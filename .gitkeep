@@ -1,0 +1,4 @@
+# Logo assets — skopiuj tutaj pliki z logo:
+# - hairlab_logo.png — pełne logo (tekst + ikona) dla splash, onboarding, home
+# - hairlab_icon.png  — sama ikona (np. pod ikonę aplikacji)
+# Jeśli plików brak, aplikacja pokaże narysowane logo (srebro + złoto).

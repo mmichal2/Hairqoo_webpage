@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hairqoo - CRM i kalendarz dla nowoczesnych stylistów</title>
+    <meta
+      name="description"
+      content="Hairqoo to nowoczesna aplikacja SaaS dla fryzjerów, barberów i salonów beauty. Zarządzaj klientami, wizytami, recepturami kolorów i zdjęciami przed/po w jednym miejscu."
+    />
+    <meta name="theme-color" content="#13131A" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a href="#top" class="logo">Hairqoo</a>
+        <nav aria-label="Główna nawigacja">
+          <ul class="nav-list">
+            <li><a href="#produkt" data-i18n="navProduct">Produkt</a></li>
+            <li><a href="#dla-kogo" data-i18n="navForWho">Dla kogo</a></li>
+            <li><a href="#kontakt" data-i18n="navContact">Kontakt</a></li>
+          </ul>
+        </nav>
+        <div class="lang-switch" role="group" aria-label="Przełącznik języka">
+          <button type="button" class="lang-btn is-active" data-lang="pl">PL</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero section">
+        <div class="container hero-grid">
+          <div class="hero-content animate-on-scroll">
+            <p class="eyebrow" data-i18n="heroEyebrow">Hairqoo SaaS dla branży beauty</p>
+            <h1 data-i18n="heroTitle">CRM i kalendarz dla nowoczesnych stylistów</h1>
+            <p class="lead" data-i18n="heroLead">
+              Hairqoo pomaga fryzjerom, barberom i salonom zarządzać klientami,
+              wizytami, recepturami, zdjęciami przed/po i komunikacją po
+              wizycie - w jednym prostym systemie.
+            </p>
+            <div class="hero-actions">
+              <a href="#kontakt" class="btn btn-primary" data-i18n="heroCtaPrimary"
+                >Dołącz do listy oczekujących</a
+              >
+              <a href="#jak-dziala" class="btn btn-ghost" data-i18n="heroCtaSecondary">Zobacz jak działa</a>
+            </div>
+          </div>
+          <div class="hero-mockup animate-on-scroll">
+            <article class="app-window">
+              <header class="app-topbar">
+                <span></span><span></span><span></span>
+              </header>
+              <div class="app-body">
+                <section class="app-card">
+                  <h2 data-i18n="mockCalendar">Kalendarz wizyt</h2>
+                  <p>Dziś: 6 wizyt</p>
+                </section>
+                <section class="app-card">
+                  <h2 data-i18n="mockClientCard">Karta klienta</h2>
+                  <p>Anna K. - kolor + strzyżenie</p>
+                </section>
+                <section class="app-card">
+                  <h2 data-i18n="mockVisitHistory">Historia wizyty</h2>
+                  <p>Receptura 7.1 + 9%, toner beige</p>
+                </section>
+                <section class="app-card app-images">
+                  <h2>Zdjęcia before / after</h2>
+                  <div class="image-pills">
+                    <span>before</span>
+                    <span>after</span>
+                  </div>
+                </section>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="proof-strip">
+        <div class="container proof-grid animate-on-scroll">
+          <article class="proof-item" data-i18n="proof1">
+            Historia klienta i receptury w 1 miejscu
+          </article>
+          <article class="proof-item" data-i18n="proof2">
+            Workflow freelancera i salonu w jednym systemie
+          </article>
+          <article class="proof-item" data-i18n="proof3">
+            Dołącz do testów zamkniętych i wpłyń na roadmapę
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-soft" id="produkt">
+        <div class="container animate-on-scroll">
+          <h2 data-i18n="problemTitle">Koniec z chaosem w notatkach, zdjęciach i wiadomościach</h2>
+          <div class="grid four">
+            <article class="card">
+              <h3 data-i18n="problem1Title">Receptury tylko w głowie</h3>
+              <p data-i18n="problem1Body">
+                Formuły koloryzacji zapisane na kartkach lub w pamięci to ryzyko
+                pomyłek i straty czasu.
+              </p>
+            </article>
+            <article class="card">
+              <h3 data-i18n="problem2Title">Zdjęcia porozrzucane w telefonie</h3>
+              <p data-i18n="problem2Body">
+                Trudno szybko znaleźć właściwe before/after, gdy klientka wraca
+                po kilku tygodniach.
+              </p>
+            </article>
+            <article class="card">
+              <h3 data-i18n="problem3Title">Historia wizyt nieczytelna</h3>
+              <p data-i18n="problem3Body">
+                Bez jednego systemu trudno odtworzyć pełny przebieg usług i
+                preferencje klienta.
+              </p>
+            </article>
+            <article class="card">
+              <h3 data-i18n="problem4Title">Brak jednego centrum pracy</h3>
+              <p data-i18n="problem4Body">
+                Kalendarz, klienci i follow-up działają osobno, zamiast wspierać
+                codzienną pracę.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container animate-on-scroll">
+          <h2 data-i18n="solutionTitle">Hairqoo zbiera całą historię pracy stylisty w jednym miejscu</h2>
+          <div class="grid four features-grid">
+            <article class="feature" data-i18n="feature1">Kalendarz wizyt</article>
+            <article class="feature" data-i18n="feature2">Baza klientów</article>
+            <article class="feature" data-i18n="feature3">Historia usług</article>
+            <article class="feature" data-i18n="feature4">Receptury kolorów</article>
+            <article class="feature" data-i18n="feature5">Zdjęcia przed/po</article>
+            <article class="feature" data-i18n="feature6">Wiadomość po wizycie</article>
+            <article class="feature" data-i18n="feature7">Notatki i preferencje klienta</article>
+            <article class="feature" data-i18n="feature8">
+              Widok dla freelancera i małego salonu
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-soft" id="dla-kogo">
+        <div class="container animate-on-scroll">
+          <h2 data-i18n="forWhoTitle">Dla kogo powstaje Hairqoo</h2>
+          <div class="grid three">
+            <article class="card">
+              <h3 data-i18n="forWho1Title">Dla freelancerów</h3>
+              <p data-i18n="forWho1Body">
+                Szybki dostęp do historii klienta i wizyt, żeby pracować sprawnie
+                bez dodatkowego chaosu.
+              </p>
+            </article>
+            <article class="card">
+              <h3 data-i18n="forWho2Title">Dla barberów</h3>
+              <p data-i18n="forWho2Body">
+                Lepsza organizacja powracających klientów, notatek i terminów w
+                jednym narzędziu.
+              </p>
+            </article>
+            <article class="card">
+              <h3 data-i18n="forWho3Title">Dla salonów beauty</h3>
+              <p data-i18n="forWho3Body">
+                Wspólna baza wiedzy o klientach i usługach, dzięki której zespół
+                działa spójnie każdego dnia.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="jak-dziala">
+        <div class="container animate-on-scroll">
+          <h2 data-i18n="howTitle">Jak to działa</h2>
+          <div class="steps">
+            <article class="step">
+              <span>1</span>
+              <h3 data-i18n="step1">Dodajesz klienta lub rezerwację</h3>
+            </article>
+            <article class="step">
+              <span>2</span>
+              <h3 data-i18n="step2">Zapisujesz przebieg wizyty, recepturę i zdjęcia</h3>
+            </article>
+            <article class="step">
+              <span>3</span>
+              <h3 data-i18n="step3">Masz pełną historię klienta przy kolejnej wizycie</h3>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-soft">
+        <div class="container animate-on-scroll">
+          <h2 data-i18n="roadmapTitle">Nad czym pracujemy</h2>
+          <p class="section-intro" data-i18n="roadmapLead">
+            Funkcje poniżej są oznaczone jako w planach i rozwijane etapami.
+          </p>
+          <div class="grid three">
+            <article class="card card-plan" data-i18n="roadmap1">Automatyczne podsumowania wizyt</article>
+            <article class="card card-plan" data-i18n="roadmap2">
+              Lepsze zdjęcia before/after do social mediów
+            </article>
+            <article class="card card-plan" data-i18n="roadmap3">Przypomnienia dla klientów</article>
+            <article class="card card-plan" data-i18n="roadmap4">Panel salonu i zespołu</article>
+            <article class="card card-plan" data-i18n="roadmap5">Analityka wizyt i klientów</article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container animate-on-scroll">
+          <h2 data-i18n="scenarioTitle">Scenariusz z codziennej pracy</h2>
+          <article class="story">
+            <p data-i18n="scenarioBody">
+              Klientka wraca po 8 tygodniach. W Hairqoo widzisz poprzednią
+              recepturę, zdjęcia, notatki i historię usługi. Nie zgadujesz -
+              pracujesz na danych.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-soft">
+        <div class="container animate-on-scroll">
+          <h2 data-i18n="trustTitle">Zaufanie i prostota</h2>
+          <div class="trust-list">
+            <p data-i18n="trust1">Dane klientów w jednym miejscu</p>
+            <p data-i18n="trust2">Prywatne zdjęcia i historia wizyt</p>
+            <p data-i18n="trust3">Prosty system bez zbędnego skomplikowania</p>
+            <p data-i18n="trust4">Stworzony z myślą o codziennej pracy stylistów</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section cta-section" id="kontakt">
+        <div class="container cta-grid animate-on-scroll">
+          <div>
+            <h2 data-i18n="ctaTitle">Chcesz testować Hairqoo jako jeden z pierwszych?</h2>
+            <p data-i18n="ctaBody">
+              Dołącz do listy oczekujących i pomóż stworzyć narzędzie, które
+              naprawdę pasuje do pracy stylistów.
+            </p>
+          </div>
+          <form class="signup-form" novalidate>
+            <label for="name" data-i18n="formName">Imię</label>
+            <input id="name" name="name" type="text" required />
+
+            <label for="email" data-i18n="formEmail">Email</label>
+            <input id="email" name="email" type="email" required />
+
+            <label for="businessType" data-i18n="formBusinessType">Typ działalności</label>
+            <select id="businessType" name="businessType" required>
+              <option value="" data-i18n="formSelect">Wybierz</option>
+              <option value="freelancer" data-i18n="formFreelancer">freelancer</option>
+              <option value="barber" data-i18n="formBarber">barber</option>
+              <option value="salon" data-i18n="formSalon">salon</option>
+              <option value="inne" data-i18n="formOther">inne</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary" data-i18n="formSubmit">Zapisz mnie</button>
+            <p class="form-message" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <p class="logo">Hairqoo</p>
+          <p data-i18n="footerLead">Nowoczesne narzędzie dla stylistów, barberów i salonów beauty.</p>
+        </div>
+        <nav aria-label="Stopka">
+          <ul class="footer-links">
+            <li><a href="#produkt" data-i18n="navProduct">Produkt</a></li>
+            <li><a href="#dla-kogo" data-i18n="navForWho">Dla kogo</a></li>
+            <li><a href="#kontakt" data-i18n="navContact">Kontakt</a></li>
+            <li><a href="#" data-i18n="navPrivacy">Prywatność</a></li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
