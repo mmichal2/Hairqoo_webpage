@@ -1,0 +1,126 @@
+/* Portal enter / exit — Silk 580ms (HAIRLAB Liquid Continuity) */
+
+.gate {
+  transition:
+    opacity var(--duration-portal) var(--ease-silk),
+    transform var(--duration-portal) var(--ease-silk),
+    filter var(--duration-portal) var(--ease-silk);
+}
+
+.gate.is-exiting {
+  opacity: 0;
+  transform: scale(1.03);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.gate.is-entering {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+.gate.is-entering.is-entering-done {
+  opacity: 1;
+  transform: scale(1);
+  filter: none;
+}
+
+.labyrinth {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity var(--duration-portal) var(--ease-silk),
+    transform var(--duration-portal) var(--ease-silk);
+}
+
+.labyrinth.is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.labyrinth.is-entering {
+  opacity: 0;
+  transform: translateY(32px);
+}
+
+.labyrinth.is-entering.is-entering-done {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.labyrinth.is-exiting {
+  opacity: 0;
+  transform: translateY(24px);
+  pointer-events: none;
+}
+
+.portal-tile {
+  transition:
+    transform 180ms var(--ease-silk),
+    box-shadow var(--duration-med) var(--ease-silk),
+    border-color var(--duration-med);
+}
+
+.portal-tile.is-pressed {
+  transform: scale(0.985);
+}
+
+/* First chamber stagger on portal enter */
+.chamber.is-stagger-reveal .chamber-header,
+.chamber.is-stagger-reveal .chamber-hint,
+.chamber.is-stagger-reveal .chamber-body,
+.chamber.is-stagger-reveal .chamber-nav {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: chamberStaggerIn var(--duration-chamber) var(--ease-silk) forwards;
+}
+
+.chamber.is-stagger-reveal .chamber-header {
+  animation-delay: 0ms;
+}
+
+.chamber.is-stagger-reveal .chamber-hint {
+  animation-delay: 70ms;
+}
+
+.chamber.is-stagger-reveal .chamber-body {
+  animation-delay: 140ms;
+}
+
+.chamber.is-stagger-reveal .chamber-nav {
+  animation-delay: 210ms;
+}
+
+@keyframes chamberStaggerIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate,
+  .labyrinth {
+    transition: none;
+    filter: none;
+    transform: none;
+  }
+
+  .gate.is-exiting,
+  .gate.is-entering,
+  .labyrinth.is-exiting,
+  .labyrinth.is-entering {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .chamber.is-stagger-reveal .chamber-header,
+  .chamber.is-stagger-reveal .chamber-hint,
+  .chamber.is-stagger-reveal .chamber-body,
+  .chamber.is-stagger-reveal .chamber-nav {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

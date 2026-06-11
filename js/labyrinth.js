@@ -1,6 +1,8 @@
 import { CHAMBER_CONFIG, applyI18n, getLang, setLang } from "./i18n.js";
 import { initMockups } from "./mockups.js";
 import { initChambers } from "./chambers/index.js";
+import { portalEnter, portalExit, portalTilePress, prefersReducedMotion } from "./motion.js";
+import { ScrollPhysics } from "./scroll-physics.js";
 
 const STORAGE_KEY = "hairqoo_labyrinth";
 
@@ -23,6 +25,8 @@ export class Labyrinth {
     this.chambers = [];
     this.currentIndex = 0;
     this.visited = new Set();
+    this.isTransitioning = false;
+    this.scrollPhysics = null;
     this.elements = {
       gate: document.getElementById("gate"),
       labyrinth: document.getElementById("labyrinth"),
@@ -55,11 +59,15 @@ export class Labyrinth {
   showGateOnLoad() {
     this.clearUrlHash();
     this.portal = null;
+    this.isTransitioning = false;
     saveState({ portal: null, lastChamber: 0 });
 
-    this.elements.gate?.classList.remove("is-hidden");
+    this.scrollPhysics?.destroy();
+    this.scrollPhysics = null;
+
+    this.elements.gate?.classList.remove("is-hidden", "is-exiting", "is-entering", "is-entering-done");
     document.body.classList.remove("is-labyrinth-active");
-    this.elements.labyrinth?.classList.remove("is-active");
+    this.elements.labyrinth?.classList.remove("is-active", "is-entering", "is-entering-done", "is-exiting");
     this.elements.progressThread?.classList.remove("is-visible");
     this.elements.progressRing?.classList.remove("is-visible");
     this.elements.minimap?.classList.remove("is-visible");
@@ -83,12 +91,18 @@ export class Labyrinth {
   }
 
   bindHomeExit() {
-    this.elements.homeExitBtn?.addEventListener("click", () => this.exitToGate());
+    this.elements.homeExitBtn?.addEventListener("click", () => {
+      if (!this.isTransitioning) this.exitToGate();
+    });
   }
 
   bindGate() {
     document.querySelectorAll("[data-portal]").forEach((btn) => {
-      btn.addEventListener("click", () => this.enterPortal(btn.dataset.portal));
+      btn.addEventListener("click", async () => {
+        if (this.isTransitioning) return;
+        await portalTilePress(btn);
+        await this.enterPortal(btn.dataset.portal);
+      });
     });
   }
 
@@ -114,38 +128,85 @@ export class Labyrinth {
   bindBackToGate() {
     this.elements.backToGate?.addEventListener("click", (e) => {
       e.preventDefault();
-      this.exitToGate();
+      if (!this.isTransitioning) this.exitToGate();
     });
   }
 
-  enterPortal(portal, scroll = true) {
-    if (!CHAMBER_CONFIG[portal]) return;
+  async enterPortal(portal) {
+    if (!CHAMBER_CONFIG[portal] || this.isTransitioning) return;
+
+    this.isTransitioning = true;
     this.portal = portal;
     saveState({ portal, lastChamber: 0 });
 
-    this.elements.gate?.classList.add("is-hidden");
     document.body.classList.add("is-labyrinth-active");
-    this.elements.labyrinth?.classList.add("is-active");
     this.elements.progressThread?.classList.add("is-visible");
     this.elements.progressRing?.classList.add("is-visible");
     this.elements.homeExitBtn?.removeAttribute("hidden");
-
-    if (this.elements.labyrinth) {
-      this.elements.labyrinth.scrollTop = 0;
-    }
 
     this.renderChambers(portal);
     this.renderMinimap(portal);
     this.renderChecklist(portal);
 
-    requestAnimationFrame(() => this.goToChamber(0, scroll));
+    const firstChamber = this.chambers[0] || null;
+
+    this.elements.labyrinth?.classList.add("is-active");
+    if (this.elements.labyrinth) this.elements.labyrinth.scrollTop = 0;
+
+    await portalEnter({
+      gate: this.elements.gate,
+      labyrinth: this.elements.labyrinth,
+      firstChamber,
+      onMidpoint: () => {
+        this.elements.gate?.classList.add("is-hidden");
+      },
+    });
+
+    this.initScrollPhysics();
+    await this.goToChamber(0, !prefersReducedMotion());
 
     if (this.onPortalChange) this.onPortalChange(portal);
     window.dispatchEvent(new CustomEvent("hairqoo:portal", { detail: { portal } }));
+
+    this.isTransitioning = false;
   }
 
-  exitToGate() {
-    this.showGateOnLoad();
+  async exitToGate() {
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+
+    await portalExit({
+      gate: this.elements.gate,
+      labyrinth: this.elements.labyrinth,
+      onStart: () => {
+        document.body.classList.remove("is-labyrinth-active");
+        this.elements.progressThread?.classList.remove("is-visible");
+        this.elements.progressRing?.classList.remove("is-visible");
+        this.elements.minimap?.classList.remove("is-visible");
+        this.elements.homeExitBtn?.setAttribute("hidden", "");
+      },
+      onComplete: () => {
+        this.showGateOnLoad();
+      },
+    });
+
+    this.isTransitioning = false;
+  }
+
+  initScrollPhysics() {
+    this.scrollPhysics?.destroy();
+    this.scrollPhysics = new ScrollPhysics(this.elements.labyrinth, {
+      onChamberChange: (idx, chamberId) => {
+        this.currentIndex = idx;
+        this.chambers[idx]?.classList.add("is-active");
+        this.markVisited(chamberId);
+        this.updateProgressFromPct((idx + 0.5) / this.chambers.length);
+      },
+      onProgress: (pct) => {
+        this.updateProgressFromPct(pct);
+      },
+    });
+    this.scrollPhysics.setChambers(this.chambers, this.elements.finale);
   }
 
   renderChambers(portal) {
@@ -170,7 +231,6 @@ export class Labyrinth {
 
     this.chambers = [...container.querySelectorAll(".chamber")];
     this.bindChamberNav();
-    this.bindHints();
     applyI18n(container);
     initMockups(container);
     initChambers(container);
@@ -187,7 +247,9 @@ export class Labyrinth {
     btn.setAttribute("aria-label", "Wróć na stronę główną");
     btn.innerHTML =
       '<span class="chamber-home-arrow" aria-hidden="true">←</span><span data-i18n="header.home">Strona główna</span>';
-    btn.addEventListener("click", () => this.exitToGate());
+    btn.addEventListener("click", () => {
+      if (!this.isTransitioning) this.exitToGate();
+    });
     header.prepend(btn);
   }
 
@@ -233,6 +295,7 @@ export class Labyrinth {
       const backBtn = chamber.querySelector("[data-action='back']");
 
       nextBtn?.addEventListener("click", () => {
+        if (this.isTransitioning) return;
         if (index < this.chambers.length - 1) {
           this.goToChamber(index + 1);
         } else {
@@ -241,22 +304,9 @@ export class Labyrinth {
       });
 
       backBtn?.addEventListener("click", () => {
+        if (this.isTransitioning) return;
         if (index > 0) this.goToChamber(index - 1);
         else this.exitToGate();
-      });
-    });
-  }
-
-  bindHints() {
-    this.chambers.forEach((chamber) => {
-      const hint = chamber.querySelector(".chamber-hint");
-      const close = chamber.querySelector(".chamber-hint-close");
-      const id = chamber.dataset.chamberId;
-      const key = `hint_${this.portal}_${id}`;
-      if (localStorage.getItem(key) === "1") hint?.classList.add("is-dismissed");
-      close?.addEventListener("click", () => {
-        hint?.classList.add("is-dismissed");
-        localStorage.setItem(key, "1");
       });
     });
   }
@@ -266,13 +316,10 @@ export class Labyrinth {
     this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-active");
+          if (entry.isIntersecting && entry.target.dataset.chamberId) {
             const idx = Number(entry.target.dataset.chamberIndex);
             if (!Number.isNaN(idx)) {
-              this.currentIndex = idx;
               this.markVisited(entry.target.dataset.chamberId);
-              this.updateProgress();
             }
           }
         });
@@ -280,11 +327,11 @@ export class Labyrinth {
       { threshold: 0.45, root: this.elements.labyrinth }
     );
     this.chambers.forEach((c) => this.observer.observe(c));
-    this.elements.finale && this.observer.observe(this.elements.finale);
   }
 
   markVisited(chamberId) {
     const key = `${this.portal}/${chamberId}`;
+    if (this.visited.has(key)) return;
     this.visited.add(key);
     const state = loadState();
     const visited = new Set(state.visitedChambers || []);
@@ -299,24 +346,22 @@ export class Labyrinth {
       ?.classList.add("is-checked");
   }
 
-  updateProgress() {
-    const total = this.chambers.length;
-    const current = this.currentIndex + 1;
-    const pct = total ? current / total : 0;
+  updateProgressFromPct(pct) {
+    const clamped = Math.max(0, Math.min(1, pct));
 
     const ring = this.elements.ringFill;
     if (ring) {
       const r = 14;
       const circ = 2 * Math.PI * r;
       ring.style.strokeDasharray = String(circ);
-      ring.style.strokeDashoffset = String(circ * (1 - pct));
+      ring.style.strokeDashoffset = String(circ * (1 - clamped));
     }
 
     const thread = this.elements.threadFill;
     if (thread) {
       const len = 800;
       thread.style.strokeDasharray = String(len);
-      thread.style.strokeDashoffset = String(len * (1 - pct));
+      thread.style.strokeDashoffset = String(len * (1 - clamped));
     }
 
     this.minimapDots?.forEach((dot, i) => {
@@ -325,34 +370,35 @@ export class Labyrinth {
     });
   }
 
-  goToChamber(index, smooth = true) {
+  async goToChamber(index, smooth = true) {
     const chamber = this.chambers[index];
     if (!chamber) return;
-    chamber.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+
     this.currentIndex = index;
     saveState({ lastChamber: index });
-    this.updateProgress();
+
+    if (this.scrollPhysics) {
+      await this.scrollPhysics.scrollToChamber(index, smooth);
+    } else {
+      chamber.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+    }
+
+    this.updateProgressFromPct((index + 0.5) / this.chambers.length);
   }
 
-  goToFinale() {
-    this.elements.finale?.scrollIntoView({ behavior: "smooth", block: "start" });
+  async goToFinale() {
     this.currentIndex = this.chambers.length;
-    const ring = this.elements.ringFill;
-    if (ring) {
-      const circ = 2 * Math.PI * 14;
-      ring.style.strokeDasharray = String(circ);
-      ring.style.strokeDashoffset = "0";
+    if (this.scrollPhysics) {
+      await this.scrollPhysics.scrollToFinale(true);
+    } else {
+      this.elements.finale?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    const thread = this.elements.threadFill;
-    if (thread) {
-      thread.style.strokeDasharray = "800";
-      thread.style.strokeDashoffset = "0";
-    }
+    this.updateProgressFromPct(1);
   }
 
   bindKeyboard() {
     document.addEventListener("keydown", (e) => {
-      if (!this.portal) return;
+      if (!this.portal || this.isTransitioning) return;
       if (e.key === "Escape") {
         this.exitToGate();
         return;

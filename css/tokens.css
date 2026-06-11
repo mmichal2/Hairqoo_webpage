@@ -47,9 +47,14 @@
 
   /* Motion */
   --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ios-spring: cubic-bezier(0.32, 0.72, 0, 1);
   --duration-fast: 200ms;
   --duration-med: 400ms;
   --duration-slow: 600ms;
+  --duration-portal: 580ms;
+  --duration-chamber: 480ms;
+  --duration-snap: 650ms;
   --stagger: 120ms;
 
   /* Layout */
