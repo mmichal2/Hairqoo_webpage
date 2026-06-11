@@ -1,25 +1,30 @@
-const SNAP_MS = 650;
+const TUNNEL_MS = 1800;
+const WHEEL_COOLDOWN = 400;
 
 function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function easeSilk(t) {
-  return 1 - Math.pow(1 - t, 3);
+function easeTunnel(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
 export class ScrollPhysics {
-  constructor(labyrinthEl, { onChamberChange, onProgress } = {}) {
+  constructor(labyrinthEl, { onChamberChange, onProgress, onAnimating } = {}) {
     this.el = labyrinthEl;
     this.chambers = [];
-    this.financeEl = null;
+    this.finaleEl = null;
     this.onChamberChange = onChamberChange;
     this.onProgress = onProgress;
+    this.onAnimating = onAnimating;
     this.rafId = null;
-    this.snapTimer = null;
     this.isAnimating = false;
     this.snapLocked = false;
     this.currentIndex = 0;
+    this.lastWheel = 0;
+    this.touchStartY = 0;
+    this.touchStartTarget = null;
+    this.tunnelVeil = document.getElementById("tunnel-veil");
 
     if (!this.el) return;
     this.bind();
@@ -36,19 +41,12 @@ export class ScrollPhysics {
   resetToStart() {
     if (!this.el || !this.chambers.length) return;
 
-    this.isAnimating = true;
+    this.isAnimating = false;
     this.snapLocked = true;
-    clearTimeout(this.snapTimer);
     this.el.scrollTop = 0;
     this.currentIndex = 0;
-
-    this.chambers.forEach((ch, i) => {
-      ch.classList.remove("is-active", "is-near", "is-far");
-      if (i === 0) ch.classList.add("is-active");
-      else if (i === 1) ch.classList.add("is-near");
-      else ch.classList.add("is-far");
-      ch.style.setProperty("--phone-parallax", "0px");
-    });
+    this.applyTunnelVisuals(0, 1);
+    this.updateDepth();
 
     if (this.onChamberChange) {
       const id = this.chambers[0]?.dataset?.chamberId;
@@ -58,8 +56,7 @@ export class ScrollPhysics {
 
     requestAnimationFrame(() => {
       this.el.scrollTop = 0;
-      this.isAnimating = false;
-      this.lockSnap(1000);
+      this.lockSnap(800);
     });
   }
 
@@ -71,21 +68,47 @@ export class ScrollPhysics {
 
   bind() {
     this.el.addEventListener("scroll", () => this.scheduleUpdate(), { passive: true });
-    this.el.addEventListener("scrollend", () => this.softSnap(), { passive: true });
+    this.el.addEventListener("wheel", (e) => this.onWheel(e), { passive: false });
     this.el.addEventListener(
-      "wheel",
-      () => {
-        clearTimeout(this.snapTimer);
-        this.snapTimer = setTimeout(() => this.softSnap(), 120);
+      "touchstart",
+      (e) => {
+        this.touchStartY = e.touches[0]?.clientY ?? 0;
+        this.touchStartTarget = e.target;
       },
       { passive: true }
     );
+    this.el.addEventListener("touchend", (e) => this.onTouchEnd(e), { passive: true });
+  }
+
+  onTouchEnd(e) {
+    if (prefersReducedMotion() || this.isAnimating || this.snapLocked) return;
+
+    const endY = e.changedTouches[0]?.clientY ?? 0;
+    const dy = this.touchStartY - endY;
+    if (Math.abs(dy) < 72) return;
+
+    const body = this.touchStartTarget?.closest?.(".chamber-body");
+    if (body && body.scrollHeight > body.clientHeight + 8) {
+      const atTop = body.scrollTop <= 2;
+      const atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 2;
+      if (dy > 0 && !atBottom) return;
+      if (dy < 0 && !atTop) return;
+    }
+
+    const now = performance.now();
+    if (now - this.lastWheel < WHEEL_COOLDOWN) return;
+    this.lastWheel = now;
+    this.navigate(dy > 0 ? 1 : -1);
   }
 
   destroy() {
     if (this.rafId) cancelAnimationFrame(this.rafId);
-    clearTimeout(this.snapTimer);
     clearTimeout(this._snapLockTimer);
+  }
+
+  setAnimating(value) {
+    this.isAnimating = value;
+    this.onAnimating?.(value);
   }
 
   scheduleUpdate() {
@@ -93,136 +116,177 @@ export class ScrollPhysics {
     if (this.rafId) return;
     this.rafId = requestAnimationFrame(() => {
       this.rafId = null;
-      this.updateDepth();
-      this.emitProgress();
+      this.updateDepthFromScroll();
     });
   }
 
-  getOffsets() {
+  getScrollPadding() {
+    return parseInt(getComputedStyle(this.el).scrollPaddingTop || "0", 10) || 0;
+  }
+
+  getChamberTop(index) {
+    const ch = this.chambers[index];
+    if (!ch) return 0;
+    return ch.offsetTop - this.getScrollPadding();
+  }
+
+  getFractionalIndex() {
+    if (!this.chambers.length) return 0;
     const scrollTop = this.el.scrollTop;
-    const viewMid = scrollTop + this.el.clientHeight * 0.42;
-    return this.chambers.map((ch) => {
-      const top = ch.offsetTop;
-      const center = top + ch.offsetHeight * 0.5;
-      return { el: ch, top, center, dist: Math.abs(center - viewMid) };
+    const tops = this.chambers.map((_, i) => this.getChamberTop(i));
+
+    if (scrollTop <= tops[0]) return 0;
+    const last = tops.length - 1;
+    if (scrollTop >= tops[last]) return last;
+
+    for (let i = 0; i < last; i++) {
+      const start = tops[i];
+      const end = tops[i + 1];
+      if (scrollTop >= start && scrollTop < end) {
+        const span = end - start || 1;
+        return i + (scrollTop - start) / span;
+      }
+    }
+    return last;
+  }
+
+  applyTunnelVisuals(fractionalIndex, emergeOverride = null) {
+    const max = Math.max(0, this.chambers.length - 1);
+    const frac = Math.max(0, Math.min(max, fractionalIndex));
+    const nearest = Math.round(frac);
+    const local = frac - nearest;
+    const emerge =
+      emergeOverride ?? Math.max(0, Math.min(1, 1 - Math.abs(local) * 1.85));
+    const tunnelDark = Math.max(0, Math.min(1, 1 - emerge));
+
+    this.el.style.setProperty("--tunnel-dark", String(tunnelDark));
+    this.el.style.setProperty("--emerge", String(emerge));
+
+    this.chambers.forEach((ch, i) => {
+      const chEmerge = Math.max(0, Math.min(1, 1 - Math.abs(frac - i)));
+      ch.style.setProperty("--ch-emerge", String(chEmerge));
     });
   }
 
-  findNearestIndex() {
-    const offsets = this.getOffsets();
-    if (!offsets.length) return 0;
-    let best = 0;
-    let min = Infinity;
-    offsets.forEach((o, i) => {
-      if (o.dist < min) {
-        min = o.dist;
-        best = i;
-      }
+  updateDepthFromScroll() {
+    const frac = this.getFractionalIndex();
+    const idx = Math.round(frac);
+    this.applyTunnelVisuals(frac);
+
+    this.chambers.forEach((ch, i) => {
+      ch.classList.remove("is-active", "is-near", "is-far", "is-emerging");
+      const dist = Math.abs(i - frac);
+      if (dist < 0.35) ch.classList.add("is-active");
+      else if (dist < 1.2) ch.classList.add("is-near");
+      else ch.classList.add("is-far");
+      if (dist > 0.1 && dist < 0.95) ch.classList.add("is-emerging");
     });
-    return best;
+
+    if (idx !== this.currentIndex) {
+      this.currentIndex = idx;
+      const id = this.chambers[idx]?.dataset?.chamberId;
+      if (id) this.onChamberChange?.(idx, id);
+    }
+
+    this.emitProgress(frac);
   }
 
   updateDepth() {
-    const idx = this.findNearestIndex();
-    this.currentIndex = idx;
-
+    this.applyTunnelVisuals(this.currentIndex, 1);
     this.chambers.forEach((ch, i) => {
-      ch.classList.remove("is-active", "is-near", "is-far");
-      if (i === idx) {
+      ch.classList.remove("is-active", "is-near", "is-far", "is-emerging");
+      if (i === this.currentIndex) {
         ch.classList.add("is-active");
-        const progress = this.getChamberScrollProgress(ch);
-        ch.style.setProperty("--phone-parallax", `${progress * -12}px`);
-      } else if (Math.abs(i - idx) === 1) {
+        ch.style.setProperty("--ch-emerge", "1");
+      } else if (Math.abs(i - this.currentIndex) === 1) {
         ch.classList.add("is-near");
-        ch.style.setProperty("--phone-parallax", "0px");
+        ch.style.setProperty("--ch-emerge", "0");
       } else {
         ch.classList.add("is-far");
-        ch.style.setProperty("--phone-parallax", "0px");
+        ch.style.setProperty("--ch-emerge", "0");
       }
     });
-
-    if (this.onChamberChange) {
-      const id = this.chambers[idx]?.dataset?.chamberId;
-      if (id) this.onChamberChange(idx, id);
-    }
+    this.emitProgress(this.currentIndex);
   }
 
-  getChamberScrollProgress(chamber) {
-    const rect = chamber.getBoundingClientRect();
-    const containerRect = this.el.getBoundingClientRect();
-    const chamberMid = rect.top + rect.height * 0.5;
-    const containerMid = containerRect.top + containerRect.height * 0.5;
-    const delta = chamberMid - containerMid;
-    return Math.max(-1, Math.min(1, delta / (containerRect.height * 0.5)));
-  }
-
-  emitProgress() {
+  emitProgress(fractionalIndex) {
     if (!this.onProgress || !this.chambers.length) return;
-    const idx = this.findNearestIndex();
-    const offsets = this.getOffsets();
-    const current = offsets[idx];
-    if (!current) return;
-
-    const neighbor =
-      idx < offsets.length - 1 ? offsets[idx + 1] : offsets[idx - 1];
-    let frac = 0;
-    if (neighbor && neighbor.dist + current.dist > 0) {
-      const total = current.dist + neighbor.dist;
-      frac = 1 - current.dist / total;
-      frac = Math.max(0, Math.min(1, frac * 0.5));
-    }
-
-    const pct = (idx + frac) / this.chambers.length;
-    this.onProgress(pct, idx);
+    const pct = (fractionalIndex + 0.5) / this.chambers.length;
+    this.onProgress(Math.max(0, Math.min(1, pct)), Math.round(fractionalIndex));
   }
 
-  softSnap() {
-    if (prefersReducedMotion() || this.isAnimating || this.snapLocked) return;
-    const idx = this.findNearestIndex();
-    const offsets = this.getOffsets();
-    const current = offsets[idx];
-    if (!current) return;
+  onWheel(e) {
+    if (prefersReducedMotion() || this.snapLocked) return;
+    if (this.isAnimating) {
+      e.preventDefault();
+      return;
+    }
 
-    const threshold = this.el.clientHeight * 0.25;
-    if (current.dist > threshold) return;
+    const now = performance.now();
+    if (now - this.lastWheel < WHEEL_COOLDOWN) {
+      e.preventDefault();
+      return;
+    }
 
-    this.scrollToChamber(idx, true);
+    if (Math.abs(e.deltaY) < 40) return;
+
+    e.preventDefault();
+    this.lastWheel = now;
+    this.navigate(e.deltaY > 0 ? 1 : -1);
+  }
+
+  navigate(direction) {
+    if (this.isAnimating || this.snapLocked) return Promise.resolve();
+
+    const target = this.currentIndex + direction;
+    if (target < 0) {
+      return Promise.resolve();
+    }
+    if (target >= this.chambers.length) {
+      return this.scrollToFinale(true);
+    }
+    return this.scrollToChamber(target, true);
   }
 
   scrollToChamber(index, smooth = true) {
     const chamber = this.chambers[index];
     if (!chamber || !this.el) return Promise.resolve();
 
+    const target = this.getChamberTop(index);
+
     if (!smooth || prefersReducedMotion()) {
-      chamber.scrollIntoView({ behavior: "auto", block: "start" });
+      this.el.scrollTop = target;
       this.currentIndex = index;
       this.updateDepth();
-      this.emitProgress();
+      const id = chamber.dataset?.chamberId;
+      if (id) this.onChamberChange?.(index, id);
       return Promise.resolve();
     }
 
-    const target = chamber.offsetTop - parseInt(getComputedStyle(this.el).scrollPaddingTop || "0", 10);
-    return this.animateScrollTo(target).then(() => {
+    return this.animateScrollTo(target, index).then(() => {
       this.currentIndex = index;
       this.updateDepth();
-      this.emitProgress();
+      const id = chamber.dataset?.chamberId;
+      if (id) this.onChamberChange?.(index, id);
     });
   }
 
   scrollToFinale(smooth = true) {
     if (!this.finaleEl) return Promise.resolve();
+    const target = this.finaleEl.offsetTop - this.getScrollPadding();
+
     if (!smooth || prefersReducedMotion()) {
-      this.finaleEl.scrollIntoView({ behavior: "auto", block: "start" });
-      if (this.onProgress) this.onProgress(1, this.chambers.length);
+      this.el.scrollTop = target;
+      this.onProgress?.(1, this.chambers.length);
       return Promise.resolve();
     }
-    const target = this.finaleEl.offsetTop - parseInt(getComputedStyle(this.el).scrollPaddingTop || "0", 10);
-    return this.animateScrollTo(target).then(() => {
-      if (this.onProgress) this.onProgress(1, this.chambers.length);
+
+    return this.animateScrollTo(target, this.chambers.length).then(() => {
+      this.onProgress?.(1, this.chambers.length);
     });
   }
 
-  animateScrollTo(target) {
+  animateScrollTo(target, targetIndex) {
     return new Promise((resolve) => {
       const start = this.el.scrollTop;
       const delta = target - start;
@@ -231,22 +295,37 @@ export class ScrollPhysics {
         return;
       }
 
-      this.isAnimating = true;
-      const duration = SNAP_MS;
+      this.setAnimating(true);
+      const duration = TUNNEL_MS;
       const startTime = performance.now();
+      const startFrac = this.getFractionalIndex();
 
       const step = (now) => {
         const elapsed = now - startTime;
         const t = Math.min(1, elapsed / duration);
-        const eased = easeSilk(t);
+        const eased = easeTunnel(t);
         this.el.scrollTop = start + delta * eased;
-        this.updateDepth();
-        this.emitProgress();
+
+        const travelFrac =
+          startFrac + (targetIndex - startFrac) * eased;
+        this.applyTunnelVisuals(travelFrac);
+
+        this.chambers.forEach((ch, i) => {
+          ch.classList.remove("is-active", "is-near", "is-far", "is-emerging");
+          const dist = Math.abs(i - travelFrac);
+          if (dist < 0.35) ch.classList.add("is-active");
+          else if (dist < 1.2) ch.classList.add("is-near");
+          else ch.classList.add("is-far");
+          if (dist > 0.08 && dist < 0.92) ch.classList.add("is-emerging");
+        });
+
+        this.emitProgress(travelFrac);
 
         if (t < 1) {
           requestAnimationFrame(step);
         } else {
-          this.isAnimating = false;
+          this.setAnimating(false);
+          this.updateDepth();
           resolve();
         }
       };

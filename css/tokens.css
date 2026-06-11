@@ -55,6 +55,7 @@
   --duration-portal: 580ms;
   --duration-chamber: 480ms;
   --duration-snap: 650ms;
+  --duration-tunnel: 1800ms;
   --stagger: 120ms;
 
   /* Layout */

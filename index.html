@@ -40,6 +40,8 @@
     <link rel="stylesheet" href="./css/motion.css" />
     <link rel="stylesheet" href="./css/preloader.css" />
     <link rel="stylesheet" href="./css/poster.css" />
+    <link rel="stylesheet" href="./css/tunnel.css" />
+    <link rel="stylesheet" href="./css/scroll-cue.css" />
   </head>
   <body>
     <div class="preloader" id="preloader" aria-hidden="true">
@@ -120,6 +122,24 @@
     </nav>
 
     <nav class="minimap glass" id="minimap" aria-label="Mapa komnat"></nav>
+
+    <div class="tunnel-veil" id="tunnel-veil" aria-hidden="true">
+      <div class="tunnel-vignette"></div>
+      <div class="tunnel-light"></div>
+      <div class="tunnel-rails"></div>
+    </div>
+
+    <button
+      type="button"
+      class="scroll-cue"
+      id="scroll-cue"
+      hidden
+      aria-label="Przejdź do następnej sekcji"
+    >
+      <span class="scroll-cue-ring" aria-hidden="true"></span>
+      <span class="scroll-cue-arrow" aria-hidden="true">↓</span>
+      <span class="scroll-cue-label" data-i18n="nav.scrollDown">Następna sekcja</span>
+    </button>
 
     <!-- GATE -->
     <section class="gate" id="gate">
@@ -871,6 +891,6 @@
       </section>
     </template>
 
-    <script type="module" src="./js/main.js?v=5"></script>
+    <script type="module" src="./js/main.js?v=6"></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-import { CHAMBER_CONFIG, applyI18n, getLang, setLang } from "./i18n.js";
+import { CHAMBER_CONFIG, applyI18n, getLang, setLang, t } from "./i18n.js";
 import { initMockups } from "./mockups.js";
 import { initChambers } from "./chambers/index.js";
 import { portalEnter, portalExit, portalTilePress, prefersReducedMotion } from "./motion.js";
@@ -39,8 +39,11 @@ export class Labyrinth {
       threadFill: document.getElementById("thread-fill"),
       backToGate: document.getElementById("back-to-gate"),
       homeExitBtn: document.getElementById("home-exit-btn"),
+      scrollCue: document.getElementById("scroll-cue"),
+      tunnelVeil: document.getElementById("tunnel-veil"),
     };
     this.onPortalChange = null;
+    this.onFinale = false;
     this.init();
   }
 
@@ -51,6 +54,7 @@ export class Labyrinth {
     this.bindKeyboard();
     this.bindBackToGate();
     this.bindHomeExit();
+    this.bindScrollCue();
     window.addEventListener("pageshow", (e) => {
       if (e.persisted) this.showGateOnLoad();
     });
@@ -82,6 +86,9 @@ export class Labyrinth {
     this.elements.progressRing?.classList.remove("is-visible");
     this.elements.minimap?.classList.remove("is-visible");
     this.elements.homeExitBtn?.setAttribute("hidden", "");
+    this.hideScrollCue();
+    this.elements.tunnelVeil?.classList.remove("is-visible");
+    this.elements.labyrinth?.classList.remove("is-tunnel-active");
 
     if (this.elements.chambersContainer) {
       this.elements.chambersContainer.innerHTML = "";
@@ -125,6 +132,7 @@ export class Labyrinth {
         document.querySelectorAll(".lang-btn").forEach((b) => {
           b.classList.toggle("is-active", b.dataset.lang === getLang());
         });
+        if (this.portal) this.updateScrollCue();
       });
     });
     const saved = localStorage.getItem("hairqoo_lang");
@@ -176,11 +184,16 @@ export class Labyrinth {
       },
     });
 
+    this.elements.labyrinth?.classList.add("is-tunnel-active");
+    this.elements.tunnelVeil?.classList.add("is-visible");
+
     this.initScrollPhysics();
     this.scrollPhysics?.resetToStart();
     if (this.elements.labyrinth) this.elements.labyrinth.scrollTop = 0;
     this.currentIndex = 0;
+    this.onFinale = false;
     this.updateProgressFromPct(0.5 / this.chambers.length);
+    this.updateScrollCue();
 
     if (this.onPortalChange) this.onPortalChange(portal);
     window.dispatchEvent(new CustomEvent("hairqoo:portal", { detail: { portal } }));
@@ -201,6 +214,8 @@ export class Labyrinth {
         this.elements.progressRing?.classList.remove("is-visible");
         this.elements.minimap?.classList.remove("is-visible");
         this.elements.homeExitBtn?.setAttribute("hidden", "");
+        this.hideScrollCue();
+        this.elements.tunnelVeil?.classList.remove("is-visible");
       },
       onComplete: () => {
         this.showGateOnLoad();
@@ -215,15 +230,83 @@ export class Labyrinth {
     this.scrollPhysics = new ScrollPhysics(this.elements.labyrinth, {
       onChamberChange: (idx, chamberId) => {
         this.currentIndex = idx;
-        this.chambers[idx]?.classList.add("is-active");
+        this.onFinale = false;
         this.markVisited(chamberId);
         this.updateProgressFromPct((idx + 0.5) / this.chambers.length);
+        this.updateScrollCue();
       },
       onProgress: (pct) => {
         this.updateProgressFromPct(pct);
+        this.checkFinaleVisibility();
+      },
+      onAnimating: (animating) => {
+        this.elements.scrollCue?.classList.toggle("is-animating", animating);
       },
     });
     this.scrollPhysics.setChambers(this.chambers, this.elements.finale);
+  }
+
+  bindScrollCue() {
+    this.elements.scrollCue?.addEventListener("click", () => {
+      if (this.isTransitioning || this.scrollPhysics?.isAnimating) return;
+      this.goToNext();
+    });
+  }
+
+  hideScrollCue() {
+    const cue = this.elements.scrollCue;
+    if (!cue) return;
+    cue.classList.remove("is-visible", "is-finish", "is-animating");
+    cue.setAttribute("hidden", "");
+  }
+
+  updateScrollCue() {
+    const cue = this.elements.scrollCue;
+    if (!cue || !this.portal) return;
+
+    if (this.onFinale) {
+      this.hideScrollCue();
+      return;
+    }
+
+    cue.removeAttribute("hidden");
+    cue.classList.add("is-visible");
+
+    const isLast = this.currentIndex >= this.chambers.length - 1;
+    cue.classList.toggle("is-finish", isLast);
+
+    const label = cue.querySelector(".scroll-cue-label");
+    if (label) {
+      label.textContent = isLast ? t("nav.scrollFinish") : t("nav.scrollDown");
+    }
+
+    cue.setAttribute(
+      "aria-label",
+      isLast ? t("nav.scrollFinishAria") : t("nav.scrollDownAria")
+    );
+  }
+
+  checkFinaleVisibility() {
+    const lab = this.elements.labyrinth;
+    const finale = this.elements.finale;
+    if (!lab || !finale || !this.chambers.length) return;
+
+    const finaleTop = finale.offsetTop - 80;
+    if (lab.scrollTop >= finaleTop) {
+      this.onFinale = true;
+      this.hideScrollCue();
+    }
+  }
+
+  async goToNext() {
+    if (this.isTransitioning || this.scrollPhysics?.isAnimating) return;
+
+    if (this.currentIndex < this.chambers.length - 1) {
+      await this.goToChamber(this.currentIndex + 1);
+    } else {
+      await this.goToFinale();
+    }
+    this.updateScrollCue();
   }
 
   renderChambers(portal) {
@@ -308,20 +391,9 @@ export class Labyrinth {
 
   bindChamberNav() {
     this.chambers.forEach((chamber, index) => {
-      const nextBtn = chamber.querySelector("[data-action='next']");
       const backBtn = chamber.querySelector("[data-action='back']");
-
-      nextBtn?.addEventListener("click", () => {
-        if (this.isTransitioning) return;
-        if (index < this.chambers.length - 1) {
-          this.goToChamber(index + 1);
-        } else {
-          this.goToFinale();
-        }
-      });
-
       backBtn?.addEventListener("click", () => {
-        if (this.isTransitioning) return;
+        if (this.isTransitioning || this.scrollPhysics?.isAnimating) return;
         if (index > 0) this.goToChamber(index - 1);
         else this.exitToGate();
       });
@@ -392,6 +464,7 @@ export class Labyrinth {
     if (!chamber) return;
 
     this.currentIndex = index;
+    this.onFinale = false;
     saveState({ lastChamber: index });
 
     if (this.scrollPhysics) {
@@ -401,10 +474,13 @@ export class Labyrinth {
     }
 
     this.updateProgressFromPct((index + 0.5) / this.chambers.length);
+    this.updateScrollCue();
   }
 
   async goToFinale() {
     this.currentIndex = this.chambers.length;
+    this.onFinale = true;
+    this.hideScrollCue();
     if (this.scrollPhysics) {
       await this.scrollPhysics.scrollToFinale(true);
     } else {
@@ -422,11 +498,7 @@ export class Labyrinth {
       }
       if (e.key === "ArrowDown" || e.key === "Enter") {
         e.preventDefault();
-        if (this.currentIndex < this.chambers.length - 1) {
-          this.goToChamber(this.currentIndex + 1);
-        } else {
-          this.goToFinale();
-        }
+        this.goToNext();
       }
       if (e.key === "ArrowUp") {
         e.preventDefault();

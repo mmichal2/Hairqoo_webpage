@@ -42,7 +42,15 @@ export const translations = {
       clientDesc: "Umów wizytę w kilka kliknięć i trzymaj swoje terminy pod kontrolą.",
       clientEnter: "Wchodzę jako klient →",
     },
-    nav: { next: "Dalej", back: "Cofnij", finish: "Zakończ tour" },
+    nav: {
+      next: "Dalej",
+      back: "Cofnij",
+      finish: "Zakończ tour",
+      scrollDown: "Następna sekcja",
+      scrollFinish: "Zakończ tour",
+      scrollDownAria: "Przejdź do następnej sekcji",
+      scrollFinishAria: "Przejdź do zakończenia tour",
+    },
     salon: {
       home: {
         title: "Twój punkt startu",
@@ -236,7 +244,15 @@ export const translations = {
       clientDesc: "Book in a few taps and keep your appointments under control.",
       clientEnter: "Enter as client →",
     },
-    nav: { next: "Next", back: "Back", finish: "Finish tour" },
+    nav: {
+      next: "Next",
+      back: "Back",
+      finish: "Finish tour",
+      scrollDown: "Next section",
+      scrollFinish: "Finish tour",
+      scrollDownAria: "Go to next section",
+      scrollFinishAria: "Go to tour finale",
+    },
     salon: {
       home: {
         title: "Your starting point",
