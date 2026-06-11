@@ -38,9 +38,10 @@ export async function portalEnter({ gate, labyrinth, firstChamber, onMidpoint })
     return;
   }
 
-  gate?.classList.add("is-exiting");
-  labyrinth?.classList.add("is-entering");
+  gate?.classList.add("is-exiting", "is-poster-launch");
+  labyrinth?.classList.add("is-entering", "is-poster-launch");
   labyrinth?.classList.remove("is-entering-done");
+  if (labyrinth) labyrinth.scrollTop = 0;
 
   await wait(PORTAL_MS * 0.35);
   onMidpoint?.();
@@ -48,8 +49,8 @@ export async function portalEnter({ gate, labyrinth, firstChamber, onMidpoint })
   labyrinth?.classList.add("is-entering-done");
   await waitTransition(labyrinth, PORTAL_MS);
 
-  gate?.classList.remove("is-exiting");
-  labyrinth?.classList.remove("is-entering", "is-entering-done");
+  gate?.classList.remove("is-exiting", "is-poster-launch");
+  labyrinth?.classList.remove("is-entering", "is-entering-done", "is-poster-launch");
 
   if (firstChamber) {
     firstChamber.classList.add("is-stagger-reveal");

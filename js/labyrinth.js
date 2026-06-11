@@ -66,8 +66,18 @@ export class Labyrinth {
     this.scrollPhysics = null;
 
     this.elements.gate?.classList.remove("is-hidden", "is-exiting", "is-entering", "is-entering-done");
-    document.body.classList.remove("is-labyrinth-active");
-    this.elements.labyrinth?.classList.remove("is-active", "is-entering", "is-entering-done", "is-exiting");
+    document.body.classList.remove(
+      "is-labyrinth-active",
+      "portal-salon-active",
+      "portal-client-active"
+    );
+    this.elements.labyrinth?.classList.remove(
+      "is-active",
+      "is-entering",
+      "is-entering-done",
+      "is-exiting",
+      "is-poster-active"
+    );
     this.elements.progressThread?.classList.remove("is-visible");
     this.elements.progressRing?.classList.remove("is-visible");
     this.elements.minimap?.classList.remove("is-visible");
@@ -139,7 +149,7 @@ export class Labyrinth {
     this.portal = portal;
     saveState({ portal, lastChamber: 0 });
 
-    document.body.classList.add("is-labyrinth-active");
+    document.body.classList.add("is-labyrinth-active", `portal-${portal}-active`);
     this.elements.progressThread?.classList.add("is-visible");
     this.elements.progressRing?.classList.add("is-visible");
     this.elements.homeExitBtn?.removeAttribute("hidden");
@@ -150,8 +160,11 @@ export class Labyrinth {
 
     const firstChamber = this.chambers[0] || null;
 
-    this.elements.labyrinth?.classList.add("is-active");
-    if (this.elements.labyrinth) this.elements.labyrinth.scrollTop = 0;
+    if (this.elements.labyrinth) {
+      this.elements.labyrinth.scrollTop = 0;
+      this.elements.labyrinth.classList.add("is-active", "is-poster-active");
+    }
+    window.scrollTo(0, 0);
 
     await portalEnter({
       gate: this.elements.gate,
@@ -159,11 +172,15 @@ export class Labyrinth {
       firstChamber,
       onMidpoint: () => {
         this.elements.gate?.classList.add("is-hidden");
+        if (this.elements.labyrinth) this.elements.labyrinth.scrollTop = 0;
       },
     });
 
     this.initScrollPhysics();
-    await this.goToChamber(0, !prefersReducedMotion());
+    this.scrollPhysics?.resetToStart();
+    if (this.elements.labyrinth) this.elements.labyrinth.scrollTop = 0;
+    this.currentIndex = 0;
+    this.updateProgressFromPct(0.5 / this.chambers.length);
 
     if (this.onPortalChange) this.onPortalChange(portal);
     window.dispatchEvent(new CustomEvent("hairqoo:portal", { detail: { portal } }));

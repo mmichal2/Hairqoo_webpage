@@ -40,12 +40,26 @@
 
 .labyrinth.is-entering {
   opacity: 0;
-  transform: translateY(32px);
+  transform: translateY(48px) scale(0.98);
+  clip-path: inset(100% 0 0 0);
 }
 
 .labyrinth.is-entering.is-entering-done {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
+  clip-path: inset(0 0 0 0);
+}
+
+.labyrinth.is-poster-launch.is-entering {
+  transition:
+    opacity var(--duration-portal) var(--ease-silk),
+    transform 720ms var(--ease-silk),
+    clip-path 720ms var(--ease-silk);
+}
+
+.gate.is-poster-launch.is-exiting {
+  transform: scale(1.06) translateY(-12px);
+  filter: blur(8px);
 }
 
 .labyrinth.is-exiting {

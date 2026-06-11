@@ -22,6 +22,10 @@ html {
   }
 }
 
+body.is-preloading {
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   font-family: "Inter", system-ui, sans-serif;

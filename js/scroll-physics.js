@@ -18,10 +18,49 @@ export class ScrollPhysics {
     this.rafId = null;
     this.snapTimer = null;
     this.isAnimating = false;
+    this.snapLocked = false;
     this.currentIndex = 0;
 
     if (!this.el) return;
     this.bind();
+  }
+
+  lockSnap(ms = 900) {
+    this.snapLocked = true;
+    clearTimeout(this._snapLockTimer);
+    this._snapLockTimer = setTimeout(() => {
+      this.snapLocked = false;
+    }, ms);
+  }
+
+  resetToStart() {
+    if (!this.el || !this.chambers.length) return;
+
+    this.isAnimating = true;
+    this.snapLocked = true;
+    clearTimeout(this.snapTimer);
+    this.el.scrollTop = 0;
+    this.currentIndex = 0;
+
+    this.chambers.forEach((ch, i) => {
+      ch.classList.remove("is-active", "is-near", "is-far");
+      if (i === 0) ch.classList.add("is-active");
+      else if (i === 1) ch.classList.add("is-near");
+      else ch.classList.add("is-far");
+      ch.style.setProperty("--phone-parallax", "0px");
+    });
+
+    if (this.onChamberChange) {
+      const id = this.chambers[0]?.dataset?.chamberId;
+      if (id) this.onChamberChange(0, id);
+    }
+    if (this.onProgress) this.onProgress(0.5 / this.chambers.length, 0);
+
+    requestAnimationFrame(() => {
+      this.el.scrollTop = 0;
+      this.isAnimating = false;
+      this.lockSnap(1000);
+    });
   }
 
   setChambers(chambers, finaleEl = null) {
@@ -46,6 +85,7 @@ export class ScrollPhysics {
   destroy() {
     if (this.rafId) cancelAnimationFrame(this.rafId);
     clearTimeout(this.snapTimer);
+    clearTimeout(this._snapLockTimer);
   }
 
   scheduleUpdate() {
@@ -137,7 +177,7 @@ export class ScrollPhysics {
   }
 
   softSnap() {
-    if (prefersReducedMotion() || this.isAnimating) return;
+    if (prefersReducedMotion() || this.isAnimating || this.snapLocked) return;
     const idx = this.findNearestIndex();
     const offsets = this.getOffsets();
     const current = offsets[idx];
