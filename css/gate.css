@@ -1,0 +1,149 @@
+.gate {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--header-h) + var(--space-xl)) var(--space-md) var(--space-xxl);
+  z-index: 1;
+}
+
+.gate.is-hidden {
+  display: none;
+}
+
+.gate-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--cosmic-void) center / cover no-repeat;
+  opacity: 0.35;
+  z-index: -1;
+}
+
+.gate-hero-bg.has-image {
+  background-image: url("../assets/images/home_hero.png");
+}
+
+.gate-brand {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  animation: gateReveal var(--duration-slow) var(--ease-out) both;
+}
+
+.gate-brand img {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto var(--space-md);
+  filter: drop-shadow(0 0 20px rgba(201, 191, 255, 0.4));
+}
+
+.gate-brand .wordmark {
+  font-family: "Manrope", sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: var(--text);
+}
+
+.gate-headline {
+  text-align: center;
+  max-width: 720px;
+  margin-bottom: var(--space-xxl);
+  animation: gateReveal var(--duration-slow) var(--ease-out) 0.12s both;
+}
+
+.gate-headline h1 {
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  line-height: 1.15;
+  margin-bottom: var(--space-md);
+}
+
+.gate-headline p {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.gate-portals {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+  width: 100%;
+  max-width: 640px;
+}
+
+@media (min-width: 600px) {
+  .gate-portals {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.portal-tile {
+  position: relative;
+  padding: var(--space-xl) var(--space-lg);
+  border-radius: var(--radius-lg);
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--duration-med) var(--ease-out),
+    box-shadow var(--duration-med) var(--ease-out),
+    border-color var(--duration-med) var(--ease-out);
+  animation: gateReveal var(--duration-slow) var(--ease-out) both;
+}
+
+.portal-tile:nth-child(1) {
+  animation-delay: 0.24s;
+}
+
+.portal-tile:nth-child(2) {
+  animation-delay: 0.36s;
+}
+
+.portal-tile:hover,
+.portal-tile:focus-visible {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-glow);
+  border-color: rgba(201, 191, 255, 0.35);
+  outline: none;
+}
+
+.portal-tile-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: var(--space-md);
+}
+
+.portal-tile h2 {
+  font-size: 1.25rem;
+  margin-bottom: var(--space-sm);
+}
+
+.portal-tile p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0 0 var(--space-md);
+}
+
+.portal-tile .enter-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+@keyframes gateReveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -3,31 +3,51 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hairqoo - CRM i kalendarz dla nowoczesnych stylistów</title>
+    <title>Hairqoo — Interaktywny przewodnik po aplikacji</title>
     <meta
       name="description"
-      content="Hairqoo to nowoczesna aplikacja SaaS dla fryzjerów, barberów i salonów beauty. Zarządzaj klientami, wizytami, recepturami kolorów i zdjęciami przed/po w jednym miejscu."
+      content="Odkryj Hairqoo — magiczny labirynt prowadzący przez portal fryzjera i klienta."
     />
     <meta name="theme-color" content="#13131A" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./css/tokens.css" />
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/gate.css" />
+    <link rel="stylesheet" href="./css/chambers.css" />
+    <link rel="stylesheet" href="./css/labyrinth.css" />
+    <link rel="stylesheet" href="./css/mockups.css" />
+    <link rel="stylesheet" href="./css/finale.css" />
   </head>
   <body>
+    <svg width="0" height="0" aria-hidden="true">
+      <defs>
+        <linearGradient id="strandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#B5B0FF" />
+          <stop offset="52%" stop-color="#D8B8E8" />
+          <stop offset="100%" stop-color="#FFB7B7" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <div class="ambient-glow" aria-hidden="true"></div>
+
     <header class="site-header">
-      <div class="container nav">
-        <a href="#top" class="logo">Hairqoo</a>
-        <nav aria-label="Główna nawigacja">
-          <ul class="nav-list">
-            <li><a href="#produkt" data-i18n="navProduct">Produkt</a></li>
-            <li><a href="#dla-kogo" data-i18n="navForWho">Dla kogo</a></li>
-            <li><a href="#kontakt" data-i18n="navContact">Kontakt</a></li>
-          </ul>
-        </nav>
+      <a href="#" class="logo" id="back-to-gate">
+        <img src="./assets/images/hairlab_icon.png" alt="" width="32" height="32" />
+        Hairqoo
+      </a>
+      <div class="header-actions">
+        <div class="progress-ring" id="progress-ring" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 36 36">
+            <circle class="ring-bg" cx="18" cy="18" r="14" />
+            <circle class="ring-fill" id="ring-fill" cx="18" cy="18" r="14" />
+          </svg>
+        </div>
         <div class="lang-switch" role="group" aria-label="Przełącznik języka">
           <button type="button" class="lang-btn is-active" data-lang="pl">PL</button>
           <button type="button" class="lang-btn" data-lang="en">EN</button>
@@ -35,264 +55,780 @@
       </div>
     </header>
 
-    <main id="top">
-      <section class="hero section">
-        <div class="container hero-grid">
-          <div class="hero-content animate-on-scroll">
-            <p class="eyebrow" data-i18n="heroEyebrow">Hairqoo SaaS dla branży beauty</p>
-            <h1 data-i18n="heroTitle">CRM i kalendarz dla nowoczesnych stylistów</h1>
-            <p class="lead" data-i18n="heroLead">
-              Hairqoo pomaga fryzjerom, barberom i salonom zarządzać klientami,
-              wizytami, recepturami, zdjęciami przed/po i komunikacją po
-              wizycie - w jednym prostym systemie.
-            </p>
-            <div class="hero-actions">
-              <a href="#kontakt" class="btn btn-primary" data-i18n="heroCtaPrimary"
-                >Dołącz do listy oczekujących</a
-              >
-              <a href="#jak-dziala" class="btn btn-ghost" data-i18n="heroCtaSecondary">Zobacz jak działa</a>
-            </div>
-          </div>
-          <div class="hero-mockup animate-on-scroll">
-            <article class="app-window">
-              <header class="app-topbar">
-                <span></span><span></span><span></span>
-              </header>
-              <div class="app-body">
-                <section class="app-card">
-                  <h2 data-i18n="mockCalendar">Kalendarz wizyt</h2>
-                  <p>Dziś: 6 wizyt</p>
-                </section>
-                <section class="app-card">
-                  <h2 data-i18n="mockClientCard">Karta klienta</h2>
-                  <p>Anna K. - kolor + strzyżenie</p>
-                </section>
-                <section class="app-card">
-                  <h2 data-i18n="mockVisitHistory">Historia wizyty</h2>
-                  <p>Receptura 7.1 + 9%, toner beige</p>
-                </section>
-                <section class="app-card app-images">
-                  <h2>Zdjęcia before / after</h2>
-                  <div class="image-pills">
-                    <span>before</span>
-                    <span>after</span>
-                  </div>
-                </section>
+    <nav class="progress-thread" id="progress-thread" aria-hidden="true">
+      <svg viewBox="0 0 48 800" preserveAspectRatio="none">
+        <path class="thread-bg" d="M24 0 V800" />
+        <path class="thread-fill" id="thread-fill" d="M24 0 V800" />
+      </svg>
+    </nav>
+
+    <nav class="minimap glass" id="minimap" aria-label="Mapa komnat"></nav>
+
+    <!-- GATE -->
+    <section class="gate" id="gate">
+      <div class="gate-hero-bg has-image" aria-hidden="true"></div>
+      <div class="gate-brand">
+        <img src="./assets/images/hairlab_icon.png" alt="Hairqoo" width="64" height="64" />
+        <div class="wordmark">Hairqoo</div>
+      </div>
+      <div class="gate-headline">
+        <h1>
+          <span data-i18n="gate.headlineBefore">Prowadź salon </span>
+          <span class="strand-text" data-i18n="gate.headlineAccent">od wizyty do follow-upu</span>
+          <span data-i18n="gate.headlineAfter">.</span>
+        </h1>
+        <p data-i18n="gate.subtitle">Rezerwacje klientów, notatki i formuły z wizyt…</p>
+      </div>
+      <div class="gate-portals">
+        <button type="button" class="portal-tile glass" data-portal="salon">
+          <div class="portal-tile-icon" aria-hidden="true">✂</div>
+          <h2 data-i18n="gate.salonTitle">Portal Fryzjera</h2>
+          <p data-i18n="gate.salonDesc">Rezerwacje, wizyty i organizacja dnia salonu…</p>
+          <span class="enter-label" data-i18n="gate.salonEnter">Wejdź do labiryntu →</span>
+        </button>
+        <button type="button" class="portal-tile glass" data-portal="client">
+          <div class="portal-tile-icon" aria-hidden="true">◇</div>
+          <h2 data-i18n="gate.clientTitle">Portal Klienta</h2>
+          <p data-i18n="gate.clientDesc">Umawiaj wizyty szybko…</p>
+          <span class="enter-label" data-i18n="gate.clientEnter">Wejdź do labiryntu →</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- LABYRINTH -->
+    <main class="labyrinth" id="labyrinth">
+      <div id="chambers"></div>
+
+      <section class="finale" id="finale">
+        <div class="finale-inner">
+          <h2 class="finale-title strand-text" data-i18n="finale.title">Odkryłeś Hairqoo</h2>
+          <p class="finale-lead" data-i18n="finale.lead">Przeszedłeś przez labirynt…</p>
+
+          <div class="checklist" id="checklist" aria-label="Odwiedzone komnaty"></div>
+
+          <article class="story-card glass">
+            <p data-i18n="finale.story">Klientka wraca po 8 tygodniach…</p>
+          </article>
+
+          <div class="cta-section">
+            <div>
+              <h3 data-i18n="finale.ctaTitle">Chcesz testować Hairqoo?</h3>
+              <p data-i18n="finale.ctaBody">Dołącz do listy oczekujących…</p>
+              <div class="theme-demo">
+                <button type="button" class="theme-chip theme-chip-dark is-active" data-theme="dark" data-i18n="finale.themeDark">Cyber-Luxury</button>
+                <button type="button" class="theme-chip theme-chip-light" data-theme="light" data-i18n="finale.themeLight">Light Luxury</button>
               </div>
-            </article>
+              <div class="social-strip">
+                <span data-i18n="finale.social">@hairqoo</span>
+              </div>
+            </div>
+            <form class="signup-form glass" id="signup-form" novalidate>
+              <label for="name" data-i18n="finale.formName">Imię</label>
+              <input id="name" name="name" type="text" required autocomplete="name" />
+
+              <label for="email" data-i18n="finale.formEmail">Email</label>
+              <input id="email" name="email" type="email" required autocomplete="email" />
+
+              <label for="businessType" data-i18n="finale.formBusinessType">Typ działalności</label>
+              <select id="businessType" name="businessType" required>
+                <option value="" data-i18n="finale.formSelect">Wybierz</option>
+                <option value="freelancer" data-i18n="finale.formFreelancer">freelancer</option>
+                <option value="barber" data-i18n="finale.formBarber">barber</option>
+                <option value="salon" data-i18n="finale.formSalon">salon</option>
+                <option value="client" data-i18n="finale.formClient">klient</option>
+                <option value="inne" data-i18n="finale.formOther">inne</option>
+              </select>
+
+              <button type="submit" class="btn btn-primary" data-i18n="finale.formSubmit">Zapisz mnie</button>
+              <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+            </form>
           </div>
-        </div>
-      </section>
-
-      <section class="proof-strip">
-        <div class="container proof-grid animate-on-scroll">
-          <article class="proof-item" data-i18n="proof1">
-            Historia klienta i receptury w 1 miejscu
-          </article>
-          <article class="proof-item" data-i18n="proof2">
-            Workflow freelancera i salonu w jednym systemie
-          </article>
-          <article class="proof-item" data-i18n="proof3">
-            Dołącz do testów zamkniętych i wpłyń na roadmapę
-          </article>
-        </div>
-      </section>
-
-      <section class="section section-soft" id="produkt">
-        <div class="container animate-on-scroll">
-          <h2 data-i18n="problemTitle">Koniec z chaosem w notatkach, zdjęciach i wiadomościach</h2>
-          <div class="grid four">
-            <article class="card">
-              <h3 data-i18n="problem1Title">Receptury tylko w głowie</h3>
-              <p data-i18n="problem1Body">
-                Formuły koloryzacji zapisane na kartkach lub w pamięci to ryzyko
-                pomyłek i straty czasu.
-              </p>
-            </article>
-            <article class="card">
-              <h3 data-i18n="problem2Title">Zdjęcia porozrzucane w telefonie</h3>
-              <p data-i18n="problem2Body">
-                Trudno szybko znaleźć właściwe before/after, gdy klientka wraca
-                po kilku tygodniach.
-              </p>
-            </article>
-            <article class="card">
-              <h3 data-i18n="problem3Title">Historia wizyt nieczytelna</h3>
-              <p data-i18n="problem3Body">
-                Bez jednego systemu trudno odtworzyć pełny przebieg usług i
-                preferencje klienta.
-              </p>
-            </article>
-            <article class="card">
-              <h3 data-i18n="problem4Title">Brak jednego centrum pracy</h3>
-              <p data-i18n="problem4Body">
-                Kalendarz, klienci i follow-up działają osobno, zamiast wspierać
-                codzienną pracę.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="container animate-on-scroll">
-          <h2 data-i18n="solutionTitle">Hairqoo zbiera całą historię pracy stylisty w jednym miejscu</h2>
-          <div class="grid four features-grid">
-            <article class="feature" data-i18n="feature1">Kalendarz wizyt</article>
-            <article class="feature" data-i18n="feature2">Baza klientów</article>
-            <article class="feature" data-i18n="feature3">Historia usług</article>
-            <article class="feature" data-i18n="feature4">Receptury kolorów</article>
-            <article class="feature" data-i18n="feature5">Zdjęcia przed/po</article>
-            <article class="feature" data-i18n="feature6">Wiadomość po wizycie</article>
-            <article class="feature" data-i18n="feature7">Notatki i preferencje klienta</article>
-            <article class="feature" data-i18n="feature8">
-              Widok dla freelancera i małego salonu
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section section-soft" id="dla-kogo">
-        <div class="container animate-on-scroll">
-          <h2 data-i18n="forWhoTitle">Dla kogo powstaje Hairqoo</h2>
-          <div class="grid three">
-            <article class="card">
-              <h3 data-i18n="forWho1Title">Dla freelancerów</h3>
-              <p data-i18n="forWho1Body">
-                Szybki dostęp do historii klienta i wizyt, żeby pracować sprawnie
-                bez dodatkowego chaosu.
-              </p>
-            </article>
-            <article class="card">
-              <h3 data-i18n="forWho2Title">Dla barberów</h3>
-              <p data-i18n="forWho2Body">
-                Lepsza organizacja powracających klientów, notatek i terminów w
-                jednym narzędziu.
-              </p>
-            </article>
-            <article class="card">
-              <h3 data-i18n="forWho3Title">Dla salonów beauty</h3>
-              <p data-i18n="forWho3Body">
-                Wspólna baza wiedzy o klientach i usługach, dzięki której zespół
-                działa spójnie każdego dnia.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="jak-dziala">
-        <div class="container animate-on-scroll">
-          <h2 data-i18n="howTitle">Jak to działa</h2>
-          <div class="steps">
-            <article class="step">
-              <span>1</span>
-              <h3 data-i18n="step1">Dodajesz klienta lub rezerwację</h3>
-            </article>
-            <article class="step">
-              <span>2</span>
-              <h3 data-i18n="step2">Zapisujesz przebieg wizyty, recepturę i zdjęcia</h3>
-            </article>
-            <article class="step">
-              <span>3</span>
-              <h3 data-i18n="step3">Masz pełną historię klienta przy kolejnej wizycie</h3>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section section-soft">
-        <div class="container animate-on-scroll">
-          <h2 data-i18n="roadmapTitle">Nad czym pracujemy</h2>
-          <p class="section-intro" data-i18n="roadmapLead">
-            Funkcje poniżej są oznaczone jako w planach i rozwijane etapami.
-          </p>
-          <div class="grid three">
-            <article class="card card-plan" data-i18n="roadmap1">Automatyczne podsumowania wizyt</article>
-            <article class="card card-plan" data-i18n="roadmap2">
-              Lepsze zdjęcia before/after do social mediów
-            </article>
-            <article class="card card-plan" data-i18n="roadmap3">Przypomnienia dla klientów</article>
-            <article class="card card-plan" data-i18n="roadmap4">Panel salonu i zespołu</article>
-            <article class="card card-plan" data-i18n="roadmap5">Analityka wizyt i klientów</article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="container animate-on-scroll">
-          <h2 data-i18n="scenarioTitle">Scenariusz z codziennej pracy</h2>
-          <article class="story">
-            <p data-i18n="scenarioBody">
-              Klientka wraca po 8 tygodniach. W Hairqoo widzisz poprzednią
-              recepturę, zdjęcia, notatki i historię usługi. Nie zgadujesz -
-              pracujesz na danych.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section section-soft">
-        <div class="container animate-on-scroll">
-          <h2 data-i18n="trustTitle">Zaufanie i prostota</h2>
-          <div class="trust-list">
-            <p data-i18n="trust1">Dane klientów w jednym miejscu</p>
-            <p data-i18n="trust2">Prywatne zdjęcia i historia wizyt</p>
-            <p data-i18n="trust3">Prosty system bez zbędnego skomplikowania</p>
-            <p data-i18n="trust4">Stworzony z myślą o codziennej pracy stylistów</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section cta-section" id="kontakt">
-        <div class="container cta-grid animate-on-scroll">
-          <div>
-            <h2 data-i18n="ctaTitle">Chcesz testować Hairqoo jako jeden z pierwszych?</h2>
-            <p data-i18n="ctaBody">
-              Dołącz do listy oczekujących i pomóż stworzyć narzędzie, które
-              naprawdę pasuje do pracy stylistów.
-            </p>
-          </div>
-          <form class="signup-form" novalidate>
-            <label for="name" data-i18n="formName">Imię</label>
-            <input id="name" name="name" type="text" required />
-
-            <label for="email" data-i18n="formEmail">Email</label>
-            <input id="email" name="email" type="email" required />
-
-            <label for="businessType" data-i18n="formBusinessType">Typ działalności</label>
-            <select id="businessType" name="businessType" required>
-              <option value="" data-i18n="formSelect">Wybierz</option>
-              <option value="freelancer" data-i18n="formFreelancer">freelancer</option>
-              <option value="barber" data-i18n="formBarber">barber</option>
-              <option value="salon" data-i18n="formSalon">salon</option>
-              <option value="inne" data-i18n="formOther">inne</option>
-            </select>
-
-            <button type="submit" class="btn btn-primary" data-i18n="formSubmit">Zapisz mnie</button>
-            <p class="form-message" role="status" aria-live="polite"></p>
-          </form>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div class="container footer-grid">
-        <div>
-          <p class="logo">Hairqoo</p>
-          <p data-i18n="footerLead">Nowoczesne narzędzie dla stylistów, barberów i salonów beauty.</p>
-        </div>
-        <nav aria-label="Stopka">
-          <ul class="footer-links">
-            <li><a href="#produkt" data-i18n="navProduct">Produkt</a></li>
-            <li><a href="#dla-kogo" data-i18n="navForWho">Dla kogo</a></li>
-            <li><a href="#kontakt" data-i18n="navContact">Kontakt</a></li>
-            <li><a href="https://hairqoo.com/privacy.html" data-i18n="navPrivacy">Prywatność</a></li>
-          </ul>
-        </nav>
-      </div>
+      <p data-i18n="finale.footer">Nowoczesne narzędzie dla stylistów…</p>
+      <p class="site-footer-legal">
+        <a href="https://hairqoo.com/privacy.html" data-i18n="finale.privacy">Prywatność</a>
+      </p>
     </footer>
 
-    <script src="./script.js"></script>
+    <!-- SALON TEMPLATES -->
+    <template id="tpl-salon-home">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">01 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.home.title">Home Hub</h2>
+            <p class="chamber-subtitle" data-i18n="salon.home.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.home.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.home.f1"></li>
+                <li data-i18n="salon.home.f2"></li>
+                <li data-i18n="salon.home.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>Hairqoo</h3><span>🔔</span></div>
+                <div class="mock-app-body">
+                  <div class="mock-home-grid" data-mock="home-tiles">
+                    <div class="mock-tile"><div class="mock-tile-icon">👥</div><h4>Baza klientów</h4></div>
+                    <div class="mock-tile"><div class="mock-tile-icon">🎨</div><h4>Formuły</h4></div>
+                    <div class="mock-tile"><div class="mock-tile-icon">⏱</div><h4>Timery</h4></div>
+                    <div class="mock-tile"><div class="mock-tile-icon">📅</div><h4>Kalendarz</h4></div>
+                    <div class="mock-tile"><div class="mock-tile-icon">💰</div><h4>Portfel</h4></div>
+                    <div class="mock-tile"><div class="mock-tile-icon">📸</div><h4>Portfolio</h4></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-salon-clients">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">02 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.clients.title">Baza klientów</h2>
+            <p class="chamber-subtitle" data-i18n="salon.clients.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.clients.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.clients.f1"></li>
+                <li data-i18n="salon.clients.f2"></li>
+                <li data-i18n="salon.clients.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3 data-i18n="salon.clients.title">Baza klientów</h3></div>
+                <div class="mock-app-body">
+                  <div class="mock-search">🔍 Anna K.</div>
+                  <div class="mock-client-card">
+                    <div class="mock-avatar"></div>
+                    <div class="mock-client-info">
+                      <h4>Anna K.</h4>
+                      <p>kolor + strzyżenie · ostatnia wizyta 8 tyg. temu</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-salon-visit">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">03 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.visit.title">Karta wizyty</h2>
+            <p class="chamber-subtitle" data-i18n="salon.visit.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.visit.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.visit.f1"></li>
+                <li data-i18n="salon.visit.f2"></li>
+                <li data-i18n="salon.visit.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>Anna K. — wizyta</h3></div>
+                <div class="mock-app-body">
+                  <div class="mock-formula">7.1 + 9% · toner beige</div>
+                  <div class="mock-ba-slider" data-mock="ba-slider">
+                    <div class="mock-ba-after">after</div>
+                    <div class="mock-ba-before">before</div>
+                    <div class="mock-ba-handle"></div>
+                  </div>
+                  <p style="font-size:0.65rem;color:var(--muted)">Przeciągnij slider — before/after</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-salon-calendar">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">04 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.calendar.title">Kalendarz</h2>
+            <p class="chamber-subtitle" data-i18n="salon.calendar.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.calendar.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.calendar.f1"></li>
+                <li data-i18n="salon.calendar.f2"></li>
+                <li data-i18n="salon.calendar.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3 data-i18n="salon.calendar.title">Kalendarz</h3></div>
+                <div class="mock-app-body">
+                  <div class="mock-calendar-day">
+                    <div class="mock-time-slot">09:00</div>
+                    <div class="mock-appointment">Anna K. — kolor</div>
+                  </div>
+                  <div class="mock-calendar-day">
+                    <div class="mock-time-slot">11:30</div>
+                    <div class="mock-appointment">Marek P. — strzyżenie</div>
+                  </div>
+                  <div class="mock-calendar-day">
+                    <div class="mock-time-slot">14:00</div>
+                    <div class="mock-appointment">Rezerwacja online — nowa</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-salon-wallet">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">05 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.wallet.title">Portfel</h2>
+            <p class="chamber-subtitle" data-i18n="salon.wallet.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.wallet.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.wallet.f1"></li>
+                <li data-i18n="salon.wallet.f2"></li>
+                <li data-i18n="salon.wallet.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3 data-i18n="salon.wallet.title">Portfel</h3></div>
+                <div class="mock-app-body">
+                  <div class="mock-revenue">
+                    <div class="mock-revenue-value">4 280 zł</div>
+                    <p style="font-size:0.65rem;color:var(--muted)">ten miesiąc</p>
+                    <div class="mock-chart">
+                      <div class="mock-chart-bar"></div>
+                      <div class="mock-chart-bar"></div>
+                      <div class="mock-chart-bar"></div>
+                      <div class="mock-chart-bar"></div>
+                      <div class="mock-chart-bar"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-salon-formulas">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">06 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.formulas.title">Formuły</h2>
+            <p class="chamber-subtitle" data-i18n="salon.formulas.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.formulas.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.formulas.f1"></li>
+                <li data-i18n="salon.formulas.f2"></li>
+                <li data-i18n="salon.formulas.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>Formuły</h3></div>
+                <div class="mock-app-body" data-mock="formulas">
+                  <div class="mock-search">🔍 Anna K.</div>
+                  <div class="mock-formula">7.1 + 9% · toner beige — 12.03</div>
+                  <div class="mock-formula">6.0 + 6% · neutral — 28.01</div>
+                  <div class="mock-formula">Balayage 8.3 + 12% — 15.11</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-salon-timers">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">07 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.timers.title">Timery</h2>
+            <p class="chamber-subtitle" data-i18n="salon.timers.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.timers.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.timers.f1"></li>
+                <li data-i18n="salon.timers.f2"></li>
+                <li data-i18n="salon.timers.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>Timery</h3></div>
+                <div class="mock-app-body">
+                  <div class="mock-timers" data-mock="timers">
+                    <div class="mock-timer"><span>Farba</span><span class="mock-timer-time">7:00</span></div>
+                    <div class="mock-timer"><span>Rozjaśniacz</span><span class="mock-timer-time">15:00</span></div>
+                    <div class="mock-timer"><span>Toner</span><span class="mock-timer-time">5:00</span></div>
+                  </div>
+                  <p style="font-size:0.6rem;color:var(--outline);margin-top:8px">Kliknij timer aby uruchomić demo</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-salon-portfolio">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">08 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.portfolio.title">Portfolio</h2>
+            <p class="chamber-subtitle" data-i18n="salon.portfolio.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.portfolio.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.portfolio.f1"></li>
+                <li data-i18n="salon.portfolio.f2"></li>
+                <li data-i18n="salon.portfolio.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>Portfolio</h3></div>
+                <div class="mock-app-body">
+                  <p style="font-size:0.7rem;margin:0 0 8px">Anna K.</p>
+                  <div class="mock-portfolio-grid">
+                    <div class="mock-portfolio-item"></div>
+                    <div class="mock-portfolio-item"></div>
+                    <div class="mock-portfolio-item"></div>
+                    <div class="mock-portfolio-item"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-salon-social">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">09 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.social.title">Social Media</h2>
+            <p class="chamber-subtitle" data-i18n="salon.social.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.social.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.social.f1"></li>
+                <li data-i18n="salon.social.f2"></li>
+                <li data-i18n="salon.social.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>@hairqoo</h3></div>
+                <div class="mock-app-body">
+                  <div class="mock-ig-post">
+                    <div class="mock-ig-header"><div class="mock-avatar" style="width:24px;height:24px"></div> hairqoo_salon</div>
+                    <div class="mock-ig-image"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-salon-retention">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">10 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.retention.title">Retencja</h2>
+            <p class="chamber-subtitle" data-i18n="salon.retention.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.retention.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.retention.f1"></li>
+                <li data-i18n="salon.retention.f2"></li>
+                <li data-i18n="salon.retention.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>Do odzyskania</h3></div>
+                <div class="mock-app-body">
+                  <div class="mock-client-card" style="margin-bottom:8px">
+                    <div class="mock-avatar"></div>
+                    <div class="mock-client-info"><h4>Ewa M.</h4><p>brak wizyty 10 tyg.</p></div>
+                  </div>
+                  <button type="button" class="btn btn-primary" style="width:100%;padding:8px;font-size:0.7rem">Wyślij SMS</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-salon-notifications">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">11 / 11</p>
+            <h2 class="chamber-title strand-text" data-i18n="salon.notifications.title">Powiadomienia</h2>
+            <p class="chamber-subtitle" data-i18n="salon.notifications.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="salon.notifications.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="salon.notifications.f1"></li>
+                <li data-i18n="salon.notifications.f2"></li>
+                <li data-i18n="salon.notifications.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>Inbox</h3></div>
+                <div class="mock-app-body">
+                  <div class="mock-notif is-unread"><span class="mock-notif-badge">Rezerwacja</span> Nowa wizyta — Anna K.</div>
+                  <div class="mock-notif is-unread"><span class="mock-notif-badge">Post</span> Post zaplanowany na 18:00</div>
+                  <div class="mock-notif"><span class="mock-notif-badge">System</span> Raport PDF gotowy</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.finish">Zakończ tour</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <!-- CLIENT TEMPLATES -->
+    <template id="tpl-client-home">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">01 / 4</p>
+            <h2 class="chamber-title strand-text" data-i18n="client.home.title">Portal klienta</h2>
+            <p class="chamber-subtitle" data-i18n="client.home.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="client.home.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="client.home.f1"></li>
+                <li data-i18n="client.home.f2"></li>
+                <li data-i18n="client.home.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>Hairqoo</h3></div>
+                <div class="mock-app-body">
+                  <div class="mock-home-grid" data-mock="home-tiles">
+                    <div class="mock-tile is-highlight"><div class="mock-tile-icon">📅</div><h4>Umów wizytę</h4></div>
+                    <div class="mock-tile"><div class="mock-tile-icon">📋</div><h4>Moje rezerwacje</h4></div>
+                    <div class="mock-tile" style="grid-column:span 2"><div class="mock-tile-icon">✨</div><h4>Konsultant AI</h4></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-client-book">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">02 / 4</p>
+            <h2 class="chamber-title strand-text" data-i18n="client.book.title">Umów wizytę</h2>
+            <p class="chamber-subtitle" data-i18n="client.book.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="client.book.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="client.book.f1"></li>
+                <li data-i18n="client.book.f2"></li>
+                <li data-i18n="client.book.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>Salon Glow</h3></div>
+                <div class="mock-app-body">
+                  <p style="font-size:0.7rem;margin:0 0 8px">Wybierz termin</p>
+                  <div class="mock-slot-grid" data-mock="slots">
+                    <div class="mock-slot is-disabled">9:00</div>
+                    <div class="mock-slot">10:30</div>
+                    <div class="mock-slot">12:00</div>
+                    <div class="mock-slot">14:00</div>
+                    <div class="mock-slot is-selected">15:30</div>
+                    <div class="mock-slot">17:00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-client-bookings">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">03 / 4</p>
+            <h2 class="chamber-title strand-text" data-i18n="client.bookings.title">Moje rezerwacje</h2>
+            <p class="chamber-subtitle" data-i18n="client.bookings.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="client.bookings.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="client.bookings.f1"></li>
+                <li data-i18n="client.bookings.f2"></li>
+                <li data-i18n="client.bookings.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>Rezerwacje</h3></div>
+                <div class="mock-app-body">
+                  <div class="mock-appointment">15.06 · 15:30 — Kolor + strzyżenie</div>
+                  <div class="mock-appointment" style="opacity:0.6">28.06 · 10:00 — Toner</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.next">Dalej</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <template id="tpl-client-ai-consultant">
+      <section class="chamber">
+        <div class="chamber-inner">
+          <header class="chamber-header">
+            <p class="chamber-number">04 / 4</p>
+            <h2 class="chamber-title strand-text" data-i18n="client.ai-consultant.title">Konsultant AI</h2>
+            <p class="chamber-subtitle" data-i18n="client.ai-consultant.subtitle"></p>
+          </header>
+          <div class="chamber-hint glass">
+            <span class="chamber-hint-icon">?</span>
+            <p class="chamber-hint-text" data-i18n="client.ai-consultant.hint"></p>
+            <button type="button" class="chamber-hint-close" aria-label="Zamknij">×</button>
+          </div>
+          <div class="chamber-body">
+            <div class="chamber-copy">
+              <ul class="chamber-features">
+                <li data-i18n="client.ai-consultant.f1"></li>
+                <li data-i18n="client.ai-consultant.f2"></li>
+                <li data-i18n="client.ai-consultant.f3"></li>
+              </ul>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-app-bar"><h3>AI Consultant</h3></div>
+                <div class="mock-app-body" data-mock="ai-consultant">
+                  <div class="mock-ai-steps">
+                    <div class="mock-ai-step is-done"></div>
+                    <div class="mock-ai-step is-done"></div>
+                    <div class="mock-ai-step"></div>
+                  </div>
+                  <div class="mock-ai-preview"><span>Wybierz kolor poniżej</span></div>
+                  <div class="mock-color-swatches">
+                    <div class="mock-swatch is-selected" style="background:#e8d5b7"></div>
+                    <div class="mock-swatch" style="background:#c9a86c"></div>
+                    <div class="mock-swatch" style="background:#b87333"></div>
+                    <div class="mock-swatch" style="background:#8b9dc3"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="chamber-nav">
+            <button type="button" class="chamber-nav-back" data-action="back" data-i18n="nav.back">Wstecz</button>
+            <button type="button" class="btn btn-primary" data-action="next" data-i18n="nav.finish">Zakończ tour</button>
+          </nav>
+        </div>
+      </section>
+    </template>
+
+    <script type="module" src="./js/main.js"></script>
   </body>
 </html>
