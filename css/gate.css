@@ -54,16 +54,25 @@
   animation: gateReveal var(--duration-slow) var(--ease-out) 0.12s both;
 }
 
-.gate-headline h1 {
-  font-size: clamp(1.75rem, 5vw, 2.75rem);
-  line-height: 1.15;
+.gate-headline h1,
+.gate-headline-title {
+  font-size: clamp(1rem, 2.8vw, 1.95rem);
+  line-height: 1.2;
   margin-bottom: var(--space-md);
+  white-space: nowrap;
 }
 
 .gate-headline p {
   color: var(--muted);
   font-size: 1.05rem;
+  line-height: 1.5;
   margin: 0;
+}
+
+@media (max-width: 480px) {
+  .gate-headline-title {
+    font-size: clamp(0.82rem, 3.6vw, 1rem);
+  }
 }
 
 .gate-portals {

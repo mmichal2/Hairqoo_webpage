@@ -24,11 +24,9 @@ export const translations = {
     },
     header: { backToGate: "Wróć do startu" },
     gate: {
-      headlineBefore: "Prowadź salon ",
-      headlineAccent: "od wizyty do follow-upu",
-      headlineAfter: ".",
+      headline: "Twój biznes - Twoje zarządzanie pięknem",
       subtitle:
-        "Rezerwacje klientów, notatki i formuły z wizyt, zdjęcia oraz e-mail z podziękowaniem po wizycie — w jednym miejscu.",
+        "Rezerwacje, formuły, zdjęcia i podziękowania po wizycie — wszystko pod ręką, bez przełączania aplikacji.",
       salonTitle: "Portal Fryzjera",
       salonDesc: "Rezerwacje, wizyty i organizacja dnia salonu w jednym miejscu.",
       salonEnter: "Wejdź do labiryntu →",
@@ -212,11 +210,9 @@ export const translations = {
     },
     header: { backToGate: "Back to start" },
     gate: {
-      headlineBefore: "Run your salon ",
-      headlineAccent: "from visit to follow-up",
-      headlineAfter: ".",
+      headline: "Your business — your beauty management",
       subtitle:
-        "Client bookings, visit notes and formulas, photos, and post-visit thank-you emails — all in one place.",
+        "Bookings, formulas, photos, and thank-you messages — all handy in one place, no app-hopping.",
       salonTitle: "Stylist Portal",
       salonDesc: "Bookings, visits, and daily salon organization in one place.",
       salonEnter: "Enter the labyrinth →",
