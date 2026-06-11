@@ -1,4 +1,5 @@
 const PORTAL_MS = 580;
+const DOOR_MS = 2200;
 
 export function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -26,37 +27,111 @@ function waitTransition(el, ms = PORTAL_MS) {
   });
 }
 
+function nextFrame() {
+  return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+}
+
 export function portalTilePress(tile) {
   if (!tile || prefersReducedMotion()) return Promise.resolve();
   tile.classList.add("is-pressed");
   return wait(180).then(() => tile.classList.remove("is-pressed"));
 }
 
-export async function portalEnter({ gate, labyrinth, firstChamber, onMidpoint }) {
+/**
+ * Cinematic door opening — gate crossfades under closed doors,
+ * labyrinth reveals as doors swing open in slow motion.
+ */
+export async function portalDoorEnter({
+  gate,
+  labyrinth,
+  doors,
+  firstChamber,
+  tunnelVeil,
+  portal,
+  onGateConcealed,
+  onDoorsOpen,
+}) {
   if (prefersReducedMotion()) {
-    onMidpoint?.();
+    onGateConcealed?.();
+    gate?.classList.add("is-hidden");
+    labyrinth?.classList.add("is-active");
+    if (firstChamber) {
+      firstChamber.classList.add("is-active");
+      firstChamber.style.setProperty("--ch-emerge", "1");
+    }
+    onDoorsOpen?.();
     return;
   }
 
-  gate?.classList.add("is-exiting", "is-poster-launch");
-  labyrinth?.classList.add("is-entering", "is-poster-launch");
-  labyrinth?.classList.remove("is-entering-done");
+  document.body.classList.add("is-portal-door-transition");
+
+  doors?.removeAttribute("hidden");
+  doors?.classList.remove("is-opening", "is-open", "is-fading", "portal-doors--salon", "portal-doors--client");
+  doors?.classList.add("is-active", `portal-doors--${portal}`);
+
+  labyrinth?.classList.remove("is-entering", "is-entering-done", "is-poster-launch", "is-door-entering");
+  labyrinth?.classList.add("is-active", "is-door-waiting");
   if (labyrinth) labyrinth.scrollTop = 0;
 
-  await wait(PORTAL_MS * 0.35);
-  onMidpoint?.();
-
-  labyrinth?.classList.add("is-entering-done");
-  await waitTransition(labyrinth, PORTAL_MS);
-
-  gate?.classList.remove("is-exiting", "is-poster-launch");
-  labyrinth?.classList.remove("is-entering", "is-entering-done", "is-poster-launch");
-
   if (firstChamber) {
-    firstChamber.classList.add("is-stagger-reveal");
-    await wait(480);
-    firstChamber.classList.remove("is-stagger-reveal");
+    firstChamber.classList.add("is-active", "is-door-reveal");
+    firstChamber.classList.remove("is-near", "is-far");
+    firstChamber.style.setProperty("--ch-emerge", "0");
   }
+
+  tunnelVeil?.classList.add("is-door-phase");
+
+  await nextFrame();
+  await nextFrame();
+
+  gate?.classList.add("is-exiting-soft");
+
+  await wait(380);
+  onGateConcealed?.();
+  gate?.classList.add("is-concealed");
+  gate?.classList.remove("is-exiting-soft");
+
+  await wait(120);
+
+  doors?.classList.add("is-opening");
+  labyrinth?.classList.remove("is-door-waiting");
+  labyrinth?.classList.add("is-door-entering");
+  tunnelVeil?.classList.add("is-visible");
+
+  await wait(DOOR_MS * 0.55);
+  firstChamber?.classList.add("is-door-lit");
+  firstChamber?.style.setProperty("--ch-emerge", "0.6");
+
+  await wait(DOOR_MS * 0.45);
+
+  doors?.classList.add("is-open");
+  firstChamber?.style.setProperty("--ch-emerge", "1");
+
+  await wait(320);
+  onDoorsOpen?.();
+
+  doors?.classList.add("is-fading");
+  await wait(650);
+
+  doors?.classList.remove("is-active", "is-opening", "is-open", "is-fading", "portal-doors--salon", "portal-doors--client");
+  doors?.setAttribute("hidden", "");
+  labyrinth?.classList.remove("is-door-waiting", "is-door-entering");
+  firstChamber?.classList.remove("is-door-reveal", "is-door-lit");
+  document.body.classList.remove("is-portal-door-transition");
+}
+
+/** @deprecated kept for reference — use portalDoorEnter */
+export async function portalEnter({ gate, labyrinth, firstChamber, onMidpoint }) {
+  return portalDoorEnter({
+    gate,
+    labyrinth,
+    doors: document.getElementById("portal-doors"),
+    firstChamber,
+    tunnelVeil: document.getElementById("tunnel-veil"),
+    portal: "salon",
+    onGateConcealed: onMidpoint,
+    onDoorsOpen: () => {},
+  });
 }
 
 export async function portalExit({ gate, labyrinth, onStart, onComplete }) {
@@ -67,7 +142,7 @@ export async function portalExit({ gate, labyrinth, onStart, onComplete }) {
   }
 
   labyrinth?.classList.add("is-exiting");
-  gate?.classList.remove("is-hidden");
+  gate?.classList.remove("is-hidden", "is-concealed");
   gate?.classList.add("is-entering");
   gate?.classList.remove("is-entering-done");
 
@@ -79,7 +154,7 @@ export async function portalExit({ gate, labyrinth, onStart, onComplete }) {
   await waitTransition(gate, PORTAL_MS);
 
   gate?.classList.remove("is-entering", "is-entering-done");
-  labyrinth?.classList.remove("is-exiting", "is-active");
+  labyrinth?.classList.remove("is-exiting", "is-active", "is-door-waiting", "is-door-entering");
 
   onComplete?.();
 }

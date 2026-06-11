@@ -42,6 +42,7 @@
     <link rel="stylesheet" href="./css/poster.css" />
     <link rel="stylesheet" href="./css/tunnel.css" />
     <link rel="stylesheet" href="./css/scroll-cue.css" />
+    <link rel="stylesheet" href="./css/portal-door.css" />
   </head>
   <body>
     <div class="preloader" id="preloader" aria-hidden="true">
@@ -122,6 +123,14 @@
     </nav>
 
     <nav class="minimap glass" id="minimap" aria-label="Mapa komnat"></nav>
+
+    <div class="portal-doors" id="portal-doors" hidden aria-hidden="true">
+      <div class="portal-doors-backdrop"></div>
+      <div class="portal-doors-light"></div>
+      <div class="portal-doors-seam"></div>
+      <div class="portal-door portal-door--left"></div>
+      <div class="portal-door portal-door--right"></div>
+    </div>
 
     <div class="tunnel-veil" id="tunnel-veil" aria-hidden="true">
       <div class="tunnel-vignette"></div>
@@ -891,6 +900,6 @@
       </section>
     </template>
 
-    <script type="module" src="./js/main.js?v=6"></script>
+    <script type="module" src="./js/main.js?v=7"></script>
   </body>
 </html>

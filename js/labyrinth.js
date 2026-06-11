@@ -1,7 +1,7 @@
 import { CHAMBER_CONFIG, applyI18n, getLang, setLang, t } from "./i18n.js";
 import { initMockups } from "./mockups.js";
 import { initChambers } from "./chambers/index.js";
-import { portalEnter, portalExit, portalTilePress, prefersReducedMotion } from "./motion.js";
+import { portalDoorEnter, portalExit, portalTilePress } from "./motion.js";
 import { ScrollPhysics } from "./scroll-physics.js";
 
 const STORAGE_KEY = "hairqoo_labyrinth";
@@ -41,6 +41,7 @@ export class Labyrinth {
       homeExitBtn: document.getElementById("home-exit-btn"),
       scrollCue: document.getElementById("scroll-cue"),
       tunnelVeil: document.getElementById("tunnel-veil"),
+      portalDoors: document.getElementById("portal-doors"),
     };
     this.onPortalChange = null;
     this.onFinale = false;
@@ -69,7 +70,24 @@ export class Labyrinth {
     this.scrollPhysics?.destroy();
     this.scrollPhysics = null;
 
-    this.elements.gate?.classList.remove("is-hidden", "is-exiting", "is-entering", "is-entering-done");
+    this.elements.gate?.classList.remove(
+      "is-hidden",
+      "is-concealed",
+      "is-exiting",
+      "is-exiting-soft",
+      "is-entering",
+      "is-entering-done"
+    );
+    this.elements.portalDoors?.setAttribute("hidden", "");
+    this.elements.portalDoors?.classList.remove(
+      "is-active",
+      "is-opening",
+      "is-open",
+      "is-fading",
+      "portal-doors--salon",
+      "portal-doors--client"
+    );
+    document.body.classList.remove("is-portal-door-transition");
     document.body.classList.remove(
       "is-labyrinth-active",
       "portal-salon-active",
@@ -170,22 +188,31 @@ export class Labyrinth {
 
     if (this.elements.labyrinth) {
       this.elements.labyrinth.scrollTop = 0;
-      this.elements.labyrinth.classList.add("is-active", "is-poster-active");
+      this.elements.labyrinth.classList.add("is-poster-active");
+      this.elements.labyrinth.classList.remove("is-door-waiting", "is-door-entering");
     }
     window.scrollTo(0, 0);
+    this.hideScrollCue();
 
-    await portalEnter({
+    await portalDoorEnter({
       gate: this.elements.gate,
       labyrinth: this.elements.labyrinth,
+      doors: this.elements.portalDoors,
       firstChamber,
-      onMidpoint: () => {
-        this.elements.gate?.classList.add("is-hidden");
+      tunnelVeil: this.elements.tunnelVeil,
+      portal,
+      onGateConcealed: () => {
+        this.elements.gate?.classList.add("is-concealed");
         if (this.elements.labyrinth) this.elements.labyrinth.scrollTop = 0;
+      },
+      onDoorsOpen: () => {
+        this.elements.gate?.classList.add("is-hidden");
+        this.elements.gate?.classList.remove("is-concealed");
       },
     });
 
     this.elements.labyrinth?.classList.add("is-tunnel-active");
-    this.elements.tunnelVeil?.classList.add("is-visible");
+    this.elements.tunnelVeil?.classList.remove("is-door-phase");
 
     this.initScrollPhysics();
     this.scrollPhysics?.resetToStart();
