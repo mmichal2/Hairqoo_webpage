@@ -40,37 +40,51 @@ export class Labyrinth {
   }
 
   init() {
+    this.showGateOnLoad();
     this.bindGate();
     this.bindLang();
-    this.parseHash();
     this.bindKeyboard();
     this.bindBackToGate();
-    this.restoreSession();
     window.addEventListener("hashchange", () => this.onHashChange());
+  }
+
+  showGateOnLoad() {
+    this.clearUrlHash();
+    this.portal = null;
+    this.elements.gate?.classList.remove("is-hidden");
+    document.body.classList.remove("is-labyrinth-active");
+    this.elements.labyrinth?.classList.remove("is-active");
+    this.elements.progressThread?.classList.remove("is-visible");
+    this.elements.progressRing?.classList.remove("is-visible");
+    this.elements.minimap?.classList.remove("is-visible");
+    if (this.elements.chambersContainer) {
+      this.elements.chambersContainer.innerHTML = "";
+    }
+    window.scrollTo(0, 0);
+  }
+
+  clearUrlHash() {
+    if (!window.location.hash) return;
+    const url = window.location.pathname + window.location.search;
+    window.history.replaceState(null, "", url);
   }
 
   onHashChange() {
     const hash = window.location.hash.replace(/^#\/?/, "");
-    if (!hash || hash === "finale") return;
+    if (!hash) {
+      if (this.portal) this.exitToGate(false);
+      return;
+    }
+    if (hash === "finale") {
+      if (!this.portal) return;
+      this.goToFinale();
+      return;
+    }
     const [portal, chamberId] = hash.split("/");
     if (!CHAMBER_CONFIG[portal]) return;
     if (this.portal !== portal) this.enterPortal(portal, false);
     const idx = CHAMBER_CONFIG[portal].indexOf(chamberId);
     if (idx >= 0) this.goToChamber(idx, true);
-  }
-
-  restoreSession() {
-    const hash = window.location.hash.replace(/^#\/?/, "");
-    if (hash && hash !== "finale") {
-      const [portal] = hash.split("/");
-      if (CHAMBER_CONFIG[portal]) return;
-    }
-    const state = loadState();
-    if (state.portal && CHAMBER_CONFIG[state.portal]) {
-      this.enterPortal(state.portal, false);
-      const idx = state.lastChamber ?? 0;
-      requestAnimationFrame(() => this.goToChamber(idx, false));
-    }
   }
 
   bindGate() {
@@ -105,19 +119,6 @@ export class Labyrinth {
     });
   }
 
-  parseHash() {
-    const hash = window.location.hash.replace(/^#\/?/, "");
-    if (!hash) return;
-    const [portal, chamberId] = hash.split("/");
-    if (CHAMBER_CONFIG[portal]) {
-      this.enterPortal(portal, false);
-      const idx = CHAMBER_CONFIG[portal].indexOf(chamberId);
-      if (idx >= 0) {
-        requestAnimationFrame(() => this.goToChamber(idx, false));
-      }
-    }
-  }
-
   enterPortal(portal, scroll = true) {
     if (!CHAMBER_CONFIG[portal]) return;
     this.portal = portal;
@@ -133,15 +134,13 @@ export class Labyrinth {
     this.renderMinimap(portal);
     this.renderChecklist(portal);
 
-    const state = loadState();
-    const lastIdx = state.lastChamber ?? 0;
-    this.goToChamber(lastIdx, scroll);
+    this.goToChamber(0, scroll);
 
     if (this.onPortalChange) this.onPortalChange(portal);
     window.dispatchEvent(new CustomEvent("hairqoo:portal", { detail: { portal } }));
   }
 
-  exitToGate() {
+  exitToGate(clearHash = true) {
     this.portal = null;
     this.elements.gate?.classList.remove("is-hidden");
     document.body.classList.remove("is-labyrinth-active");
@@ -150,7 +149,8 @@ export class Labyrinth {
     this.elements.progressRing?.classList.remove("is-visible");
     this.elements.minimap?.classList.remove("is-visible");
     this.elements.chambersContainer.innerHTML = "";
-    window.location.hash = "";
+    if (clearHash) this.clearUrlHash();
+    window.scrollTo(0, 0);
   }
 
   renderChambers(portal) {
