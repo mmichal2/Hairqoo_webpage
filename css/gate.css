@@ -6,7 +6,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--header-h) + var(--space-xl)) var(--space-md) var(--space-xxl);
+  padding: calc(72px + var(--space-xl)) var(--space-md) var(--space-xxl);
   z-index: 1;
 }
 

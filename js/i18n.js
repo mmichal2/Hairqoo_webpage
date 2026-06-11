@@ -1,3 +1,15 @@
+import es from "./locales/es.js";
+import pt from "./locales/pt.js";
+import fr from "./locales/fr.js";
+
+export const SUPPORTED_LANGUAGES = [
+  { code: "pl", flag: "🇵🇱", labelKey: "languages.pl" },
+  { code: "en", flag: "🇬🇧", labelKey: "languages.en" },
+  { code: "es", flag: "🇪🇸", labelKey: "languages.es" },
+  { code: "pt", flag: "🇵🇹", labelKey: "languages.pt" },
+  { code: "fr", flag: "🇫🇷", labelKey: "languages.fr" },
+];
+
 export const CHAMBER_CONFIG = {
   salon: [
     "home",
@@ -31,6 +43,19 @@ export const translations = {
       ready: "Witaj w Hairqoo",
     },
     header: { backToGate: "Wróć na start", home: "Strona główna" },
+    languages: {
+      menuTooltip: "Język aplikacji",
+      pl: "Polski",
+      en: "Angielski",
+      es: "Hiszpański",
+      pt: "Portugalski",
+      fr: "Francuski",
+    },
+    theme: {
+      toggleLight: "Tryb jasny",
+      toggleDark: "Tryb ciemny",
+      ariaLabel: "Przełącz motyw",
+    },
     gate: {
       headline: "Twój biznes - Twoje zarządzanie pięknem",
       subtitle:
@@ -233,6 +258,19 @@ export const translations = {
       ready: "Welcome to Hairqoo",
     },
     header: { backToGate: "Back to start", home: "Home" },
+    languages: {
+      menuTooltip: "App language",
+      pl: "Polish",
+      en: "English",
+      es: "Spanish",
+      pt: "Portuguese",
+      fr: "French",
+    },
+    theme: {
+      toggleLight: "Light mode",
+      toggleDark: "Dark mode",
+      ariaLabel: "Toggle theme",
+    },
     gate: {
       headline: "Your business — your beauty management",
       subtitle:
@@ -420,6 +458,9 @@ export const translations = {
       "ai-consultant": "AI",
     },
   },
+  es,
+  pt,
+  fr,
 };
 
 let currentLang = "pl";
@@ -430,11 +471,13 @@ export function getLang() {
 
 export function t(path) {
   const keys = path.split(".");
-  let obj = translations[currentLang];
-  for (const k of keys) {
-    obj = obj?.[k];
+  for (const locale of [currentLang, "en", "pl"]) {
+    let obj = translations[locale];
+    if (!obj) continue;
+    for (const k of keys) obj = obj?.[k];
+    if (typeof obj === "string") return obj;
   }
-  return obj ?? path;
+  return path;
 }
 
 export function setLang(lang) {
@@ -454,6 +497,18 @@ export function applyI18n(root = document) {
       }
     }
   });
+  root.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-aria");
+    const val = t(key);
+    if (typeof val === "string") el.setAttribute("aria-label", val);
+  });
+
+  document.querySelectorAll("[data-theme-toggle]").forEach((btn) => {
+    const isLight = btn.classList.contains("is-light-active");
+    btn.setAttribute("aria-label", isLight ? t("theme.toggleDark") : t("theme.toggleLight"));
+    btn.setAttribute("title", btn.getAttribute("aria-label"));
+  });
+
   document.documentElement.lang = currentLang;
   document.title = t("meta.title");
   const desc = document.querySelector('meta[name="description"]');

@@ -1,4 +1,4 @@
-import { CHAMBER_CONFIG, applyI18n, getLang, setLang, t } from "./i18n.js";
+import { CHAMBER_CONFIG, applyI18n, t } from "./i18n.js";
 import { initMockups } from "./mockups.js";
 import { initChambers } from "./chambers/index.js";
 import { portalDoorEnter, portalExit, portalTilePress } from "./motion.js";
@@ -51,8 +51,13 @@ export class Labyrinth {
   init() {
     this.showGateOnLoad();
     this.bindGate();
-    this.bindLang();
     this.bindKeyboard();
+    window.addEventListener("hairqoo:lang", () => {
+      if (this.portal) {
+        applyI18n(this.elements.chambersContainer);
+        this.updateScrollCue();
+      }
+    });
     this.bindBackToGate();
     this.bindHomeExit();
     this.bindScrollCue();
@@ -138,26 +143,6 @@ export class Labyrinth {
         await portalTilePress(btn);
         await this.enterPortal(btn.dataset.portal);
       });
-    });
-  }
-
-  bindLang() {
-    document.querySelectorAll(".lang-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        setLang(btn.dataset.lang);
-        localStorage.setItem("hairqoo_lang", getLang());
-        applyI18n();
-        document.querySelectorAll(".lang-btn").forEach((b) => {
-          b.classList.toggle("is-active", b.dataset.lang === getLang());
-        });
-        if (this.portal) this.updateScrollCue();
-      });
-    });
-    const saved = localStorage.getItem("hairqoo_lang");
-    if (saved) setLang(saved);
-    applyI18n();
-    document.querySelectorAll(".lang-btn").forEach((b) => {
-      b.classList.toggle("is-active", b.dataset.lang === getLang());
     });
   }
 

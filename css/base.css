@@ -164,6 +164,16 @@ button {
     transparent 60%
   );
   animation: breathe 14s ease-in-out infinite;
+  transition: opacity 480ms var(--ease-silk);
+}
+
+[data-theme="light"] .ambient-glow {
+  background: radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    rgba(90, 69, 212, 0.1) 0%,
+    transparent 60%
+  );
+  opacity: 0.75;
 }
 
 @keyframes breathe {

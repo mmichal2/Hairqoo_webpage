@@ -39,23 +39,13 @@ export function initForm(labyrinth) {
   });
 }
 
+import { applyTheme } from "./theme.js";
+
 export function initThemeDemo() {
-  const chips = document.querySelectorAll(".theme-chip");
-  chips.forEach((chip) => {
+  document.querySelectorAll(".theme-chip").forEach((chip) => {
     chip.addEventListener("click", () => {
-      chips.forEach((c) => c.classList.remove("is-active"));
-      chip.classList.add("is-active");
-      if (chip.dataset.theme === "light") {
-        document.documentElement.style.setProperty("--bg", "#f7f4ef");
-        document.documentElement.style.setProperty("--text", "#1c1824");
-        document.documentElement.style.setProperty("--surface", "#ffffff");
-        document.documentElement.style.setProperty("--muted", "#5a5568");
-      } else {
-        document.documentElement.style.removeProperty("--bg");
-        document.documentElement.style.removeProperty("--text");
-        document.documentElement.style.removeProperty("--surface");
-        document.documentElement.style.removeProperty("--muted");
-      }
+      applyTheme(chip.dataset.theme);
+      localStorage.setItem("hairqoo_theme", chip.dataset.theme);
     });
   });
 }

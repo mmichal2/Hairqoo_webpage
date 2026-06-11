@@ -1,0 +1,211 @@
+/* Gate floating controls + labyrinth header controls */
+
+.gate-controls {
+  position: fixed;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body.is-labyrinth-active .gate-controls {
+  display: none;
+}
+
+.header-controls {
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+body.is-labyrinth-active .header-controls {
+  display: flex;
+}
+
+.ctrl-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  border: 1px solid rgba(201, 191, 255, 0.22);
+  background: rgba(11, 11, 18, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition:
+    transform 200ms var(--ease-silk),
+    box-shadow 200ms var(--ease-silk),
+    border-color 200ms var(--ease-silk),
+    background 200ms var(--ease-silk);
+}
+
+[data-theme="light"] .ctrl-btn {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(90, 69, 212, 0.18);
+}
+
+.ctrl-btn:hover,
+.ctrl-btn:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 0 24px rgba(123, 97, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.ctrl-btn:active {
+  transform: scale(0.96);
+}
+
+.lang-globe-icon {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.theme-toggle .theme-icon {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  transition:
+    opacity 360ms var(--ease-silk),
+    transform 360ms var(--ease-silk),
+    filter 360ms var(--ease-silk);
+}
+
+.theme-toggle .theme-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.theme-toggle .theme-icon-sun {
+  color: #f5c842;
+  opacity: 0;
+  transform: rotate(-40deg) scale(0.6);
+}
+
+.theme-toggle .theme-icon-moon {
+  color: var(--primary);
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle.is-light-active .theme-icon-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle.is-light-active .theme-icon-moon {
+  opacity: 0;
+  transform: rotate(40deg) scale(0.6);
+}
+
+.lang-menu {
+  position: relative;
+}
+
+.lang-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 196px;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: rgba(11, 11, 18, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow), 0 16px 40px rgba(0, 0, 0, 0.35);
+  z-index: 120;
+}
+
+[data-theme="light"] .lang-menu-panel {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.lang-menu.is-open .lang-menu-btn {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(123, 97, 255, 0.3);
+}
+
+.lang-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  color: var(--text);
+  transition: background 160ms var(--ease-silk);
+}
+
+.lang-menu-item:hover,
+.lang-menu-item:focus-visible {
+  background: rgba(201, 191, 255, 0.1);
+}
+
+.lang-menu-item.is-active {
+  background: rgba(123, 97, 255, 0.14);
+}
+
+.lang-menu-item.is-active .lang-menu-label {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.lang-menu-flag {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.lang-menu-label {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.lang-menu-check {
+  font-size: 0.85rem;
+  color: var(--primary);
+  opacity: 0;
+  transition: opacity 160ms;
+}
+
+.lang-menu-item.is-active .lang-menu-check {
+  opacity: 1;
+}
+
+html.is-theme-transitioning,
+html.is-theme-transitioning * {
+  transition:
+    background-color 480ms var(--ease-silk),
+    color 480ms var(--ease-silk),
+    border-color 480ms var(--ease-silk),
+    box-shadow 480ms var(--ease-silk) !important;
+}
+
+body:not(.is-labyrinth-active) .site-header {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .gate-controls {
+    top: calc(12px + env(safe-area-inset-top, 0px));
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    gap: 8px;
+  }
+
+  .ctrl-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .lang-globe-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
