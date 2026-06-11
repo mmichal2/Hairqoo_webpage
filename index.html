@@ -9,6 +9,21 @@
       content="Odkryj Hairqoo — magiczny labirynt prowadzący przez portal fryzjera i klienta."
     />
     <meta name="theme-color" content="#13131A" />
+    <script>
+      /* Zawsze startuj od strony głównej — przed załadowaniem JS i scroll restoration */
+      (function () {
+        if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+        if (location.hash) {
+          history.replaceState(null, "", location.pathname + location.search);
+        }
+        try {
+          var s = JSON.parse(localStorage.getItem("hairqoo_labyrinth") || "{}");
+          delete s.portal;
+          s.lastChamber = 0;
+          localStorage.setItem("hairqoo_labyrinth", JSON.stringify(s));
+        } catch (e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -37,10 +52,22 @@
     <div class="ambient-glow" aria-hidden="true"></div>
 
     <header class="site-header">
-      <a href="#" class="logo" id="back-to-gate">
-        <img src="./assets/images/hairlab_icon.png" alt="" width="32" height="32" />
-        Hairqoo
-      </a>
+      <div class="header-start">
+        <button
+          type="button"
+          class="home-exit-btn glass"
+          id="home-exit-btn"
+          hidden
+          aria-label="Wróć na stronę główną"
+        >
+          <span class="home-exit-arrow" aria-hidden="true">←</span>
+          <span data-i18n="header.home">Strona główna</span>
+        </button>
+        <a href="#" class="logo" id="back-to-gate">
+          <img src="./assets/images/hairlab_icon.png" alt="" width="32" height="32" />
+          Hairqoo
+        </a>
+      </div>
       <div class="header-actions">
         <div class="progress-ring" id="progress-ring" aria-hidden="true">
           <svg width="36" height="36" viewBox="0 0 36 36">
@@ -829,6 +856,6 @@
       </section>
     </template>
 
-    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/main.js?v=3"></script>
   </body>
 </html>

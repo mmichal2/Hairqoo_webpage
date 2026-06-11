@@ -22,7 +22,7 @@ export const translations = {
       description:
         "Odkryj Hairqoo — magiczny labirynt prowadzący przez portal fryzjera i klienta. CRM, kalendarz, formuły, AI i więcej.",
     },
-    header: { backToGate: "Wróć do startu" },
+    header: { backToGate: "Wróć do startu", home: "Strona główna" },
     gate: {
       headline: "Twój biznes - Twoje zarządzanie pięknem",
       subtitle:
@@ -208,7 +208,7 @@ export const translations = {
       description:
         "Discover Hairqoo — a magical labyrinth through the stylist and client portals. CRM, calendar, formulas, AI and more.",
     },
-    header: { backToGate: "Back to start" },
+    header: { backToGate: "Back to start", home: "Home" },
     gate: {
       headline: "Your business — your beauty management",
       subtitle:
