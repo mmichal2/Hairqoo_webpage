@@ -1,4 +1,4 @@
-import { CHAMBER_CONFIG, applyI18n, t } from "./i18n.js";
+import { CHAMBER_CONFIG, applyFinaleI18n, applyI18n, t } from "./i18n.js";
 import { initMockups } from "./mockups.js";
 import { initChambers } from "./chambers/index.js";
 import { portalDoorEnter, portalExit, portalTilePress } from "./motion.js";
@@ -42,6 +42,7 @@ export class Labyrinth {
       scrollCue: document.getElementById("scroll-cue"),
       tunnelVeil: document.getElementById("tunnel-veil"),
       portalDoors: document.getElementById("portal-doors"),
+      siteHeader: document.getElementById("site-header"),
     };
     this.onPortalChange = null;
     this.onFinale = false;
@@ -55,6 +56,7 @@ export class Labyrinth {
     window.addEventListener("hairqoo:lang", () => {
       if (this.portal) {
         applyI18n(this.elements.chambersContainer);
+        applyFinaleI18n(this.portal);
         this.updateScrollCue();
       }
     });
@@ -98,6 +100,7 @@ export class Labyrinth {
       "portal-salon-active",
       "portal-client-active"
     );
+    this.elements.siteHeader?.setAttribute("hidden", "");
     this.elements.labyrinth?.classList.remove(
       "is-active",
       "is-entering",
@@ -161,6 +164,7 @@ export class Labyrinth {
     saveState({ portal, lastChamber: 0 });
 
     document.body.classList.add("is-labyrinth-active", `portal-${portal}-active`);
+    this.elements.siteHeader?.removeAttribute("hidden");
     this.elements.progressThread?.classList.add("is-visible");
     this.elements.progressRing?.classList.add("is-visible");
     this.elements.homeExitBtn?.removeAttribute("hidden");
@@ -168,6 +172,7 @@ export class Labyrinth {
     this.renderChambers(portal);
     this.renderMinimap(portal);
     this.renderChecklist(portal);
+    applyFinaleI18n(portal);
 
     const firstChamber = this.chambers[0] || null;
 

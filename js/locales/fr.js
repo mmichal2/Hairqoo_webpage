@@ -171,12 +171,26 @@ export default {
     },
   },
   finale: {
-    title: "C'etait Hairqoo",
-    lead: "Vous avez termine la visite complete. Rejoignez maintenant la liste d'attente et testez l'app parmi les premiers.",
-    story:
-      "Une cliente revient apres 8 semaines. Vous ouvrez Hairqoo et voyez aussitot: derniere formule, photos, notes, historique complet. Vous ne devinez pas, vous savez.",
-    ctaTitle: "Envie d'essayer Hairqoo avant le lancement?",
-    ctaBody: "Rejoignez la liste d'attente et aidez-nous a creer un outil vraiment adapte au travail en salon.",
+    salon: {
+      title: "C'est Hairqoo",
+      lead: "Vous connaissez deja les outils qui tiennent le salon sous controle. Inscrivez-vous et testez Hairqoo avec nous — avant le lancement.",
+      story:
+        "Une cliente revient apres deux mois. Vous ouvrez sa fiche et vous avez tout de suite : derniere formule, photos, notes, historique complet. Pas de devinettes — vous savez par ou commencer.",
+      ctaTitle: "Envie de tester Hairqoo avant le lancement officiel?",
+      ctaBody:
+        "Rejoignez la liste d'attente. Aidez-nous a peaufiner un outil pour les stylistes qui travaillent avec des donnees — pas avec la memoire.",
+      footer: "Hairqoo — votre salon dans une seule app. Pour stylistes, barbiers et equipes beaute.",
+    },
+    client: {
+      title: "C'est Hairqoo",
+      lead: "Vous avez vu a quel point reserver et planifier sa couleur peut etre simple. Inscrivez-vous et testez le portail client — parmi les premiers.",
+      story:
+        "Une nouvelle couleur en tete? Selfie, palette, apercu IA — et vous savez si c'est la bonne teinte. Puis vous reservez chez votre styliste en un clic. Sans appels, sans stress.",
+      ctaTitle: "Envie d'essayer Hairqoo en tant que cliente?",
+      ctaBody:
+        "Rejoignez la liste d'attente et aidez-nous a creer une app qui simplifie la vie — de l'idee de couleur a la visite au salon.",
+      footer: "Hairqoo — reservez, gerez vos rendez-vous et planifiez votre look. Simple, confortable, a votre facon.",
+    },
     formName: "Nom",
     formEmail: "Email",
     formBusinessType: "Type d'activite",
@@ -193,7 +207,6 @@ export default {
     themeDark: "Cyber-Luxury",
     themeLight: "Light Luxury",
     social: "@hairqoo",
-    footer: "Hairqoo - un outil moderne pour coiffeurs, barbiers et salons de beaute.",
     privacy: "Confidentialite",
   },
   checklist: {

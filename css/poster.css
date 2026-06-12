@@ -201,6 +201,7 @@ body.portal-client-active .chamber.is-active .chamber-title {
 }
 
 body.is-labyrinth-active .site-header {
+  display: flex;
   background: rgba(11, 11, 18, 0.88);
   border-bottom-color: rgba(201, 191, 255, 0.12);
 }

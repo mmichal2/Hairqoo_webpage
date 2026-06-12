@@ -171,12 +171,26 @@ export default {
     },
   },
   finale: {
-    title: "Este foi o Hairqoo",
-    lead: "Voce concluiu o tour completo. Agora entre na lista de espera e teste o app entre os primeiros.",
-    story:
-      "Uma cliente volta apos 8 semanas. Voce abre o Hairqoo e ve na hora: ultima formula, fotos, observacoes e todo o historico. Voce nao adivinha, voce sabe.",
-    ctaTitle: "Quer testar o Hairqoo antes do lancamento?",
-    ctaBody: "Entre na lista de espera e nos ajude a criar uma ferramenta que realmente combina com o trabalho do salao.",
+    salon: {
+      title: "Isto e Hairqoo",
+      lead: "Ja conheces as ferramentas que mantem o salao sob controlo. Inscreve-te na lista e testa o Hairqoo connosco — antes do lancamento.",
+      story:
+        "Uma cliente volta depois de dois meses. Abres a ficha e tens logo: ultima formula, fotos, notas e historico completo. Nao adivinhas — sabes por onde comecar.",
+      ctaTitle: "Queres testar o Hairqoo antes do lancamento oficial?",
+      ctaBody:
+        "Entra na lista de espera. Ajuda-nos a aperfeicoar uma ferramenta para estilistas que trabalham com dados — nao com memoria.",
+      footer: "Hairqoo — o teu salao numa so app. Para estilistas, barbeiros e equipas de beleza.",
+    },
+    client: {
+      title: "Isto e Hairqoo",
+      lead: "Ja viste como pode ser simples marcar visitas e planear a cor. Inscreve-te e experimenta o portal do cliente — entre os primeiros.",
+      story:
+        "A pensar numa cor nova? Selfie, paleta, pre-visualizacao com IA — e sabes se e o teu tom. Depois marcas com o teu estilista num toque. Sem chamadas, sem stress.",
+      ctaTitle: "Queres experimentar o Hairqoo como cliente?",
+      ctaBody:
+        "Entra na lista de espera e ajuda-nos a criar uma app que facilita a vida — da ideia de cor a visita ao salao.",
+      footer: "Hairqoo — marca visitas, gere os teus horarios e planeia o teu look. Simples, comodo, ao teu jeito.",
+    },
     formName: "Nome",
     formEmail: "Email",
     formBusinessType: "Tipo de negocio",
@@ -193,7 +207,6 @@ export default {
     themeDark: "Cyber-Luxury",
     themeLight: "Light Luxury",
     social: "@hairqoo",
-    footer: "Hairqoo - uma ferramenta moderna para cabeleireiros, barbeiros e saloes de beleza.",
     privacy: "Privacidade",
   },
   checklist: {

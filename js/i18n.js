@@ -201,12 +201,26 @@ export const translations = {
       },
     },
     finale: {
-      title: "To był Hairqoo",
-      lead: "Przeszedłeś cały tour — teraz możesz dołączyć do listy oczekujących i testować aplikację jako jeden z pierwszych.",
-      story:
-        "Klientka wraca po 8 tygodniach. Otwierasz Hairqoo i od razu widzisz: poprzednią recepturę, zdjęcia, notatki, historię. Nie zgadujesz — po prostu wiesz.",
-      ctaTitle: "Chcesz wypróbować Hairqoo przed premierą?",
-      ctaBody: "Zapisz się na listę oczekujących i pomóż nam dopracować narzędzie, które naprawdę pasuje do pracy w salonie.",
+      salon: {
+        title: "To jest Hairqoo",
+        lead: "Znasz już narzędzia, które trzymają salon w ryzach. Zapisz się na listę i testuj Hairqoo z nami — zanim premiera.",
+        story:
+          "Klientka wraca po dwóch miesiącach. Otwierasz kartę i od razu masz: ostatnią formułę, zdjęcia, notatki, pełną historię. Nie domyślasz się — wiesz, od czego zacząć.",
+        ctaTitle: "Chcesz testować Hairqoo przed oficjalną premierą?",
+        ctaBody:
+          "Dołącz do listy oczekujących. Pomóż nam dopracować narzędzie dla stylistów, którzy pracują na danych — nie na pamięci.",
+        footer: "Hairqoo — Twój salon w jednej aplikacji. Dla stylistów, barberów i zespołów beauty.",
+      },
+      client: {
+        title: "To jest Hairqoo",
+        lead: "Widziałeś, jak prosto może wyglądać umawianie wizyt i planowanie koloru. Zapisz się i przetestuj portal klienta — jako jeden z pierwszych.",
+        story:
+          "Myślisz o nowym kolorze? Selfie, paleta, podgląd AI — i od razu wiesz, czy to ten odcień. Potem jednym kliknięciem rezerwujesz termin u swojego fryzjera. Bez telefonów, bez stresu.",
+        ctaTitle: "Chcesz wypróbować Hairqoo jako klient?",
+        ctaBody:
+          "Dołącz do listy oczekujących i pomóż nam dopracować aplikację, która ułatwia życie — od pomysłu na kolor po wizytę w salonie.",
+        footer: "Hairqoo — umów wizytę, trzymaj terminy i planuj swój look. Prosto, wygodnie, po Twojemu.",
+      },
       formName: "Imię",
       formEmail: "Email",
       formBusinessType: "Typ działalności",
@@ -223,7 +237,6 @@ export const translations = {
       themeDark: "Cyber-Luxury",
       themeLight: "Light Luxury",
       social: "@hairqoo",
-      footer: "Hairqoo — nowoczesne narzędzie dla stylistów, barberów i salonów beauty.",
       privacy: "Prywatność",
     },
     checklist: {
@@ -416,12 +429,26 @@ export const translations = {
       },
     },
     finale: {
-      title: "That was Hairqoo",
-      lead: "You finished the full tour — now join the waitlist and test the app as one of the first.",
-      story:
-        "A client returns after 8 weeks. You open Hairqoo and instantly see: the last formula, photos, notes, full history. You don't guess — you just know.",
-      ctaTitle: "Want to try Hairqoo before launch?",
-      ctaBody: "Join the waitlist and help us shape a tool that truly fits salon work.",
+      salon: {
+        title: "This is Hairqoo",
+        lead: "You've seen the tools that keep a salon running smoothly. Join the waitlist and test Hairqoo with us — before launch.",
+        story:
+          "A client walks in after two months. You open their card and instantly have: the last formula, photos, notes, full history. No guessing — you know exactly where to start.",
+        ctaTitle: "Want to test Hairqoo before the official launch?",
+        ctaBody:
+          "Join the waitlist. Help us refine a tool built for stylists who work with data — not memory.",
+        footer: "Hairqoo — your salon in one app. For stylists, barbers, and beauty teams.",
+      },
+      client: {
+        title: "This is Hairqoo",
+        lead: "You've seen how simple booking and color planning can be. Sign up and try the client portal — as one of the first.",
+        story:
+          "Thinking about a new color? Selfie, palette, AI preview — and you know if it's the right shade. Then book your stylist in one tap. No phone tag, no stress.",
+        ctaTitle: "Want to try Hairqoo as a client?",
+        ctaBody:
+          "Join the waitlist and help us shape an app that makes life easier — from color idea to salon visit.",
+        footer: "Hairqoo — book visits, manage appointments, plan your look. Simple, easy, your way.",
+      },
       formName: "Name",
       formEmail: "Email",
       formBusinessType: "Business type",
@@ -438,7 +465,6 @@ export const translations = {
       themeDark: "Cyber-Luxury",
       themeLight: "Light Luxury",
       social: "@hairqoo",
-      footer: "Hairqoo — a modern tool for stylists, barbers, and beauty salons.",
       privacy: "Privacy",
     },
     checklist: {
@@ -513,4 +539,19 @@ export function applyI18n(root = document) {
   document.title = t("meta.title");
   const desc = document.querySelector('meta[name="description"]');
   if (desc) desc.setAttribute("content", t("meta.description"));
+}
+
+export function applyFinaleI18n(portal, root = document) {
+  if (!portal || (portal !== "salon" && portal !== "client")) return;
+  const scope = root.getElementById?.("finale") || root.querySelector?.("#finale") || root;
+  scope.querySelectorAll("[data-i18n-finale]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-finale");
+    const val = t(`finale.${portal}.${key}`);
+    if (typeof val === "string") el.textContent = val;
+  });
+  const footer = document.querySelector(".site-footer [data-i18n-finale]");
+  if (footer) {
+    const val = t(`finale.${portal}.footer`);
+    if (typeof val === "string") footer.textContent = val;
+  }
 }

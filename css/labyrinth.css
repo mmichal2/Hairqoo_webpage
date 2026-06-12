@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   height: var(--header-h);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--space-md);
@@ -12,6 +12,10 @@
   background: rgba(19, 19, 26, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--glass-border);
+}
+
+body.is-labyrinth-active .site-header {
+  display: flex;
 }
 
 .header-start {

@@ -188,10 +188,6 @@ html.is-theme-transitioning * {
     box-shadow 480ms var(--ease-silk) !important;
 }
 
-body:not(.is-labyrinth-active) .site-header {
-  display: none;
-}
-
 @media (max-width: 560px) {
   .gate-controls {
     top: calc(12px + env(safe-area-inset-top, 0px));

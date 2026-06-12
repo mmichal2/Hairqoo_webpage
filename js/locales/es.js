@@ -171,12 +171,26 @@ export default {
     },
   },
   finale: {
-    title: "Esto fue Hairqoo",
-    lead: "Terminaste el recorrido completo. Ahora unete a la lista de espera y prueba la app entre los primeros.",
-    story:
-      "Una clienta vuelve tras 8 semanas. Abres Hairqoo y ves al instante: la ultima formula, fotos, notas e historial completo. No adivinas, simplemente lo sabes.",
-    ctaTitle: "Quieres probar Hairqoo antes del lanzamiento?",
-    ctaBody: "Unete a la lista de espera y ayudanos a crear una herramienta que de verdad encaje con el trabajo del salon.",
+    salon: {
+      title: "Esto es Hairqoo",
+      lead: "Ya conoces las herramientas que mantienen el salon bajo control. Apuntate a la lista y prueba Hairqoo con nosotros — antes del lanzamiento.",
+      story:
+        "Una clienta vuelve tras dos meses. Abres su ficha y al instante tienes: la ultima formula, fotos, notas e historial completo. No adivinas — sabes por donde empezar.",
+      ctaTitle: "Quieres probar Hairqoo antes del lanzamiento oficial?",
+      ctaBody:
+        "Unete a la lista de espera. Ayudanos a pulir una herramienta para estilistas que trabajan con datos — no con la memoria.",
+      footer: "Hairqoo — tu salon en una sola app. Para estilistas, barberos y equipos de belleza.",
+    },
+    client: {
+      title: "Esto es Hairqoo",
+      lead: "Ya viste lo facil que puede ser reservar y planear tu color. Apuntate y prueba el portal de cliente — entre los primeros.",
+      story:
+        "Piensas en un color nuevo? Selfie, paleta, vista previa con IA — y sabes si es tu tono. Luego reservas con tu estilista en un toque. Sin llamadas, sin estres.",
+      ctaTitle: "Quieres probar Hairqoo como cliente?",
+      ctaBody:
+        "Unete a la lista de espera y ayudanos a crear una app que facilita la vida — de la idea de color a la visita al salon.",
+      footer: "Hairqoo — reserva citas, controla tus visitas y planifica tu look. Facil, comodo, a tu manera.",
+    },
     formName: "Nombre",
     formEmail: "Email",
     formBusinessType: "Tipo de negocio",
@@ -193,7 +207,6 @@ export default {
     themeDark: "Cyber-Luxury",
     themeLight: "Light Luxury",
     social: "@hairqoo",
-    footer: "Hairqoo: una herramienta moderna para estilistas, barberos y salones de belleza.",
     privacy: "Privacidad",
   },
   checklist: {
