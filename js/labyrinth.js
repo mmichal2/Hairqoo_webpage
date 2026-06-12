@@ -48,6 +48,22 @@ export class Labyrinth {
     this.init();
   }
 
+  getTotalSteps() {
+    return this.chambers.length + 1;
+  }
+
+  getFinaleIndex() {
+    return this.chambers.length;
+  }
+
+  updateFinaleStep(portal) {
+    const el = document.getElementById("finale-step");
+    if (!el || !portal) return;
+    const total = CHAMBER_CONFIG[portal].length + 1;
+    const label = `${String(total).padStart(2, "0")} / ${total}`;
+    el.textContent = label;
+  }
+
   init() {
     this.showGateOnLoad();
     this.bindGate();
@@ -56,6 +72,7 @@ export class Labyrinth {
       if (this.portal) {
         applyI18n(this.elements.chambersContainer);
         applyFinaleI18n(this.portal);
+        this.updateFinaleStep(this.portal);
         this.updateScrollCue();
       }
     });
@@ -172,6 +189,7 @@ export class Labyrinth {
     this.renderMinimap(portal);
     this.renderChecklist(portal);
     applyFinaleI18n(portal);
+    this.updateFinaleStep(portal);
 
     const firstChamber = this.chambers[0] || null;
 
@@ -210,7 +228,7 @@ export class Labyrinth {
     if (this.elements.labyrinth) this.elements.labyrinth.scrollTop = 0;
     this.currentIndex = 0;
     this.onFinale = false;
-    this.updateProgressFromPct(0.5 / this.chambers.length);
+    this.updateProgressFromPct(0.5 / this.getTotalSteps());
     this.updateScrollCue();
 
     if (this.onPortalChange) this.onPortalChange(portal);
@@ -255,7 +273,7 @@ export class Labyrinth {
         this.currentIndex = idx;
         this.onFinale = false;
         this.markVisited(chamberId);
-        this.updateProgressFromPct((idx + 0.5) / this.chambers.length);
+        this.updateProgressFromPct((idx + 0.5) / this.getTotalSteps(), idx);
         this.updateScrollCue();
       },
       onProgress: (pct, activeIndex) => {
@@ -342,8 +360,8 @@ export class Labyrinth {
       if (!this.onFinale) {
         this.onFinale = true;
         this.hideScrollCue();
-        this.updateMinimapDots(this.chambers.length - 1, true);
-        this.updateProgressFromPct(1, this.chambers.length - 1);
+        this.updateMinimapDots(this.getFinaleIndex(), true);
+        this.updateProgressFromPct(1, this.getFinaleIndex());
       }
     } else if (this.onFinale) {
       this.onFinale = false;
@@ -413,6 +431,18 @@ export class Labyrinth {
       dot.addEventListener("click", () => this.goToChamber(i));
       minimap.appendChild(dot);
     });
+
+    const finaleIdx = CHAMBER_CONFIG[portal].length;
+    const finaleDot = document.createElement("button");
+    finaleDot.type = "button";
+    finaleDot.className = "minimap-dot glass minimap-dot--finale";
+    finaleDot.title = t("nav.scrollFinish");
+    finaleDot.dataset.index = String(finaleIdx);
+    finaleDot.addEventListener("click", () => {
+      if (!this.isTransitioning && !this.scrollPhysics?.isAnimating) this.goToFinale();
+    });
+    minimap.appendChild(finaleDot);
+
     this.minimapDots = [...minimap.querySelectorAll(".minimap-dot")];
   }
 
@@ -499,8 +529,10 @@ export class Labyrinth {
     }
 
     if (typeof activeIndex === "number" && !Number.isNaN(activeIndex)) {
-      if (activeIndex < this.chambers.length) {
+      if (activeIndex < this.getFinaleIndex()) {
         this.currentIndex = activeIndex;
+      } else if (activeIndex >= this.getFinaleIndex()) {
+        this.onFinale = true;
       }
       this.updateMinimapDots(activeIndex, this.onFinale);
     } else {
@@ -511,14 +543,14 @@ export class Labyrinth {
   updateMinimapDots(activeIndex, onFinale = this.onFinale) {
     if (!this.minimapDots?.length || !this.chambers.length) return;
 
-    const last = this.chambers.length - 1;
+    const finaleIdx = this.getFinaleIndex();
     const current = onFinale
-      ? last
-      : Math.max(0, Math.min(last, activeIndex));
+      ? finaleIdx
+      : Math.max(0, Math.min(finaleIdx - 1, activeIndex ?? this.currentIndex));
 
     this.minimapDots.forEach((dot, i) => {
       dot.classList.toggle("is-current", i === current);
-      dot.classList.toggle("is-visited", onFinale ? i < last : i < current);
+      dot.classList.toggle("is-visited", i < current);
     });
   }
 
@@ -536,12 +568,11 @@ export class Labyrinth {
       chamber.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
     }
 
-    this.updateProgressFromPct((index + 0.5) / this.chambers.length);
+    this.updateProgressFromPct((index + 0.5) / this.getTotalSteps(), index);
     this.updateScrollCue();
   }
 
   async goToFinale() {
-    this.currentIndex = this.chambers.length - 1;
     this.onFinale = true;
     this.hideScrollCue();
     if (this.scrollPhysics) {
@@ -549,8 +580,8 @@ export class Labyrinth {
     } else {
       this.elements.finale?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    this.updateProgressFromPct(1, this.chambers.length - 1);
-    this.updateMinimapDots(this.chambers.length - 1, true);
+    this.updateProgressFromPct(1, this.getFinaleIndex());
+    this.updateMinimapDots(this.getFinaleIndex(), true);
   }
 
   bindKeyboard() {
@@ -566,7 +597,8 @@ export class Labyrinth {
       }
       if (e.key === "ArrowUp") {
         e.preventDefault();
-        if (this.currentIndex > 0) this.goToChamber(this.currentIndex - 1);
+        if (this.onFinale) this.goToChamber(this.chambers.length - 1);
+        else if (this.currentIndex > 0) this.goToChamber(this.currentIndex - 1);
       }
     });
   }

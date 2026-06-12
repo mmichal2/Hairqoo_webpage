@@ -11,28 +11,48 @@
   z-index: 1;
 }
 
+.gate-content {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 720px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 960px) {
+  .gate {
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: clamp(32px, 9vw, 128px);
+    padding-right: var(--space-xl);
+  }
+
+  .gate-content {
+    align-items: flex-start;
+    text-align: left;
+    margin-top: 4vh;
+  }
+
+  .gate-brand {
+    text-align: left;
+  }
+
+  .gate-brand img {
+    margin-left: 0;
+  }
+
+  .gate-headline {
+    text-align: left;
+  }
+
+  .gate-portals {
+    max-width: 680px;
+  }
+}
+
 .gate.is-hidden {
   display: none;
-}
-
-.gate-hero-bg {
-  position: fixed;
-  inset: 0;
-  background: var(--cosmic-void) center / cover no-repeat;
-  opacity: 0.35;
-  z-index: 0;
-  pointer-events: none;
-  transition: none;
-}
-
-body.is-labyrinth-active .gate-hero-bg {
-  visibility: hidden;
-  opacity: 0;
-}
-
-body.is-gate-restoring .gate-hero-bg {
-  visibility: visible;
-  opacity: 0.35;
 }
 
 body.is-gate-restoring .ambient-glow,
@@ -40,10 +60,6 @@ body.is-gate-restoring .poster-horizon,
 body.is-gate-restoring .poster-horizon-glow {
   opacity: 1;
   visibility: visible;
-}
-
-.gate-hero-bg.has-image {
-  background-image: url("../assets/images/home_hero.png");
 }
 
 .gate-brand {
@@ -82,23 +98,20 @@ body.is-gate-restoring .poster-horizon-glow {
 
 .gate-headline h1,
 .gate-headline-title {
-  font-size: clamp(1rem, 2.8vw, 1.95rem);
-  line-height: 1.2;
+  font-size: clamp(1.65rem, 4.2vw, 3rem);
+  line-height: 1.08;
   margin-bottom: var(--space-md);
-  white-space: nowrap;
+  letter-spacing: -0.03em;
+  white-space: normal;
+  max-width: 22ch;
 }
 
 .gate-headline p {
   color: var(--muted);
-  font-size: 1.05rem;
-  line-height: 1.5;
+  font-size: clamp(0.95rem, 1.8vw, 1.08rem);
+  line-height: 1.55;
   margin: 0;
-}
-
-@media (max-width: 480px) {
-  .gate-headline-title {
-    font-size: clamp(0.82rem, 3.6vw, 1rem);
-  }
+  max-width: 38ch;
 }
 
 .gate-portals {

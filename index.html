@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="./css/tokens.css" />
     <link rel="stylesheet" href="./css/base.css" />
     <link rel="stylesheet" href="./css/gate.css" />
+    <link rel="stylesheet" href="./css/gate-poster.css" />
     <link rel="stylesheet" href="./css/chambers.css" />
     <link rel="stylesheet" href="./css/labyrinth.css" />
     <link rel="stylesheet" href="./css/mockups.css" />
@@ -194,32 +195,40 @@
 
     <!-- GATE -->
     <section class="gate" id="gate">
-      <div class="gate-hero-bg has-image" aria-hidden="true"></div>
-      <div class="gate-brand">
-        <img src="./assets/images/hairlab_icon.png" alt="Hairqoo" width="64" height="64" />
-        <div class="wordmark">Hairqoo</div>
+      <div class="gate-poster-stack" id="gate-poster-stack" aria-hidden="true">
+        <div class="gate-hero-bg has-image" id="gate-hero-bg"></div>
+        <div class="gate-poster-duotone"></div>
+        <div class="gate-poster-scrim"></div>
+        <div class="gate-poster-vignette"></div>
+        <div class="gate-poster-grain"></div>
       </div>
-      <div class="gate-headline">
-        <h1 class="strand-text gate-headline-title" data-i18n="gate.headline">
-          Twój biznes - Twoje zarządzanie pięknem
-        </h1>
-        <p data-i18n="gate.subtitle">
-          Rezerwacje, formuły, zdjęcia i podziękowania po wizycie — wszystko pod ręką, bez przełączania aplikacji.
-        </p>
-      </div>
-      <div class="gate-portals">
-        <button type="button" class="portal-tile glass" data-portal="salon">
-          <div class="portal-tile-icon" aria-hidden="true">✂</div>
-          <h2 data-i18n="gate.salonTitle">Portal Fryzjera</h2>
-          <p data-i18n="gate.salonDesc">Rezerwacje, wizyty i organizacja dnia salonu…</p>
-          <span class="enter-label" data-i18n="gate.salonEnter">Wejdź do labiryntu →</span>
-        </button>
-        <button type="button" class="portal-tile glass" data-portal="client">
-          <div class="portal-tile-icon" aria-hidden="true">◇</div>
-          <h2 data-i18n="gate.clientTitle">Portal Klienta</h2>
-          <p data-i18n="gate.clientDesc">Umawiaj wizyty szybko…</p>
-          <span class="enter-label" data-i18n="gate.clientEnter">Wejdź do labiryntu →</span>
-        </button>
+      <div class="gate-content">
+        <div class="gate-brand">
+          <img src="./assets/images/hairlab_icon.png" alt="Hairqoo" width="64" height="64" />
+          <div class="wordmark">Hairqoo</div>
+        </div>
+        <div class="gate-headline">
+          <h1 class="strand-text gate-headline-title" data-i18n="gate.headline">
+            Twój biznes - Twoje zarządzanie pięknem
+          </h1>
+          <p data-i18n="gate.subtitle">
+            Rezerwacje, formuły, zdjęcia i podziękowania po wizycie — wszystko pod ręką, bez przełączania aplikacji.
+          </p>
+        </div>
+        <div class="gate-portals">
+          <button type="button" class="portal-tile glass" data-portal="salon">
+            <div class="portal-tile-icon" aria-hidden="true">✂</div>
+            <h2 data-i18n="gate.salonTitle">Portal Fryzjera</h2>
+            <p data-i18n="gate.salonDesc">Rezerwacje, wizyty i organizacja dnia salonu…</p>
+            <span class="enter-label" data-i18n="gate.salonEnter">Wejdź do labiryntu →</span>
+          </button>
+          <button type="button" class="portal-tile glass" data-portal="client">
+            <div class="portal-tile-icon" aria-hidden="true">◇</div>
+            <h2 data-i18n="gate.clientTitle">Portal Klienta</h2>
+            <p data-i18n="gate.clientDesc">Umawiaj wizyty szybko…</p>
+            <span class="enter-label" data-i18n="gate.clientEnter">Wejdź do labiryntu →</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -229,8 +238,11 @@
 
       <section class="finale" id="finale">
         <div class="finale-inner">
-          <h2 class="finale-title strand-text" data-i18n-finale="title">To jest Hairqoo</h2>
-          <p class="finale-lead" data-i18n-finale="lead"></p>
+          <header class="finale-header chamber-header">
+            <p class="chamber-number" id="finale-step" aria-hidden="true">12 / 12</p>
+            <h2 class="finale-title strand-text" data-i18n-finale="title">To jest Hairqoo</h2>
+            <p class="finale-lead" data-i18n-finale="lead"></p>
+          </header>
 
           <div class="checklist" id="checklist" aria-label="Odwiedzone komnaty"></div>
 
@@ -942,6 +954,6 @@
       </section>
     </template>
 
-    <script type="module" src="./js/main.js?v=16"></script>
+    <script type="module" src="./js/main.js?v=17"></script>
   </body>
 </html>

@@ -41,6 +41,12 @@
   border-radius: 4px;
 }
 
+.finale-header {
+  margin-bottom: var(--space-lg);
+  position: relative;
+  padding-right: 7.5rem;
+}
+
 .finale-title {
   font-size: clamp(1.5rem, 3.5vw, 2.25rem);
   margin-bottom: var(--space-sm);
@@ -48,7 +54,7 @@
 
 .finale-lead {
   color: var(--muted);
-  margin-bottom: var(--space-lg);
+  margin-bottom: 0;
   font-size: clamp(0.9rem, 2vw, 1rem);
 }
 

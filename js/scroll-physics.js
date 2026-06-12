@@ -52,7 +52,7 @@ export class ScrollPhysics {
       const id = this.chambers[0]?.dataset?.chamberId;
       if (id) this.onChamberChange(0, id);
     }
-    if (this.onProgress) this.onProgress(0.5 / this.chambers.length, 0);
+    if (this.onProgress) this.onProgress(0.5 / (this.chambers.length + 1), 0);
 
     requestAnimationFrame(() => {
       this.el.scrollTop = 0;
@@ -264,12 +264,13 @@ export class ScrollPhysics {
 
   emitProgress(fractionalIndex) {
     if (!this.onProgress || !this.chambers.length) return;
+    const totalSteps = this.chambers.length + 1;
     const onFinale = fractionalIndex >= this.chambers.length - 0.02;
     const pct = onFinale
       ? 1
-      : (fractionalIndex + 0.5) / this.chambers.length;
+      : (fractionalIndex + 0.5) / totalSteps;
     const rounded = onFinale
-      ? this.chambers.length - 1
+      ? this.chambers.length
       : Math.max(0, Math.min(this.chambers.length - 1, Math.round(fractionalIndex)));
     this.onProgress(Math.max(0, Math.min(1, pct)), rounded, fractionalIndex);
   }
@@ -296,6 +297,13 @@ export class ScrollPhysics {
 
   navigate(direction) {
     if (this.isAnimating || this.snapLocked) return Promise.resolve();
+
+    if (this.finaleEl && this.el.scrollTop >= this.getFinaleTop() - 4) {
+      if (direction < 0) {
+        return this.scrollToChamber(this.chambers.length - 1, true);
+      }
+      return Promise.resolve();
+    }
 
     const target = this.currentIndex + direction;
     if (target < 0) {

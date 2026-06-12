@@ -155,9 +155,16 @@
   transform: translateY(-50%);
   z-index: 50;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   padding: var(--space-sm);
   border-radius: var(--radius-md);
+  max-height: min(88dvh, 640px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.minimap::-webkit-scrollbar {
+  display: none;
 }
 
 @media (min-width: 1100px) {
