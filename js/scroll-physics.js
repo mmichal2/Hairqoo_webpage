@@ -1,5 +1,6 @@
 const TUNNEL_MS = 1800;
 const WHEEL_COOLDOWN = 400;
+const SNAP_TOLERANCE = 10;
 
 function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -24,7 +25,10 @@ export class ScrollPhysics {
     this.lastWheel = 0;
     this.touchStartY = 0;
     this.touchStartTarget = null;
+    this._tops = [];
+    this._finaleTop = Infinity;
     this.tunnelVeil = document.getElementById("tunnel-veil");
+    this._onResize = () => this.measurePositions();
 
     if (!this.el) return;
     this.bind();
@@ -38,6 +42,26 @@ export class ScrollPhysics {
     }, ms);
   }
 
+  measurePositions() {
+    if (!this.el || !this.chambers.length) return;
+
+    const scrollTop = this.el.scrollTop;
+    const containerRect = this.el.getBoundingClientRect();
+    const pad = this.getScrollPadding();
+
+    this._tops = this.chambers.map((ch) => {
+      const rect = ch.getBoundingClientRect();
+      return Math.max(0, rect.top - containerRect.top + scrollTop - pad);
+    });
+
+    if (this.finaleEl) {
+      const rect = this.finaleEl.getBoundingClientRect();
+      this._finaleTop = Math.max(0, rect.top - containerRect.top + scrollTop - pad);
+    } else {
+      this._finaleTop = Infinity;
+    }
+  }
+
   resetToStart() {
     if (!this.el || !this.chambers.length) return;
 
@@ -45,6 +69,7 @@ export class ScrollPhysics {
     this.snapLocked = true;
     this.el.scrollTop = 0;
     this.currentIndex = 0;
+    this.measurePositions();
     this.applyTunnelVisuals(0, 1);
     this.updateDepth();
 
@@ -55,6 +80,7 @@ export class ScrollPhysics {
     if (this.onProgress) this.onProgress(0.5 / (this.chambers.length + 1), 0);
 
     requestAnimationFrame(() => {
+      this.measurePositions();
       this.el.scrollTop = 0;
       this.lockSnap(800);
     });
@@ -63,7 +89,10 @@ export class ScrollPhysics {
   setChambers(chambers, finaleEl = null) {
     this.chambers = chambers || [];
     this.finaleEl = finaleEl;
-    this.updateDepth();
+    requestAnimationFrame(() => {
+      this.measurePositions();
+      this.updateDepth();
+    });
   }
 
   bind() {
@@ -78,6 +107,7 @@ export class ScrollPhysics {
       { passive: true }
     );
     this.el.addEventListener("touchend", (e) => this.onTouchEnd(e), { passive: true });
+    window.addEventListener("resize", this._onResize);
   }
 
   onTouchEnd(e) {
@@ -104,6 +134,7 @@ export class ScrollPhysics {
   destroy() {
     if (this.rafId) cancelAnimationFrame(this.rafId);
     clearTimeout(this._snapLockTimer);
+    window.removeEventListener("resize", this._onResize);
   }
 
   setAnimating(value) {
@@ -124,21 +155,29 @@ export class ScrollPhysics {
   maybeSnapToNearest() {
     if (this.isAnimating || this.snapLocked || !this.chambers.length) return;
 
-    const frac = this.getFractionalIndex();
-    if (frac >= this.chambers.length - 0.02) {
-      const finaleTop = this.getFinaleTop();
-      if (Math.abs(this.el.scrollTop - finaleTop) > 6) {
+    this.measurePositions();
+    const scrollTop = this.el.scrollTop;
+    const finaleTop = this.getFinaleTop();
+
+    if (this.finaleEl && scrollTop >= finaleTop - SNAP_TOLERANCE) {
+      if (Math.abs(scrollTop - finaleTop) > SNAP_TOLERANCE) {
         this.el.scrollTop = finaleTop;
       }
       return;
     }
 
+    const settledTop = this.getChamberTop(this.currentIndex);
+    if (Math.abs(scrollTop - settledTop) <= SNAP_TOLERANCE) {
+      return;
+    }
+
+    const frac = this.getFractionalIndex();
     const nearest = Math.max(
       0,
       Math.min(this.chambers.length - 1, Math.round(frac))
     );
     const target = this.getChamberTop(nearest);
-    if (Math.abs(this.el.scrollTop - target) > 6) {
+    if (Math.abs(scrollTop - target) > SNAP_TOLERANCE) {
       this.el.scrollTop = target;
       if (nearest !== this.currentIndex) {
         this.currentIndex = nearest;
@@ -156,30 +195,31 @@ export class ScrollPhysics {
   }
 
   getChamberTop(index) {
-    const ch = this.chambers[index];
-    if (!ch) return 0;
-    return ch.offsetTop - this.getScrollPadding();
+    if (!this._tops.length) this.measurePositions();
+    return this._tops[index] ?? 0;
   }
 
   getFinaleTop() {
-    if (!this.finaleEl) return Infinity;
-    return this.finaleEl.offsetTop - this.getScrollPadding();
+    if (this._finaleTop === undefined || !this._tops.length) this.measurePositions();
+    return this._finaleTop ?? Infinity;
   }
 
   getFractionalIndex() {
     if (!this.chambers.length) return 0;
+
+    this.measurePositions();
     const scrollTop = this.el.scrollTop;
     const finaleTop = this.getFinaleTop();
+    const tops = this._tops;
 
-    if (this.finaleEl && scrollTop >= finaleTop - 2) {
+    if (this.finaleEl && scrollTop >= finaleTop - SNAP_TOLERANCE) {
       return this.chambers.length;
     }
 
-    const tops = this.chambers.map((_, i) => this.getChamberTop(i));
+    if (scrollTop <= tops[0] + SNAP_TOLERANCE) return 0;
 
-    if (scrollTop <= tops[0]) return 0;
     const last = tops.length - 1;
-    if (scrollTop >= tops[last] && (!this.finaleEl || scrollTop < finaleTop - 2)) {
+    if (scrollTop >= tops[last] - SNAP_TOLERANCE && (!this.finaleEl || scrollTop < finaleTop - SNAP_TOLERANCE)) {
       const span = (this.finaleEl ? finaleTop : tops[last] + this.el.clientHeight) - tops[last] || 1;
       const local = (scrollTop - tops[last]) / span;
       return last + Math.min(1, Math.max(0, local)) * 0.99;
@@ -188,7 +228,7 @@ export class ScrollPhysics {
     for (let i = 0; i < last; i++) {
       const start = tops[i];
       const end = tops[i + 1];
-      if (scrollTop >= start && scrollTop < end) {
+      if (scrollTop >= start - SNAP_TOLERANCE && scrollTop < end - SNAP_TOLERANCE) {
         const span = end - start || 1;
         return i + (scrollTop - start) / span;
       }
@@ -265,21 +305,43 @@ export class ScrollPhysics {
   emitProgress(fractionalIndex) {
     if (!this.onProgress || !this.chambers.length) return;
     const totalSteps = this.chambers.length + 1;
-    const onFinale = fractionalIndex >= this.chambers.length - 0.02;
+    const onFinale =
+      !this.isAnimating &&
+      fractionalIndex >= this.chambers.length - 0.02 &&
+      this.el.scrollTop >= this.getFinaleTop() - SNAP_TOLERANCE;
     const pct = onFinale
       ? 1
       : (fractionalIndex + 0.5) / totalSteps;
     const rounded = onFinale
       ? this.chambers.length
-      : Math.max(0, Math.min(this.chambers.length - 1, Math.round(fractionalIndex)));
+      : this.isAnimating
+        ? this.currentIndex
+        : Math.max(0, Math.min(this.chambers.length - 1, Math.round(fractionalIndex)));
     this.onProgress(Math.max(0, Math.min(1, pct)), rounded, fractionalIndex);
   }
 
   onWheel(e) {
     if (prefersReducedMotion() || this.snapLocked) return;
+
+    const body = e.target?.closest?.(".chamber-body");
+    const innerScrollable = body && body.scrollHeight > body.clientHeight + 8;
+
     if (this.isAnimating) {
       e.preventDefault();
       return;
+    }
+
+    if (Math.abs(e.deltaY) < 40) {
+      if (innerScrollable) return;
+      e.preventDefault();
+      return;
+    }
+
+    if (innerScrollable) {
+      const atTop = body.scrollTop <= 2;
+      const atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 2;
+      if (e.deltaY > 0 && !atBottom) return;
+      if (e.deltaY < 0 && !atTop) return;
     }
 
     const now = performance.now();
@@ -287,8 +349,6 @@ export class ScrollPhysics {
       e.preventDefault();
       return;
     }
-
-    if (Math.abs(e.deltaY) < 40) return;
 
     e.preventDefault();
     this.lastWheel = now;
@@ -298,7 +358,9 @@ export class ScrollPhysics {
   navigate(direction) {
     if (this.isAnimating || this.snapLocked) return Promise.resolve();
 
-    if (this.finaleEl && this.el.scrollTop >= this.getFinaleTop() - 4) {
+    this.measurePositions();
+
+    if (this.finaleEl && this.el.scrollTop >= this.getFinaleTop() - SNAP_TOLERANCE) {
       if (direction < 0) {
         return this.scrollToChamber(this.chambers.length - 1, true);
       }
@@ -319,37 +381,47 @@ export class ScrollPhysics {
     const chamber = this.chambers[index];
     if (!chamber || !this.el) return Promise.resolve();
 
+    this.measurePositions();
     const target = this.getChamberTop(index);
+    this.currentIndex = index;
 
     if (!smooth || prefersReducedMotion()) {
+      this.el.scrollTop = target;
+      this.updateDepth();
+      const id = chamber.dataset?.chamberId;
+      if (id) this.onChamberChange?.(index, id);
+      this.lockSnap(450);
+      return Promise.resolve();
+    }
+
+    return this.animateScrollTo(target, index).then(() => {
       this.el.scrollTop = target;
       this.currentIndex = index;
       this.updateDepth();
       const id = chamber.dataset?.chamberId;
       if (id) this.onChamberChange?.(index, id);
-      return Promise.resolve();
-    }
-
-    return this.animateScrollTo(target, index).then(() => {
-      this.currentIndex = index;
-      this.updateDepth();
-      const id = chamber.dataset?.chamberId;
-      if (id) this.onChamberChange?.(index, id);
+      this.lockSnap(500);
     });
   }
 
   scrollToFinale(smooth = true) {
     if (!this.finaleEl) return Promise.resolve();
-    const target = this.finaleEl.offsetTop - this.getScrollPadding();
+
+    this.measurePositions();
+    const target = this.getFinaleTop();
+    this.currentIndex = this.chambers.length - 1;
 
     if (!smooth || prefersReducedMotion()) {
       this.el.scrollTop = target;
       this.onProgress?.(1, this.chambers.length);
+      this.lockSnap(450);
       return Promise.resolve();
     }
 
     return this.animateScrollTo(target, this.chambers.length).then(() => {
+      this.el.scrollTop = target;
       this.onProgress?.(1, this.chambers.length);
+      this.lockSnap(500);
     });
   }
 
@@ -358,6 +430,7 @@ export class ScrollPhysics {
       const start = this.el.scrollTop;
       const delta = target - start;
       if (Math.abs(delta) < 2) {
+        this.currentIndex = Math.min(targetIndex, this.chambers.length - 1);
         resolve();
         return;
       }
@@ -374,8 +447,7 @@ export class ScrollPhysics {
         const eased = easeTunnel(t);
         this.el.scrollTop = start + delta * eased;
 
-        const travelFrac =
-          startFrac + (targetIndex - startFrac) * eased;
+        const travelFrac = startFrac + (targetIndex - startFrac) * eased;
         this.applyTunnelVisuals(travelFrac);
 
         this.chambers.forEach((ch, i) => {
@@ -392,9 +464,9 @@ export class ScrollPhysics {
         if (t < 1) {
           requestAnimationFrame(step);
         } else {
+          this.el.scrollTop = target;
           this.setAnimating(false);
           this.tunnelVeil?.classList.remove("is-visible");
-          this.updateDepth();
           resolve();
         }
       };

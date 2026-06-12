@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="./css/tokens.css" />
     <link rel="stylesheet" href="./css/base.css" />
     <link rel="stylesheet" href="./css/gate.css" />
-    <link rel="stylesheet" href="./css/gate-poster.css" />
+    <link rel="stylesheet" href="./css/gate-poster.css?v=19" />
     <link rel="stylesheet" href="./css/chambers.css" />
     <link rel="stylesheet" href="./css/labyrinth.css" />
     <link rel="stylesheet" href="./css/mockups.css" />
@@ -196,7 +196,20 @@
     <!-- GATE -->
     <section class="gate" id="gate">
       <div class="gate-poster-stack" id="gate-poster-stack" aria-hidden="true">
-        <div class="gate-hero-bg has-image" id="gate-hero-bg"></div>
+        <div class="gate-hero-bg has-image" id="gate-hero-bg">
+          <div class="gate-hero-fill" aria-hidden="true"></div>
+          <div class="gate-hero-frame" id="gate-hero-frame">
+            <img
+              class="gate-hero-photo"
+              src="./assets/images/home_hero.png"
+              alt=""
+              width="434"
+              height="1024"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </div>
+        </div>
         <div class="gate-poster-duotone"></div>
         <div class="gate-poster-scrim"></div>
         <div class="gate-poster-vignette"></div>
@@ -954,6 +967,6 @@
       </section>
     </template>
 
-    <script type="module" src="./js/main.js?v=18"></script>
+    <script type="module" src="./js/main.js?v=19"></script>
   </body>
 </html>

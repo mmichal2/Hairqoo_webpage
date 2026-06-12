@@ -10,33 +10,66 @@
 
 .gate-hero-bg {
   position: absolute;
-  inset: -4%;
-  background: var(--cosmic-void) 68% 38% / cover no-repeat;
-  opacity: 0.62;
-  transform: scale(1);
-  will-change: transform;
-  filter: contrast(1.06) saturate(1.08);
-  transition: none;
+  inset: 0;
+  overflow: hidden;
 }
 
-.gate.is-poster-ready .gate-hero-bg {
+.gate-hero-fill {
+  position: absolute;
+  inset: -12%;
+  background: var(--cosmic-void) url("../assets/images/home_hero.png") center / cover no-repeat;
+  filter: blur(42px) saturate(1.15) contrast(1.04);
+  transform: scale(1.12);
+  opacity: 0.58;
+  will-change: transform;
+}
+
+.gate-hero-frame {
+  --parallax-x: 0px;
+  --parallax-y: 0px;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:
+    calc(72px + env(safe-area-inset-top, 0px))
+    clamp(12px, 3vw, 32px)
+    calc(48px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  transform: translate3d(var(--parallax-x), var(--parallax-y), 0) scale(1);
+  will-change: transform;
+}
+
+.gate.is-poster-ready .gate-hero-frame {
   animation: gateKenBurns 28s var(--ease-silk) forwards;
 }
 
-.gate-hero-bg.has-image {
-  background-image: url("../assets/images/home_hero.png");
+.gate-hero-photo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(52vw, 420px);
+  max-height: min(78dvh, 920px);
+  object-fit: contain;
+  object-position: center center;
+  filter: contrast(1.06) saturate(1.08);
+  border-radius: 2px;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(201, 191, 255, 0.08);
 }
 
 .gate-poster-duotone {
   position: absolute;
   inset: 0;
   background:
-  linear-gradient(
-    125deg,
-    rgba(123, 97, 255, 0.22) 0%,
-    transparent 42%,
-    rgba(255, 178, 184, 0.14) 100%
-  );
+    linear-gradient(
+      125deg,
+      rgba(123, 97, 255, 0.22) 0%,
+      transparent 42%,
+      rgba(255, 178, 184, 0.14) 100%
+    );
   mix-blend-mode: soft-light;
   opacity: 0.85;
 }
@@ -60,7 +93,7 @@
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse 88% 72% at 62% 42%,
+    ellipse 88% 72% at 50% 46%,
     transparent 32%,
     rgba(11, 11, 18, 0.55) 100%
   );
@@ -85,9 +118,16 @@ body.is-gate-restoring .gate-poster-stack {
   opacity: 1;
 }
 
-[data-theme="light"] .gate-hero-bg {
-  opacity: 0.48;
+[data-theme="light"] .gate-hero-fill {
+  opacity: 0.42;
+  filter: blur(38px) saturate(0.95) brightness(1.06);
+}
+
+[data-theme="light"] .gate-hero-photo {
   filter: contrast(1.02) saturate(0.92) brightness(1.04);
+  box-shadow:
+    0 20px 64px rgba(90, 69, 212, 0.12),
+    0 0 0 1px rgba(90, 69, 212, 0.1);
 }
 
 [data-theme="light"] .gate-poster-duotone {
@@ -114,7 +154,7 @@ body.is-gate-restoring .gate-poster-stack {
 
 [data-theme="light"] .gate-poster-vignette {
   background: radial-gradient(
-    ellipse 90% 74% at 62% 40%,
+    ellipse 90% 74% at 50% 44%,
     transparent 28%,
     rgba(247, 244, 239, 0.65) 100%
   );
@@ -125,27 +165,37 @@ body.is-gate-restoring .gate-poster-stack {
 }
 
 @media (max-width: 720px) {
-  .gate-hero-bg {
-    background-position: 58% 32%;
-    inset: -2%;
+  .gate-hero-frame {
+    padding:
+      calc(64px + env(safe-area-inset-top, 0px))
+      10px
+      calc(40px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .gate-hero-photo {
+    max-width: min(88vw, 360px);
+    max-height: min(62dvh, 640px);
+  }
+}
+
+@media (min-aspect-ratio: 16/10) {
+  .gate-hero-photo {
+    max-width: min(38vw, 400px);
+    max-height: min(84dvh, 960px);
   }
 }
 
 @keyframes gateKenBurns {
   from {
-    transform: scale(1);
+    transform: translate3d(var(--parallax-x), var(--parallax-y), 0) scale(1);
   }
   to {
-    transform: scale(1.06);
+    transform: translate3d(var(--parallax-x), var(--parallax-y), 0) scale(1.05);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gate.is-poster-ready .gate-hero-bg {
+  .gate.is-poster-ready .gate-hero-frame {
     animation: none;
-  }
-
-  .gate-hero-bg {
-    inset: 0;
   }
 }
