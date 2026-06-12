@@ -41,6 +41,10 @@ body.is-labyrinth-active {
   overflow: hidden;
 }
 
+body.is-labyrinth-active .site-footer {
+  display: none;
+}
+
 body.is-labyrinth-active .ambient-glow,
 body.is-labyrinth-active .poster-horizon,
 body.is-labyrinth-active .poster-horizon-glow {

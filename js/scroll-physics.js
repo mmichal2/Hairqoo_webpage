@@ -117,7 +117,38 @@ export class ScrollPhysics {
     this.rafId = requestAnimationFrame(() => {
       this.rafId = null;
       this.updateDepthFromScroll();
+      this.maybeSnapToNearest();
     });
+  }
+
+  maybeSnapToNearest() {
+    if (this.isAnimating || this.snapLocked || !this.chambers.length) return;
+
+    const frac = this.getFractionalIndex();
+    if (frac >= this.chambers.length - 0.02) {
+      const finaleTop = this.getFinaleTop();
+      if (Math.abs(this.el.scrollTop - finaleTop) > 6) {
+        this.el.scrollTop = finaleTop;
+      }
+      return;
+    }
+
+    const nearest = Math.max(
+      0,
+      Math.min(this.chambers.length - 1, Math.round(frac))
+    );
+    const target = this.getChamberTop(nearest);
+    if (Math.abs(this.el.scrollTop - target) > 6) {
+      this.el.scrollTop = target;
+      if (nearest !== this.currentIndex) {
+        this.currentIndex = nearest;
+        this.updateDepth();
+        const id = this.chambers[nearest]?.dataset?.chamberId;
+        if (id) this.onChamberChange?.(nearest, id);
+      } else {
+        this.emitProgress(frac);
+      }
+    }
   }
 
   getScrollPadding() {
@@ -130,14 +161,29 @@ export class ScrollPhysics {
     return ch.offsetTop - this.getScrollPadding();
   }
 
+  getFinaleTop() {
+    if (!this.finaleEl) return Infinity;
+    return this.finaleEl.offsetTop - this.getScrollPadding();
+  }
+
   getFractionalIndex() {
     if (!this.chambers.length) return 0;
     const scrollTop = this.el.scrollTop;
+    const finaleTop = this.getFinaleTop();
+
+    if (this.finaleEl && scrollTop >= finaleTop - 2) {
+      return this.chambers.length;
+    }
+
     const tops = this.chambers.map((_, i) => this.getChamberTop(i));
 
     if (scrollTop <= tops[0]) return 0;
     const last = tops.length - 1;
-    if (scrollTop >= tops[last]) return last;
+    if (scrollTop >= tops[last] && (!this.finaleEl || scrollTop < finaleTop - 2)) {
+      const span = (this.finaleEl ? finaleTop : tops[last] + this.el.clientHeight) - tops[last] || 1;
+      const local = (scrollTop - tops[last]) / span;
+      return last + Math.min(1, Math.max(0, local)) * 0.99;
+    }
 
     for (let i = 0; i < last; i++) {
       const start = tops[i];
@@ -172,19 +218,24 @@ export class ScrollPhysics {
 
   updateDepthFromScroll() {
     const frac = this.getFractionalIndex();
-    const idx = Math.round(frac);
-    this.applyTunnelVisuals(frac);
+    const onFinale = Boolean(this.finaleEl && frac >= this.chambers.length - 0.02);
+    const idx = onFinale
+      ? this.chambers.length - 1
+      : Math.max(0, Math.min(this.chambers.length - 1, Math.round(frac)));
+    const visualFrac = onFinale ? this.chambers.length - 1 : frac;
+
+    this.applyTunnelVisuals(visualFrac);
 
     this.chambers.forEach((ch, i) => {
       ch.classList.remove("is-active", "is-near", "is-far", "is-emerging");
-      const dist = Math.abs(i - frac);
+      const dist = Math.abs(i - visualFrac);
       if (dist < 0.35) ch.classList.add("is-active");
       else if (dist < 1.2) ch.classList.add("is-near");
       else ch.classList.add("is-far");
       if (dist > 0.1 && dist < 0.95) ch.classList.add("is-emerging");
     });
 
-    if (idx !== this.currentIndex) {
+    if (!onFinale && idx !== this.currentIndex) {
       this.currentIndex = idx;
       const id = this.chambers[idx]?.dataset?.chamberId;
       if (id) this.onChamberChange?.(idx, id);
@@ -213,8 +264,14 @@ export class ScrollPhysics {
 
   emitProgress(fractionalIndex) {
     if (!this.onProgress || !this.chambers.length) return;
-    const pct = (fractionalIndex + 0.5) / this.chambers.length;
-    this.onProgress(Math.max(0, Math.min(1, pct)), Math.round(fractionalIndex));
+    const onFinale = fractionalIndex >= this.chambers.length - 0.02;
+    const pct = onFinale
+      ? 1
+      : (fractionalIndex + 0.5) / this.chambers.length;
+    const rounded = onFinale
+      ? this.chambers.length - 1
+      : Math.max(0, Math.min(this.chambers.length - 1, Math.round(fractionalIndex)));
+    this.onProgress(Math.max(0, Math.min(1, pct)), rounded, fractionalIndex);
   }
 
   onWheel(e) {

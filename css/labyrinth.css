@@ -100,6 +100,8 @@
   height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   scroll-snap-type: none;
   scroll-padding-top: var(--space-md);
   scroll-behavior: auto;
@@ -114,6 +116,10 @@
   inset: 0;
   width: 100%;
   background: var(--bg);
+}
+
+.labyrinth.is-active::-webkit-scrollbar {
+  display: none;
 }
 
 .labyrinth.is-exiting {

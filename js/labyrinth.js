@@ -258,8 +258,8 @@ export class Labyrinth {
         this.updateProgressFromPct((idx + 0.5) / this.chambers.length);
         this.updateScrollCue();
       },
-      onProgress: (pct) => {
-        this.updateProgressFromPct(pct);
+      onProgress: (pct, activeIndex) => {
+        this.updateProgressFromPct(pct, activeIndex);
         this.checkFinaleVisibility();
       },
       onAnimating: (animating) => {
@@ -334,10 +334,20 @@ export class Labyrinth {
     const finale = this.elements.finale;
     if (!lab || !finale || !this.chambers.length) return;
 
-    const finaleTop = finale.offsetTop - 80;
-    if (lab.scrollTop >= finaleTop) {
-      this.onFinale = true;
-      this.hideScrollCue();
+    const padding =
+      parseInt(getComputedStyle(lab).scrollPaddingTop || "0", 10) || 0;
+    const finaleTop = finale.offsetTop - padding;
+
+    if (lab.scrollTop >= finaleTop - 2) {
+      if (!this.onFinale) {
+        this.onFinale = true;
+        this.hideScrollCue();
+        this.updateMinimapDots(this.chambers.length - 1, true);
+        this.updateProgressFromPct(1, this.chambers.length - 1);
+      }
+    } else if (this.onFinale) {
+      this.onFinale = false;
+      this.updateScrollCue();
     }
   }
 
@@ -470,7 +480,7 @@ export class Labyrinth {
       ?.classList.add("is-checked");
   }
 
-  updateProgressFromPct(pct) {
+  updateProgressFromPct(pct, activeIndex = null) {
     const clamped = Math.max(0, Math.min(1, pct));
 
     const ring = this.elements.ringFill;
@@ -488,9 +498,27 @@ export class Labyrinth {
       thread.style.strokeDashoffset = String(len * (1 - clamped));
     }
 
-    this.minimapDots?.forEach((dot, i) => {
-      dot.classList.toggle("is-current", i === this.currentIndex);
-      dot.classList.toggle("is-visited", i < this.currentIndex);
+    if (typeof activeIndex === "number" && !Number.isNaN(activeIndex)) {
+      if (activeIndex < this.chambers.length) {
+        this.currentIndex = activeIndex;
+      }
+      this.updateMinimapDots(activeIndex, this.onFinale);
+    } else {
+      this.updateMinimapDots(this.currentIndex, this.onFinale);
+    }
+  }
+
+  updateMinimapDots(activeIndex, onFinale = this.onFinale) {
+    if (!this.minimapDots?.length || !this.chambers.length) return;
+
+    const last = this.chambers.length - 1;
+    const current = onFinale
+      ? last
+      : Math.max(0, Math.min(last, activeIndex));
+
+    this.minimapDots.forEach((dot, i) => {
+      dot.classList.toggle("is-current", i === current);
+      dot.classList.toggle("is-visited", onFinale ? i < last : i < current);
     });
   }
 
@@ -513,7 +541,7 @@ export class Labyrinth {
   }
 
   async goToFinale() {
-    this.currentIndex = this.chambers.length;
+    this.currentIndex = this.chambers.length - 1;
     this.onFinale = true;
     this.hideScrollCue();
     if (this.scrollPhysics) {
@@ -521,7 +549,8 @@ export class Labyrinth {
     } else {
       this.elements.finale?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    this.updateProgressFromPct(1);
+    this.updateProgressFromPct(1, this.chambers.length - 1);
+    this.updateMinimapDots(this.chambers.length - 1, true);
   }
 
   bindKeyboard() {
