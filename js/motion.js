@@ -135,27 +135,19 @@ export async function portalEnter({ gate, labyrinth, firstChamber, onMidpoint })
 }
 
 export async function portalExit({ gate, labyrinth, onStart, onComplete }) {
+  document.body.classList.add("is-gate-restoring");
+  gate?.classList.remove("is-hidden", "is-concealed", "is-exiting-soft", "is-exiting", "is-entering");
+  onStart?.();
+
   if (prefersReducedMotion()) {
-    onStart?.();
+    labyrinth?.classList.remove("is-active", "is-exiting", "is-door-waiting", "is-door-entering");
     onComplete?.();
     return;
   }
 
   labyrinth?.classList.add("is-exiting");
-  gate?.classList.remove("is-hidden", "is-concealed");
-  gate?.classList.add("is-entering");
-  gate?.classList.remove("is-entering-done");
-
-  onStart?.();
-
-  await wait(PORTAL_MS * 0.4);
-
-  gate?.classList.add("is-entering-done");
-  await waitTransition(gate, PORTAL_MS);
-
-  gate?.classList.remove("is-entering", "is-entering-done");
-  labyrinth?.classList.remove("is-exiting", "is-active", "is-door-waiting", "is-door-entering");
-
+  await wait(280);
+  labyrinth?.classList.remove("is-active", "is-exiting", "is-door-waiting", "is-door-entering");
   onComplete?.();
 }
 

@@ -22,10 +22,24 @@
   opacity: 0.35;
   z-index: 0;
   pointer-events: none;
+  transition: none;
 }
 
 body.is-labyrinth-active .gate-hero-bg {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
+}
+
+body.is-gate-restoring .gate-hero-bg {
+  visibility: visible;
+  opacity: 0.35;
+}
+
+body.is-gate-restoring .ambient-glow,
+body.is-gate-restoring .poster-horizon,
+body.is-gate-restoring .poster-horizon-glow {
+  opacity: 1;
+  visibility: visible;
 }
 
 .gate-hero-bg.has-image {

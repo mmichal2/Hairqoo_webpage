@@ -1,13 +1,71 @@
 /* Gate floating controls + labyrinth header controls */
 
+.portal-chrome {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.portal-chrome > * {
+  pointer-events: auto;
+}
+
+.gate-controls,
+.labyrinth-home-exit {
+  top: calc(16px + env(safe-area-inset-top, 0px));
+}
+
 .gate-controls {
   position: fixed;
-  top: calc(16px + env(safe-area-inset-top, 0px));
   right: calc(16px + env(safe-area-inset-right, 0px));
-  z-index: 110;
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.labyrinth-home-exit {
+  position: fixed;
+  left: calc(16px + env(safe-area-inset-left, 0px));
+  display: none;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  border: 1px solid rgba(201, 191, 255, 0.28);
+  background: rgba(11, 11, 18, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition:
+    transform 200ms var(--ease-silk),
+    box-shadow 200ms var(--ease-silk),
+    border-color 200ms var(--ease-silk),
+    background 200ms var(--ease-silk);
+}
+
+body.is-labyrinth-active .labyrinth-home-exit:not([hidden]) {
+  display: inline-flex;
+}
+
+[data-theme="light"] .labyrinth-home-exit {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(90, 69, 212, 0.18);
+}
+
+.labyrinth-home-exit:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 24px rgba(123, 97, 255, 0.25);
+  transform: translateX(-2px);
+}
+
+.labyrinth-home-arrow {
+  font-size: 1.1rem;
+  color: var(--primary);
+  line-height: 1;
 }
 
 .ctrl-btn {
@@ -175,10 +233,25 @@ html.is-theme-transitioning * {
 }
 
 @media (max-width: 560px) {
-  .gate-controls {
+  .gate-controls,
+  .labyrinth-home-exit {
     top: calc(12px + env(safe-area-inset-top, 0px));
+  }
+
+  .gate-controls {
     right: calc(12px + env(safe-area-inset-right, 0px));
     gap: 8px;
+  }
+
+  .labyrinth-home-exit {
+    left: calc(12px + env(safe-area-inset-left, 0px));
+    height: 40px;
+    padding: 0 12px;
+    font-size: 0.8rem;
+  }
+
+  .labyrinth-home-label {
+    display: none;
   }
 
   .ctrl-btn {

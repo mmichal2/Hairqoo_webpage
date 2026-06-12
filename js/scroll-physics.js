@@ -161,6 +161,8 @@ export class ScrollPhysics {
 
     this.el.style.setProperty("--tunnel-dark", String(tunnelDark));
     this.el.style.setProperty("--emerge", String(emerge));
+    document.body.style.setProperty("--tunnel-dark", String(tunnelDark));
+    document.body.style.setProperty("--emerge", String(emerge));
 
     this.chambers.forEach((ch, i) => {
       const chEmerge = Math.max(0, Math.min(1, 1 - Math.abs(frac - i)));
@@ -296,6 +298,7 @@ export class ScrollPhysics {
       }
 
       this.setAnimating(true);
+      this.tunnelVeil?.classList.add("is-visible");
       const duration = TUNNEL_MS;
       const startTime = performance.now();
       const startFrac = this.getFractionalIndex();
@@ -325,6 +328,7 @@ export class ScrollPhysics {
           requestAnimationFrame(step);
         } else {
           this.setAnimating(false);
+          this.tunnelVeil?.classList.remove("is-visible");
           this.updateDepth();
           resolve();
         }

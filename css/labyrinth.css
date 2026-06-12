@@ -140,6 +140,16 @@
 
 .labyrinth.is-active {
   display: block;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  background: var(--bg);
+}
+
+.labyrinth.is-exiting {
+  opacity: 0;
+  transition: opacity 280ms var(--ease-silk);
+  pointer-events: none;
 }
 
 .progress-thread svg {

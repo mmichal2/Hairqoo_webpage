@@ -105,6 +105,10 @@ body.portal-client-active .poster-horizon-glow {
 }
 
 .chamber-number {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -114,6 +118,8 @@ body.portal-client-active .poster-horizon-glow {
   background: rgba(11, 11, 18, 0.6);
   font-family: "Manrope", sans-serif;
   letter-spacing: 0.2em;
+  white-space: nowrap;
+  z-index: 1;
 }
 
 .chamber-number::before {
@@ -129,6 +135,12 @@ body.portal-client-active .poster-horizon-glow {
 body.portal-client-active .chamber-number::before {
   background: var(--secondary);
   box-shadow: 0 0 8px rgba(255, 178, 184, 0.6);
+}
+
+[data-theme="light"] .chamber-number {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(90, 69, 212, 0.2);
+  color: var(--muted);
 }
 
 @keyframes missionPulse {

@@ -85,10 +85,32 @@
 
     <div class="ambient-glow" aria-hidden="true"></div>
 
-    <div class="gate-controls" id="gate-controls">
+    <div class="portal-chrome" id="portal-chrome" aria-hidden="false">
       <button
         type="button"
-        class="ctrl-btn theme-toggle"
+        class="labyrinth-home-exit glass"
+        id="labyrinth-home-exit"
+        hidden
+        aria-label="Wróć na stronę główną"
+      >
+        <span class="labyrinth-home-arrow" aria-hidden="true">←</span>
+        <span class="labyrinth-home-label" data-i18n="header.home">Strona główna</span>
+      </button>
+
+      <div class="gate-controls" id="gate-controls">
+        <button
+          type="button"
+          class="ctrl-btn scroll-cue"
+          id="scroll-cue"
+          hidden
+          aria-label="Przejdź do następnej sekcji"
+        >
+          <span class="scroll-cue-arrow" aria-hidden="true">↓</span>
+          <span class="scroll-cue-label visually-hidden" data-i18n="nav.scrollDown">Następna sekcja</span>
+        </button>
+        <button
+          type="button"
+          class="ctrl-btn theme-toggle"
         data-theme-toggle
         data-i18n-aria="theme.toggleLight"
         aria-pressed="false"
@@ -126,6 +148,7 @@
         </button>
         <div class="lang-menu-panel" data-lang-panel role="menu" hidden></div>
       </div>
+      </div>
     </div>
 
     <div class="labyrinth-utils" hidden aria-hidden="true">
@@ -160,18 +183,6 @@
       <div class="tunnel-light"></div>
       <div class="tunnel-rails"></div>
     </div>
-
-    <button
-      type="button"
-      class="scroll-cue"
-      id="scroll-cue"
-      hidden
-      aria-label="Przejdź do następnej sekcji"
-    >
-      <span class="scroll-cue-ring" aria-hidden="true"></span>
-      <span class="scroll-cue-arrow" aria-hidden="true">↓</span>
-      <span class="scroll-cue-label" data-i18n="nav.scrollDown">Następna sekcja</span>
-    </button>
 
     <!-- GATE -->
     <section class="gate" id="gate">
@@ -923,6 +934,6 @@
       </section>
     </template>
 
-    <script type="module" src="./js/main.js?v=11"></script>
+    <script type="module" src="./js/main.js?v=14"></script>
   </body>
 </html>

@@ -41,6 +41,13 @@ body.is-labyrinth-active {
   overflow: hidden;
 }
 
+body.is-labyrinth-active .ambient-glow,
+body.is-labyrinth-active .poster-horizon,
+body.is-labyrinth-active .poster-horizon-glow {
+  opacity: 0;
+  visibility: hidden;
+}
+
 h1,
 h2,
 h3,
@@ -77,6 +84,18 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 :focus-visible {

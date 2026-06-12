@@ -17,17 +17,17 @@ body.is-labyrinth-active .tunnel-veil.is-visible {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 72% 58% at 50% 40%, transparent 0%, rgba(11, 11, 18, 0.28) 78%),
-    linear-gradient(180deg, rgba(11, 11, 18, 0.45) 0%, transparent 32%, transparent 68%, rgba(11, 11, 18, 0.38) 100%);
-  opacity: calc(0.15 + var(--tunnel-dark, 0.4) * 0.35);
+    radial-gradient(ellipse 72% 58% at 50% 42%, transparent 0%, rgba(11, 11, 18, 0.22) 80%),
+    linear-gradient(180deg, transparent 0%, transparent 72%, rgba(11, 11, 18, 0.28) 100%);
+  opacity: calc(var(--tunnel-dark, 0) * 0.38);
   transition: opacity 80ms linear;
 }
 
 [data-theme="light"] .tunnel-vignette {
   background:
-    radial-gradient(ellipse 72% 58% at 50% 40%, transparent 0%, rgba(90, 69, 212, 0.06) 78%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 32%, transparent 68%, rgba(247, 244, 239, 0.3) 100%);
-  opacity: calc(0.08 + var(--tunnel-dark, 0.3) * 0.2);
+    radial-gradient(ellipse 72% 58% at 50% 42%, transparent 0%, rgba(90, 69, 212, 0.04) 82%),
+    linear-gradient(180deg, transparent 0%, transparent 100%);
+  opacity: calc(var(--tunnel-dark, 0) * 0.16);
 }
 
 .tunnel-light {
@@ -44,6 +44,7 @@ body.is-labyrinth-active .tunnel-veil.is-visible {
     transparent 70%
   );
   filter: blur(2px);
+  opacity: calc(var(--tunnel-dark, 0) * 0.95);
   transition: opacity 80ms linear;
 }
 
@@ -65,19 +66,19 @@ body.portal-client-active .tunnel-light {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(11, 11, 18, calc(0.1 + var(--tunnel-dark, 0.35) * 0.28)) 100%
+    rgba(11, 11, 18, calc(0.1 + var(--tunnel-dark, 0) * 0.28)) 100%
   );
   mask-image: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
-  opacity: calc(0.2 + var(--tunnel-dark, 0.35) * 0.35);
+  opacity: calc(var(--tunnel-dark, 0) * 0.55);
 }
 
 [data-theme="light"] .tunnel-rails {
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(90, 69, 212, calc(0.04 + var(--tunnel-dark, 0.25) * 0.1)) 100%
+    rgba(90, 69, 212, calc(0.04 + var(--tunnel-dark, 0) * 0.1)) 100%
   );
-  opacity: calc(0.12 + var(--tunnel-dark, 0.25) * 0.2);
+  opacity: calc(var(--tunnel-dark, 0) * 0.32);
 }
 
 .labyrinth.is-tunnel-active {
