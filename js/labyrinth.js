@@ -115,6 +115,7 @@ export class Labyrinth {
     );
     this.elements.minimap?.classList.remove("is-visible");
     this.hideScrollCue();
+    this.hideProgressRing();
     this.elements.labyrinthHomeExit?.setAttribute("hidden", "");
     this.elements.tunnelVeil?.classList.remove("is-visible", "is-door-phase");
     this.elements.labyrinth?.classList.remove("is-tunnel-active", "is-exiting");
@@ -164,6 +165,7 @@ export class Labyrinth {
 
     document.body.classList.add("is-labyrinth-active", `portal-${portal}-active`);
     this.elements.labyrinthHomeExit?.removeAttribute("hidden");
+    this.showProgressRing();
     applyI18n(this.elements.labyrinthHomeExit);
 
     this.renderChambers(portal);
@@ -227,6 +229,7 @@ export class Labyrinth {
       onStart: () => {
         this.elements.minimap?.classList.remove("is-visible");
         this.hideScrollCue();
+        this.hideProgressRing();
         this.elements.labyrinthHomeExit?.setAttribute("hidden", "");
         this.elements.tunnelVeil?.classList.remove("is-visible", "is-door-phase");
         this.elements.portalDoors?.setAttribute("hidden", "");
@@ -261,6 +264,7 @@ export class Labyrinth {
       },
       onAnimating: (animating) => {
         this.elements.scrollCue?.classList.toggle("is-animating", animating);
+        this.elements.progressRing?.classList.toggle("is-animating", animating);
       },
     });
     this.scrollPhysics.setChambers(this.chambers, this.elements.finale);
@@ -278,6 +282,25 @@ export class Labyrinth {
     if (!cue) return;
     cue.classList.remove("is-visible", "is-finish", "is-animating");
     cue.setAttribute("hidden", "");
+  }
+
+  showProgressRing() {
+    const ring = this.elements.progressRing;
+    if (!ring) return;
+    ring.removeAttribute("hidden");
+    ring.classList.add("is-visible");
+  }
+
+  hideProgressRing() {
+    const ring = this.elements.progressRing;
+    if (!ring) return;
+    ring.classList.remove("is-visible");
+    ring.setAttribute("hidden", "");
+    if (this.elements.ringFill) {
+      const circ = 2 * Math.PI * 14;
+      this.elements.ringFill.style.strokeDasharray = String(circ);
+      this.elements.ringFill.style.strokeDashoffset = String(circ);
+    }
   }
 
   updateScrollCue() {

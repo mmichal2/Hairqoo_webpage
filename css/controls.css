@@ -68,6 +68,61 @@ body.is-labyrinth-active .labyrinth-home-exit:not([hidden]) {
   line-height: 1;
 }
 
+.progress-ring.ctrl-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  flex-shrink: 0;
+  cursor: default;
+  pointer-events: none;
+  transition:
+    transform 280ms var(--ease-silk),
+    box-shadow 280ms var(--ease-silk);
+}
+
+body.is-labyrinth-active .progress-ring.ctrl-btn.is-visible {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-ring[hidden] {
+  display: none !important;
+}
+
+.progress-ring svg {
+  width: 36px;
+  height: 36px;
+  transform: rotate(-90deg);
+}
+
+.progress-ring circle {
+  fill: none;
+  stroke-width: 3;
+}
+
+.progress-ring .ring-bg {
+  stroke: var(--line);
+  opacity: 0.55;
+}
+
+.progress-ring .ring-fill {
+  stroke: url(#strandGradient);
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--duration-slow) var(--ease-out);
+}
+
+.progress-ring.is-animating {
+  transform: scale(1.08);
+  box-shadow: 0 0 28px rgba(123, 97, 255, 0.35);
+}
+
+[data-theme="light"] .progress-ring .ring-bg {
+  stroke: rgba(90, 69, 212, 0.22);
+  opacity: 1;
+}
+
 .ctrl-btn {
   position: relative;
   width: 44px;

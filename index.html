@@ -98,16 +98,18 @@
       </button>
 
       <div class="gate-controls" id="gate-controls">
-        <button
-          type="button"
-          class="ctrl-btn scroll-cue"
-          id="scroll-cue"
+        <div
+          class="progress-ring ctrl-btn"
+          id="progress-ring"
           hidden
-          aria-label="Przejdź do następnej sekcji"
+          role="img"
+          aria-label="Postęp touru"
         >
-          <span class="scroll-cue-arrow" aria-hidden="true">↓</span>
-          <span class="scroll-cue-label visually-hidden" data-i18n="nav.scrollDown">Następna sekcja</span>
-        </button>
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+            <circle class="ring-bg" cx="18" cy="18" r="14" />
+            <circle class="ring-fill" id="ring-fill" cx="18" cy="18" r="14" />
+          </svg>
+        </div>
         <button
           type="button"
           class="ctrl-btn theme-toggle"
@@ -151,14 +153,20 @@
       </div>
     </div>
 
+    <button
+      type="button"
+      class="scroll-cue"
+      id="scroll-cue"
+      hidden
+      aria-label="Przejdź do następnej sekcji"
+    >
+      <span class="scroll-cue-ring" aria-hidden="true"></span>
+      <span class="scroll-cue-arrow" aria-hidden="true">↓</span>
+      <span class="scroll-cue-label" data-i18n="nav.scrollDown">Następna sekcja</span>
+    </button>
+
     <div class="labyrinth-utils" hidden aria-hidden="true">
       <a href="#" id="back-to-gate"></a>
-      <div class="progress-ring" id="progress-ring" aria-hidden="true">
-        <svg width="36" height="36" viewBox="0 0 36 36">
-          <circle class="ring-bg" cx="18" cy="18" r="14" />
-          <circle class="ring-fill" id="ring-fill" cx="18" cy="18" r="14" />
-        </svg>
-      </div>
     </div>
 
     <nav class="progress-thread" id="progress-thread" aria-hidden="true">
@@ -934,6 +942,6 @@
       </section>
     </template>
 
-    <script type="module" src="./js/main.js?v=14"></script>
+    <script type="module" src="./js/main.js?v=15"></script>
   </body>
 </html>
