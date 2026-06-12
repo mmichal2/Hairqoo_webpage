@@ -60,8 +60,11 @@ export class Labyrinth {
     const el = document.getElementById("finale-step");
     if (!el || !portal) return;
     const total = CHAMBER_CONFIG[portal].length + 1;
-    const label = `${String(total).padStart(2, "0")} / ${total}`;
-    el.textContent = label;
+    if (portal === "client") {
+      el.textContent = `${total} / ${total}`;
+    } else {
+      el.textContent = `${String(total).padStart(2, "0")} / ${total}`;
+    }
   }
 
   init() {

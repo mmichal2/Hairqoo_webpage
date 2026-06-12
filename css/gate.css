@@ -20,37 +20,6 @@
   align-items: center;
 }
 
-@media (min-width: 960px) {
-  .gate {
-    align-items: flex-start;
-    justify-content: center;
-    padding-left: clamp(32px, 9vw, 128px);
-    padding-right: var(--space-xl);
-  }
-
-  .gate-content {
-    align-items: flex-start;
-    text-align: left;
-    margin-top: 4vh;
-  }
-
-  .gate-brand {
-    text-align: left;
-  }
-
-  .gate-brand img {
-    margin-left: 0;
-  }
-
-  .gate-headline {
-    text-align: left;
-  }
-
-  .gate-portals {
-    max-width: 680px;
-  }
-}
-
 .gate.is-hidden {
   display: none;
 }
@@ -100,7 +69,7 @@ body.is-gate-restoring .poster-horizon-glow {
 .gate-headline-title {
   font-size: clamp(1.65rem, 4.2vw, 3rem);
   line-height: 1.08;
-  margin-bottom: var(--space-md);
+  margin: 0 auto var(--space-md);
   letter-spacing: -0.03em;
   white-space: normal;
   max-width: 22ch;
@@ -110,7 +79,7 @@ body.is-gate-restoring .poster-horizon-glow {
   color: var(--muted);
   font-size: clamp(0.95rem, 1.8vw, 1.08rem);
   line-height: 1.55;
-  margin: 0;
+  margin: 0 auto;
   max-width: 38ch;
 }
 
