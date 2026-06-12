@@ -81,20 +81,24 @@ body.portal-client-active .poster-horizon-glow {
 
 .gate.is-poster-ready .gate-brand,
 .gate.is-poster-ready .gate-subtitle,
+.gate.is-poster-ready .gate-headline--left,
+.gate.is-poster-ready .gate-headline--right,
 .gate.is-poster-ready .gate-side {
   animation: posterRise 1s var(--ease-silk) both;
 }
 
-.gate.is-poster-ready .gate-subtitle {
-  animation-delay: 0.08s;
+.gate.is-poster-ready .gate-subtitle,
+.gate.is-poster-ready .gate-headline--left,
+.gate.is-poster-ready .gate-headline--right {
+  animation-delay: 0.1s;
 }
 
 .gate.is-poster-ready .gate-side--left {
-  animation-delay: 0.14s;
+  animation-delay: 0.22s;
 }
 
 .gate.is-poster-ready .gate-side--right {
-  animation-delay: 0.22s;
+  animation-delay: 0.3s;
 }
 
 @keyframes posterRise {
