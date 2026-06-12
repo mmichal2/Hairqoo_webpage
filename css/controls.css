@@ -10,20 +10,6 @@
   gap: 10px;
 }
 
-body.is-labyrinth-active .gate-controls {
-  display: none;
-}
-
-.header-controls {
-  display: none;
-  align-items: center;
-  gap: 10px;
-}
-
-body.is-labyrinth-active .header-controls {
-  display: flex;
-}
-
 .ctrl-btn {
   position: relative;
   width: 44px;

@@ -1,21 +1,9 @@
 .site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--header-h);
-  display: none;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--space-md);
-  z-index: 100;
-  background: rgba(19, 19, 26, 0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--glass-border);
+  display: none !important;
 }
 
-body.is-labyrinth-active .site-header {
-  display: flex;
+.progress-thread {
+  display: none !important;
 }
 
 .header-start {
@@ -143,7 +131,7 @@ body.is-labyrinth-active .site-header {
   overflow-y: auto;
   overflow-x: hidden;
   scroll-snap-type: none;
-  scroll-padding-top: var(--header-h);
+  scroll-padding-top: var(--space-md);
   scroll-behavior: auto;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
@@ -152,22 +140,6 @@ body.is-labyrinth-active .site-header {
 
 .labyrinth.is-active {
   display: block;
-}
-
-.progress-thread {
-  position: fixed;
-  left: 0;
-  top: var(--header-h);
-  bottom: 0;
-  width: var(--thread-w);
-  z-index: 50;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--duration-med);
-}
-
-.progress-thread.is-visible {
-  opacity: 1;
 }
 
 .progress-thread svg {

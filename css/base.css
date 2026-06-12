@@ -170,10 +170,14 @@ button {
 [data-theme="light"] .ambient-glow {
   background: radial-gradient(
     ellipse 80% 50% at 50% 0%,
-    rgba(90, 69, 212, 0.1) 0%,
-    transparent 60%
+    rgba(90, 69, 212, 0.14) 0%,
+    transparent 62%
   );
-  opacity: 0.75;
+  opacity: 0.55;
+}
+
+[data-theme="light"] .poster-horizon-glow {
+  background: radial-gradient(ellipse at 50% 100%, rgba(90, 69, 212, 0.08) 0%, transparent 65%);
 }
 
 @keyframes breathe {

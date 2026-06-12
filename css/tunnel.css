@@ -17,10 +17,17 @@ body.is-labyrinth-active .tunnel-veil.is-visible {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 55% at 50% 38%, transparent 0%, rgba(11, 11, 18, 0.55) 72%),
-    linear-gradient(180deg, rgba(11, 11, 18, 0.92) 0%, transparent 28%, transparent 72%, rgba(11, 11, 18, 0.88) 100%);
-  opacity: calc(0.35 + var(--tunnel-dark, 0.65) * 0.65);
+    radial-gradient(ellipse 72% 58% at 50% 40%, transparent 0%, rgba(11, 11, 18, 0.28) 78%),
+    linear-gradient(180deg, rgba(11, 11, 18, 0.45) 0%, transparent 32%, transparent 68%, rgba(11, 11, 18, 0.38) 100%);
+  opacity: calc(0.15 + var(--tunnel-dark, 0.4) * 0.35);
   transition: opacity 80ms linear;
+}
+
+[data-theme="light"] .tunnel-vignette {
+  background:
+    radial-gradient(ellipse 72% 58% at 50% 40%, transparent 0%, rgba(90, 69, 212, 0.06) 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 32%, transparent 68%, rgba(247, 244, 239, 0.3) 100%);
+  opacity: calc(0.08 + var(--tunnel-dark, 0.3) * 0.2);
 }
 
 .tunnel-light {
@@ -54,14 +61,23 @@ body.portal-client-active .tunnel-light {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 40%;
+  height: 32%;
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(11, 11, 18, calc(0.2 + var(--tunnel-dark, 0.5) * 0.5)) 100%
+    rgba(11, 11, 18, calc(0.1 + var(--tunnel-dark, 0.35) * 0.28)) 100%
   );
   mask-image: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
-  opacity: calc(0.4 + var(--tunnel-dark, 0.5) * 0.6);
+  opacity: calc(0.2 + var(--tunnel-dark, 0.35) * 0.35);
+}
+
+[data-theme="light"] .tunnel-rails {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(90, 69, 212, calc(0.04 + var(--tunnel-dark, 0.25) * 0.1)) 100%
+  );
+  opacity: calc(0.12 + var(--tunnel-dark, 0.25) * 0.2);
 }
 
 .labyrinth.is-tunnel-active {
@@ -79,8 +95,8 @@ body.portal-client-active .tunnel-light {
     translateY(calc((1 - var(--ch-emerge, 0)) * 48px))
     rotateX(calc((1 - var(--ch-emerge, 0)) * 4deg));
   filter:
-    brightness(calc(0.55 + var(--ch-emerge, 0) * 0.45))
-    blur(calc((1 - var(--ch-emerge, 0)) * 5px));
+    brightness(calc(0.78 + var(--ch-emerge, 0) * 0.22))
+    blur(calc((1 - var(--ch-emerge, 0)) * 2.5px));
   box-shadow: var(--tunnel-shadow, none);
   transition:
     transform 120ms linear,

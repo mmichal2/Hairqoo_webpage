@@ -7,15 +7,15 @@
   flex-direction: column;
   justify-content: stretch;
   padding: 0;
-  padding-left: calc(var(--thread-w) + var(--space-sm));
+  padding-left: var(--space-md);
   box-sizing: border-box;
   overflow: hidden;
-  opacity: 0.35;
+  opacity: 0.5;
   transition: opacity 200ms linear;
 }
 
 .chamber.is-near {
-  opacity: 0.65;
+  opacity: 0.82;
 }
 
 .chamber.is-active {
@@ -23,7 +23,7 @@
 }
 
 .chamber.is-far {
-  opacity: 0.2;
+  opacity: 0.38;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -40,7 +40,7 @@
   display: flex;
   flex-direction: column;
   padding:
-    calc(var(--header-h) + 8px)
+    calc(var(--space-xl) + env(safe-area-inset-top, 0px))
     var(--space-md)
     calc(88px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;

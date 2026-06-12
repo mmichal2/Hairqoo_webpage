@@ -18,11 +18,22 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(201, 191, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201, 191, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(201, 191, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 191, 255, 0.03) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 75%);
-  opacity: 0.35;
+  opacity: 0.22;
+}
+
+[data-theme="light"] .poster-grid {
+  background-image:
+    linear-gradient(rgba(90, 69, 212, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 69, 212, 0.05) 1px, transparent 1px);
+  opacity: 0.14;
+}
+
+[data-theme="light"] .poster-stars {
+  opacity: 0.2;
 }
 
 .poster-horizon {
@@ -198,12 +209,6 @@ body.portal-client-active .chamber.is-active .chamber-title {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(201, 191, 255, 0.4), transparent);
   box-shadow: 0 0 30px rgba(123, 97, 255, 0.3);
-}
-
-body.is-labyrinth-active .site-header {
-  display: flex;
-  background: rgba(11, 11, 18, 0.88);
-  border-bottom-color: rgba(201, 191, 255, 0.12);
 }
 
 @media (prefers-reduced-motion: reduce) {
