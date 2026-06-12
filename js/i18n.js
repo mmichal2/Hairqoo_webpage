@@ -57,7 +57,8 @@ export const translations = {
       ariaLabel: "Przełącz motyw",
     },
     gate: {
-      headline: "Twój biznes - Twoje zarządzanie pięknem",
+      headlineLeft: "Twój biznes",
+      headlineRight: "Twoje wizyty",
       subtitle:
         "Rezerwacje, formuły, zdjęcia i podziękowania po wizycie — wszystko w jednym miejscu. Bez przełączania aplikacji, bez chaosu.",
       salonTitle: "Portal Fryzjera",
@@ -285,7 +286,8 @@ export const translations = {
       ariaLabel: "Toggle theme",
     },
     gate: {
-      headline: "Your business — your beauty management",
+      headlineLeft: "Your business",
+      headlineRight: "Your appointments",
       subtitle:
         "Bookings, formulas, photos, and thank-you notes after every visit — all in one place. No app-hopping, no chaos.",
       salonTitle: "Stylist Portal",

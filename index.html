@@ -32,7 +32,7 @@
     />
     <link rel="stylesheet" href="./css/tokens.css" />
     <link rel="stylesheet" href="./css/base.css" />
-    <link rel="stylesheet" href="./css/gate.css" />
+    <link rel="stylesheet" href="./css/gate.css?v=21" />
     <link rel="stylesheet" href="./css/gate-poster.css?v=19" />
     <link rel="stylesheet" href="./css/chambers.css?v=20" />
     <link rel="stylesheet" href="./css/labyrinth.css" />
@@ -220,27 +220,29 @@
           <img src="./assets/images/hairlab_icon.png" alt="Hairqoo" width="64" height="64" />
           <div class="wordmark">Hairqoo</div>
         </div>
-        <div class="gate-headline">
-          <h1 class="strand-text gate-headline-title" data-i18n="gate.headline">
-            Twój biznes - Twoje zarządzanie pięknem
-          </h1>
-          <p data-i18n="gate.subtitle">
-            Rezerwacje, formuły, zdjęcia i podziękowania po wizycie — wszystko pod ręką, bez przełączania aplikacji.
-          </p>
-        </div>
-        <div class="gate-portals">
-          <button type="button" class="portal-tile glass" data-portal="salon">
-            <div class="portal-tile-icon" aria-hidden="true">✂</div>
-            <h2 data-i18n="gate.salonTitle">Portal Fryzjera</h2>
-            <p data-i18n="gate.salonDesc">Rezerwacje, wizyty i organizacja dnia salonu…</p>
-            <span class="enter-label" data-i18n="gate.salonEnter">Wejdź do labiryntu →</span>
-          </button>
-          <button type="button" class="portal-tile glass" data-portal="client">
-            <div class="portal-tile-icon" aria-hidden="true">◇</div>
-            <h2 data-i18n="gate.clientTitle">Portal Klienta</h2>
-            <p data-i18n="gate.clientDesc">Umawiaj wizyty szybko…</p>
-            <span class="enter-label" data-i18n="gate.clientEnter">Wejdź do labiryntu →</span>
-          </button>
+        <p class="gate-subtitle" data-i18n="gate.subtitle">
+          Rezerwacje, formuły, zdjęcia i podziękowania po wizycie — wszystko pod ręką, bez przełączania aplikacji.
+        </p>
+        <div class="gate-editorial">
+          <div class="gate-side gate-side--left">
+            <h1 class="strand-text gate-headline-title" data-i18n="gate.headlineLeft">Twój biznes</h1>
+            <button type="button" class="portal-tile glass" data-portal="salon">
+              <div class="portal-tile-icon" aria-hidden="true">✂</div>
+              <h2 data-i18n="gate.salonTitle">Portal Fryzjera</h2>
+              <p data-i18n="gate.salonDesc">Rezerwacje, wizyty i organizacja dnia salonu…</p>
+              <span class="enter-label" data-i18n="gate.salonEnter">Wejdź do labiryntu →</span>
+            </button>
+          </div>
+          <div class="gate-editorial-center" aria-hidden="true"></div>
+          <div class="gate-side gate-side--right">
+            <h1 class="strand-text gate-headline-title" data-i18n="gate.headlineRight">Twoje wizyty</h1>
+            <button type="button" class="portal-tile glass" data-portal="client">
+              <div class="portal-tile-icon" aria-hidden="true">◇</div>
+              <h2 data-i18n="gate.clientTitle">Portal Klienta</h2>
+              <p data-i18n="gate.clientDesc">Umawiaj wizyty szybko…</p>
+              <span class="enter-label" data-i18n="gate.clientEnter">Wejdź do labiryntu →</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -967,6 +969,6 @@
       </section>
     </template>
 
-    <script type="module" src="./js/main.js?v=20"></script>
+    <script type="module" src="./js/main.js?v=21"></script>
   </body>
 </html>
