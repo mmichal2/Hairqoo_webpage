@@ -83,7 +83,7 @@ body.portal-client-active .poster-horizon-glow {
 .gate.is-poster-ready .gate-subtitle,
 .gate.is-poster-ready .gate-headline--left,
 .gate.is-poster-ready .gate-headline--right,
-.gate.is-poster-ready .gate-side {
+.gate.is-poster-ready .gate-col .portal-tile {
   animation: posterRise 1s var(--ease-silk) both;
 }
 
@@ -93,11 +93,11 @@ body.portal-client-active .poster-horizon-glow {
   animation-delay: 0.1s;
 }
 
-.gate.is-poster-ready .gate-side--left {
+.gate.is-poster-ready .gate-col--left .portal-tile {
   animation-delay: 0.22s;
 }
 
-.gate.is-poster-ready .gate-side--right {
+.gate.is-poster-ready .gate-col--right .portal-tile {
   animation-delay: 0.3s;
 }
 
