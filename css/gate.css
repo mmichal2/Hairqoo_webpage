@@ -188,11 +188,11 @@ body.is-gate-restoring .poster-horizon-glow {
     text-shadow: 0 2px 22px rgba(0, 0, 0, 0.55);
   }
 
-  /* Editorial anchors to lower viewport — headlines where the gaze leads */
+  /* Editorial below brand — min offset restores pre-overlap spacing */
   .gate-editorial {
     margin-top: auto;
     gap: var(--space-xl);
-    padding-top: clamp(6px, 1.5vh, 16px);
+    padding-top: clamp(148px, 26dvh, 280px);
     width: 100%;
     max-width: 100%;
   }
