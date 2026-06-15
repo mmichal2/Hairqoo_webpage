@@ -140,10 +140,12 @@ body.is-gate-restoring .poster-horizon-glow {
 
 @media (max-width: 720px) {
   .gate {
+    --gate-chrome-offset: calc(52px + env(safe-area-inset-top, 0px));
     min-height: 100dvh;
     justify-content: flex-start;
+    align-items: stretch;
     padding:
-      calc(clamp(200px, 34dvh, 360px) + env(safe-area-inset-top, 0px))
+      var(--gate-chrome-offset)
       calc(var(--space-md) + env(safe-area-inset-right, 0px))
       calc(var(--space-xxl) + env(safe-area-inset-bottom, 0px))
       calc(var(--space-md) + env(safe-area-inset-left, 0px));
@@ -153,44 +155,125 @@ body.is-gate-restoring .poster-horizon-glow {
   .gate-content {
     width: 100%;
     flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(
+      100dvh - var(--gate-chrome-offset) - env(safe-area-inset-bottom, 0px) - var(--space-xxl)
+    );
   }
 
+  /* Brand sits high in top-left negative space — clear of crown & profile */
   .gate-brand {
-    margin-bottom: var(--space-md);
+    align-self: flex-start;
+    text-align: left;
+    margin-bottom: 0;
+    max-width: min(58%, 220px);
   }
 
+  .gate-brand img {
+    width: 52px;
+    height: 52px;
+    margin: 0 0 var(--space-xs);
+    filter: drop-shadow(0 2px 18px rgba(0, 0, 0, 0.5));
+  }
+
+  .gate-brand .wordmark {
+    font-size: 1.5rem;
+    line-height: 1.1;
+    text-shadow: 0 2px 22px rgba(0, 0, 0, 0.55);
+  }
+
+  /* Editorial anchors to lower viewport — headlines where the gaze leads */
   .gate-editorial {
-    gap: var(--space-lg);
+    margin-top: auto;
+    gap: var(--space-xl);
+    padding-top: clamp(6px, 1.5vh, 16px);
+    width: 100%;
+    max-width: 100%;
   }
 
   .gate-col {
-    align-items: center;
-    gap: var(--space-lg);
+    align-items: stretch;
+    gap: var(--space-md);
   }
 
   .gate-col--left,
   .gate-col--right {
-    align-items: center;
+    align-items: stretch;
   }
 
   .gate-headline-title {
-    text-align: center;
-    max-width: none;
+    font-size: clamp(1.45rem, 6.4vw, 1.8rem);
+    line-height: 1.12;
+    text-align: left;
+    max-width: 12ch;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
   }
 
   .gate-headline--left,
   .gate-headline--right {
-    text-align: center;
+    text-align: left;
+    align-self: flex-start;
   }
 
   .gate-col .portal-tile {
     max-width: 100%;
     width: 100%;
+    padding: var(--space-lg) var(--space-md);
+    background: rgba(19, 19, 26, 0.74);
+    border-color: rgba(201, 191, 255, 0.22);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.38),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  [data-theme="light"] .gate-col .portal-tile {
+    background: rgba(255, 255, 255, 0.82);
+    border-color: rgba(90, 69, 212, 0.16);
+    box-shadow:
+      0 16px 40px rgba(90, 69, 212, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.65);
   }
 
   .gate-subtitle {
-    max-width: 36ch;
-    margin-inline: auto;
+    text-align: left;
+    max-width: none;
+    margin-inline: 0;
+    font-size: 0.9rem;
+    line-height: 1.62;
+    color: rgba(228, 225, 236, 0.9);
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
+  }
+
+  [data-theme="light"] .gate-subtitle {
+    color: rgba(28, 24, 36, 0.82);
+    text-shadow: 0 1px 10px rgba(255, 255, 255, 0.35);
+  }
+
+  .portal-tile h2 {
+    font-size: 1.15rem;
+  }
+
+  .portal-tile p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 380px) {
+  .gate-brand {
+    max-width: 54%;
+  }
+
+  .gate-brand img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .gate-brand .wordmark {
+    font-size: 1.35rem;
   }
 }
 
