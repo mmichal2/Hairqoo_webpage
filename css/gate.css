@@ -153,6 +153,7 @@ body.is-gate-restoring .poster-horizon-glow {
   }
 
   .gate-content {
+    position: relative;
     width: 100%;
     flex: 1 0 auto;
     display: flex;
@@ -162,8 +163,12 @@ body.is-gate-restoring .poster-horizon-glow {
     );
   }
 
-  /* Brand sits high in top-left negative space — clear of crown & profile */
+  /* Brand pinned to top of screen — clear of profile & headlines below */
   .gate-brand {
+    position: absolute;
+    top: calc(6px + env(safe-area-inset-top, 0px) - var(--gate-chrome-offset));
+    left: 0;
+    z-index: 2;
     align-self: flex-start;
     text-align: left;
     margin-bottom: 0;
@@ -220,7 +225,7 @@ body.is-gate-restoring .poster-horizon-glow {
     max-width: 100%;
     width: 100%;
     padding: var(--space-lg) var(--space-md);
-    background: rgba(19, 19, 26, 0.74);
+    background: rgba(19, 19, 26, 0.52);
     border-color: rgba(201, 191, 255, 0.22);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -230,7 +235,7 @@ body.is-gate-restoring .poster-horizon-glow {
   }
 
   [data-theme="light"] .gate-col .portal-tile {
-    background: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.57);
     border-color: rgba(90, 69, 212, 0.16);
     box-shadow:
       0 16px 40px rgba(90, 69, 212, 0.1),

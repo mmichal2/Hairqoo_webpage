@@ -10,6 +10,7 @@ export function runPreloader(onDone) {
 
   if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     gate?.classList.add("is-poster-ready");
+    window.__hairqooMarkBootComplete?.();
     onDone?.();
     return;
   }
@@ -29,6 +30,7 @@ export function runPreloader(onDone) {
   setTimeout(() => {
     clearInterval(statusInterval);
     if (statusEl) statusEl.textContent = t("preloader.ready");
+    window.__hairqooMarkBootComplete?.();
     el.classList.add("is-done");
     document.body.classList.remove("is-preloading");
     gate?.classList.add("is-poster-ready");

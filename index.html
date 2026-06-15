@@ -13,18 +13,53 @@
     />
     <meta name="theme-color" content="#13131A" />
     <script>
-      /* Zawsze startuj od strony głównej — przed załadowaniem JS i scroll restoration */
+      /* Boot: reset stanu, scroll, failsafe gdy JS/cache nie załadują modułu */
       (function () {
+        var BOOT_FAILSAFE_MS = 8000;
+
         if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+        window.scrollTo(0, 0);
+
         if (location.hash) {
           history.replaceState(null, "", location.pathname + location.search);
         }
+
         try {
           var s = JSON.parse(localStorage.getItem("hairqoo_labyrinth") || "{}");
           delete s.portal;
           s.lastChamber = 0;
           localStorage.setItem("hairqoo_labyrinth", JSON.stringify(s));
         } catch (e) {}
+
+        window.__hairqooBootComplete = false;
+        window.__hairqooMarkBootComplete = function () {
+          window.__hairqooBootComplete = true;
+        };
+        window.__hairqooReleaseGate = function () {
+          if (window.__hairqooBootComplete) return;
+          window.__hairqooMarkBootComplete();
+          document.body.classList.remove("is-preloading");
+          var gate = document.getElementById("gate");
+          if (gate) gate.classList.add("is-poster-ready");
+          var preloader = document.getElementById("preloader");
+          if (preloader && !preloader.classList.contains("is-done")) {
+            preloader.classList.add("is-done");
+            setTimeout(function () {
+              preloader.remove();
+            }, 950);
+          }
+        };
+
+        setTimeout(function () {
+          if (!window.__hairqooBootComplete) window.__hairqooReleaseGate();
+        }, BOOT_FAILSAFE_MS);
+
+        window.addEventListener("pageshow", function (e) {
+          window.scrollTo(0, 0);
+          if (e.persisted && !window.__hairqooBootComplete) {
+            window.__hairqooReleaseGate();
+          }
+        });
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -33,21 +68,21 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./css/tokens.css" />
-    <link rel="stylesheet" href="./css/base.css" />
-    <link rel="stylesheet" href="./css/gate.css?v=25" />
-    <link rel="stylesheet" href="./css/gate-poster.css?v=24" />
-    <link rel="stylesheet" href="./css/chambers.css?v=20" />
-    <link rel="stylesheet" href="./css/labyrinth.css" />
-    <link rel="stylesheet" href="./css/mockups.css" />
-    <link rel="stylesheet" href="./css/finale.css" />
-    <link rel="stylesheet" href="./css/motion.css" />
-    <link rel="stylesheet" href="./css/preloader.css" />
-    <link rel="stylesheet" href="./css/poster.css?v=2" />
-    <link rel="stylesheet" href="./css/tunnel.css" />
-    <link rel="stylesheet" href="./css/scroll-cue.css" />
-    <link rel="stylesheet" href="./css/portal-door.css" />
-    <link rel="stylesheet" href="./css/controls.css" />
+    <link rel="stylesheet" href="./css/tokens.css?v=28" />
+    <link rel="stylesheet" href="./css/base.css?v=28" />
+    <link rel="stylesheet" href="./css/gate.css?v=28" />
+    <link rel="stylesheet" href="./css/gate-poster.css?v=28" />
+    <link rel="stylesheet" href="./css/chambers.css?v=28" />
+    <link rel="stylesheet" href="./css/labyrinth.css?v=28" />
+    <link rel="stylesheet" href="./css/mockups.css?v=28" />
+    <link rel="stylesheet" href="./css/finale.css?v=28" />
+    <link rel="stylesheet" href="./css/motion.css?v=28" />
+    <link rel="stylesheet" href="./css/preloader.css?v=28" />
+    <link rel="stylesheet" href="./css/poster.css?v=28" />
+    <link rel="stylesheet" href="./css/tunnel.css?v=28" />
+    <link rel="stylesheet" href="./css/scroll-cue.css?v=28" />
+    <link rel="stylesheet" href="./css/portal-door.css?v=28" />
+    <link rel="stylesheet" href="./css/controls.css?v=28" />
   </head>
   <body>
     <div class="preloader" id="preloader" aria-hidden="true">
@@ -978,6 +1013,11 @@
       </section>
     </template>
 
-    <script type="module" src="./js/main.js?v=21"></script>
+    <script type="module">
+      import("./js/main.js?v=28").catch(function (err) {
+        console.error("Hairqoo boot failed:", err);
+        window.__hairqooReleaseGate?.();
+      });
+    </script>
   </body>
 </html>

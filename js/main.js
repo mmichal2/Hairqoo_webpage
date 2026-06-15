@@ -7,21 +7,26 @@ import { initControls } from "./controls.js";
 import { initTheme } from "./theme.js";
 import { applyI18n } from "./i18n.js";
 
-initTheme();
-initPosterField(document.getElementById("poster-stars"));
-initGatePoster();
-applyI18n(document.getElementById("preloader") || document);
-
 let labyrinthInstance = null;
 
-initControls({
-  onLangChange: () => {
-    labyrinthInstance?.updateScrollCue?.();
-  },
-});
+try {
+  initTheme();
+  initPosterField(document.getElementById("poster-stars"));
+  initGatePoster();
+  applyI18n(document.getElementById("preloader") || document);
 
-runPreloader(() => {
-  labyrinthInstance = new Labyrinth();
-  initForm(labyrinthInstance);
-  initThemeDemo();
-});
+  initControls({
+    onLangChange: () => {
+      labyrinthInstance?.updateScrollCue?.();
+    },
+  });
+
+  runPreloader(() => {
+    labyrinthInstance = new Labyrinth();
+    initForm(labyrinthInstance);
+    initThemeDemo();
+  });
+} catch (err) {
+  console.error("Hairqoo init failed:", err);
+  window.__hairqooReleaseGate?.();
+}
