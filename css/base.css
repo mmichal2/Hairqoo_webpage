@@ -41,6 +41,16 @@ body.is-labyrinth-active {
   overflow: hidden;
 }
 
+@media (max-width: 720px) {
+  body:not(.is-labyrinth-active):not(.is-preloading) {
+    background: var(--cosmic-void);
+  }
+
+  [data-theme="light"] body:not(.is-labyrinth-active):not(.is-preloading) {
+    background: var(--bg);
+  }
+}
+
 body.is-labyrinth-active .site-footer {
   display: none;
 }

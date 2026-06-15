@@ -165,22 +165,25 @@ body.is-gate-restoring .gate-poster-stack {
 }
 
 @media (max-width: 720px) {
-  .gate {
-    min-height: max(100dvh, calc(100vw * 1024 / 434));
+  /* Fixed full-bleed hero — content scrolls independently in .gate-content */
+  .gate-poster-stack {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    min-height: 100svh;
+    z-index: 0;
   }
 
-  .gate-poster-stack {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: auto;
-    width: 100%;
-    height: calc(100vw * 1024 / 434);
+  @supports (-webkit-touch-callout: none) {
+    .gate-poster-stack {
+      min-height: -webkit-fill-available;
+    }
   }
 
   .gate-hero-bg {
-    background: #0c0e14;
+    background: var(--cosmic-void);
   }
 
   .gate-hero-fill {
@@ -192,6 +195,8 @@ body.is-gate-restoring .gate-poster-stack {
     transform: none;
     inset: 0;
     display: block;
+    width: 100%;
+    height: 100%;
   }
 
   .gate.is-poster-ready .gate-hero-frame {
@@ -201,30 +206,51 @@ body.is-gate-restoring .gate-poster-stack {
   .gate-hero-photo {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
     max-width: none;
     max-height: none;
-    object-fit: initial;
+    object-fit: cover;
     object-position: center top;
     border-radius: 0;
     box-shadow: none;
+    transform: translateZ(0);
   }
 
   .gate-poster-scrim {
     background: linear-gradient(
       180deg,
-      rgba(11, 11, 18, 0.55) 0%,
-      transparent 16%,
-      transparent 78%,
-      rgba(11, 11, 18, 0.5) 100%
+      transparent 0%,
+      transparent 10%,
+      rgba(11, 11, 18, 0.12) 38%,
+      rgba(11, 11, 18, 0.35) 72%,
+      rgba(11, 11, 18, 0.62) 100%
     );
   }
 
   .gate-poster-vignette {
     background: radial-gradient(
-      ellipse 130% 92% at 50% 48%,
-      transparent 58%,
-      rgba(11, 11, 18, 0.22) 100%
+      ellipse 120% 88% at 50% 42%,
+      transparent 52%,
+      rgba(11, 11, 18, 0.28) 100%
+    );
+  }
+
+  [data-theme="light"] .gate-poster-scrim {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 10%,
+      rgba(247, 244, 239, 0.2) 38%,
+      rgba(247, 244, 239, 0.45) 72%,
+      rgba(247, 244, 239, 0.72) 100%
+    );
+  }
+
+  [data-theme="light"] .gate-poster-vignette {
+    background: radial-gradient(
+      ellipse 120% 88% at 50% 42%,
+      transparent 50%,
+      rgba(247, 244, 239, 0.45) 100%
     );
   }
 }

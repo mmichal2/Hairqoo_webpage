@@ -231,6 +231,16 @@ body.portal-client-active .chamber.is-active .chamber-title {
   box-shadow: 0 0 30px rgba(123, 97, 255, 0.3);
 }
 
+@media (max-width: 720px) {
+  body:not(.is-labyrinth-active) .poster-field,
+  body:not(.is-labyrinth-active) .poster-horizon,
+  body:not(.is-labyrinth-active) .poster-horizon-glow,
+  body:not(.is-labyrinth-active) .ambient-glow {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .chamber-number::before {
     animation: none;
