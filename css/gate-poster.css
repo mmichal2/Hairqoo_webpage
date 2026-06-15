@@ -165,16 +165,67 @@ body.is-gate-restoring .gate-poster-stack {
 }
 
 @media (max-width: 720px) {
+  .gate {
+    min-height: max(100dvh, calc(100vw * 1024 / 434));
+  }
+
+  .gate-poster-stack {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: auto;
+    width: 100%;
+    height: calc(100vw * 1024 / 434);
+  }
+
+  .gate-hero-bg {
+    background: #0c0e14;
+  }
+
+  .gate-hero-fill {
+    display: none;
+  }
+
   .gate-hero-frame {
-    padding:
-      calc(64px + env(safe-area-inset-top, 0px))
-      10px
-      calc(40px + env(safe-area-inset-bottom, 0px));
+    padding: 0;
+    transform: none;
+    inset: 0;
+    display: block;
+  }
+
+  .gate.is-poster-ready .gate-hero-frame {
+    animation: none;
   }
 
   .gate-hero-photo {
-    max-width: min(88vw, 360px);
-    max-height: min(62dvh, 640px);
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    object-fit: initial;
+    object-position: center top;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .gate-poster-scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(11, 11, 18, 0.55) 0%,
+      transparent 16%,
+      transparent 78%,
+      rgba(11, 11, 18, 0.5) 100%
+    );
+  }
+
+  .gate-poster-vignette {
+    background: radial-gradient(
+      ellipse 130% 92% at 50% 48%,
+      transparent 58%,
+      rgba(11, 11, 18, 0.22) 100%
+    );
   }
 }
 
