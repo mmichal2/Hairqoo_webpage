@@ -17,16 +17,20 @@ try {
 
   initControls({
     onLangChange: () => {
-      labyrinthInstance?.updateScrollCue?.();
+      if (labyrinthInstance && labyrinthInstance.updateScrollCue) {
+        labyrinthInstance.updateScrollCue();
+      }
     },
   });
 
-  runPreloader(() => {
-    labyrinthInstance = new Labyrinth();
-    initForm(labyrinthInstance);
-    initThemeDemo();
-  });
+  labyrinthInstance = new Labyrinth();
+  initForm(labyrinthInstance);
+  initThemeDemo();
+  window.__hairqooAppReady = true;
+
+  runPreloader();
 } catch (err) {
   console.error("Hairqoo init failed:", err);
-  window.__hairqooReleaseGate?.();
+  window.__hairqooAppReady = false;
+  if (window.__hairqooReleaseGate) window.__hairqooReleaseGate();
 }

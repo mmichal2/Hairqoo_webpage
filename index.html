@@ -15,7 +15,8 @@
     <script>
       /* Boot: reset stanu, scroll, failsafe gdy JS/cache nie załadują modułu */
       (function () {
-        var BOOT_FAILSAFE_MS = 8000;
+        var BOOT_RELEASE_MS = 8000;
+        var BOOT_HELP_MS = 12000;
 
         if ("scrollRestoration" in history) history.scrollRestoration = "manual";
         window.scrollTo(0, 0);
@@ -29,11 +30,20 @@
           delete s.portal;
           s.lastChamber = 0;
           localStorage.setItem("hairqoo_labyrinth", JSON.stringify(s));
-        } catch (e) {}
+        } catch (e) {
+          try {
+            localStorage.removeItem("hairqoo_labyrinth");
+          } catch (e2) {}
+        }
 
+        window.__hairqooAppReady = false;
         window.__hairqooBootComplete = false;
         window.__hairqooMarkBootComplete = function () {
           window.__hairqooBootComplete = true;
+        };
+        window.__hairqooShowBootHelp = function () {
+          var banner = document.getElementById("boot-fallback");
+          if (banner) banner.hidden = false;
         };
         window.__hairqooReleaseGate = function () {
           if (window.__hairqooBootComplete) return;
@@ -51,12 +61,16 @@
         };
 
         setTimeout(function () {
-          if (!window.__hairqooBootComplete) window.__hairqooReleaseGate();
-        }, BOOT_FAILSAFE_MS);
+          if (!window.__hairqooAppReady) window.__hairqooReleaseGate();
+        }, BOOT_RELEASE_MS);
+
+        setTimeout(function () {
+          if (!window.__hairqooAppReady) window.__hairqooShowBootHelp();
+        }, BOOT_HELP_MS);
 
         window.addEventListener("pageshow", function (e) {
           window.scrollTo(0, 0);
-          if (e.persisted && !window.__hairqooBootComplete) {
+          if (e.persisted && !window.__hairqooAppReady) {
             window.__hairqooReleaseGate();
           }
         });
@@ -68,21 +82,21 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./css/tokens.css?v=28" />
-    <link rel="stylesheet" href="./css/base.css?v=28" />
-    <link rel="stylesheet" href="./css/gate.css?v=30" />
-    <link rel="stylesheet" href="./css/gate-poster.css?v=28" />
-    <link rel="stylesheet" href="./css/chambers.css?v=28" />
-    <link rel="stylesheet" href="./css/labyrinth.css?v=28" />
-    <link rel="stylesheet" href="./css/mockups.css?v=28" />
-    <link rel="stylesheet" href="./css/finale.css?v=28" />
-    <link rel="stylesheet" href="./css/motion.css?v=28" />
-    <link rel="stylesheet" href="./css/preloader.css?v=28" />
-    <link rel="stylesheet" href="./css/poster.css?v=28" />
-    <link rel="stylesheet" href="./css/tunnel.css?v=28" />
-    <link rel="stylesheet" href="./css/scroll-cue.css?v=28" />
-    <link rel="stylesheet" href="./css/portal-door.css?v=28" />
-    <link rel="stylesheet" href="./css/controls.css?v=28" />
+    <link rel="stylesheet" href="./css/tokens.css?v=31" />
+    <link rel="stylesheet" href="./css/base.css?v=31" />
+    <link rel="stylesheet" href="./css/gate.css?v=31" />
+    <link rel="stylesheet" href="./css/gate-poster.css?v=31" />
+    <link rel="stylesheet" href="./css/chambers.css?v=31" />
+    <link rel="stylesheet" href="./css/labyrinth.css?v=31" />
+    <link rel="stylesheet" href="./css/mockups.css?v=31" />
+    <link rel="stylesheet" href="./css/finale.css?v=31" />
+    <link rel="stylesheet" href="./css/motion.css?v=31" />
+    <link rel="stylesheet" href="./css/preloader.css?v=31" />
+    <link rel="stylesheet" href="./css/poster.css?v=31" />
+    <link rel="stylesheet" href="./css/tunnel.css?v=31" />
+    <link rel="stylesheet" href="./css/scroll-cue.css?v=31" />
+    <link rel="stylesheet" href="./css/portal-door.css?v=31" />
+    <link rel="stylesheet" href="./css/controls.css?v=31" />
   </head>
   <body>
     <div class="preloader" id="preloader" aria-hidden="true">
@@ -1013,11 +1027,21 @@
       </section>
     </template>
 
-    <script type="module">
-      import("./js/main.js?v=28").catch(function (err) {
-        console.error("Hairqoo boot failed:", err);
-        window.__hairqooReleaseGate?.();
-      });
+    <div
+      class="boot-fallback"
+      id="boot-fallback"
+      role="alert"
+      hidden
+    >
+      <p>Strona nie załadowała się w pełni. Odśwież lub wyczyść cache przeglądarki.</p>
+      <button type="button" class="boot-fallback-btn" onclick="location.reload()">
+        Odśwież stronę
+      </button>
+    </div>
+
+    <script type="module" src="./js/main.js?v=31"></script>
+    <script nomodule>
+      document.getElementById("boot-fallback").hidden = false;
     </script>
   </body>
 </html>
