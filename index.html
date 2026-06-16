@@ -6,10 +6,10 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <title>Hairqoo — Interaktywny przewodnik po aplikacji</title>
+    <title>Hairqoo — Globalny system operacyjny branży fryzjerskiej</title>
     <meta
       name="description"
-      content="Odkryj Hairqoo — magiczny labirynt prowadzący przez portal fryzjera i klienta."
+      content="Wszystko, co fryzjerskie — znajdź, ucz się, twórz. Wydarzenia, edukatorzy, produkty i społeczność w jednym systemie."
     />
     <meta name="theme-color" content="#13131A" />
     <script>
@@ -96,7 +96,8 @@
     <link rel="stylesheet" href="./css/tunnel.css?v=32" />
     <link rel="stylesheet" href="./css/scroll-cue.css?v=32" />
     <link rel="stylesheet" href="./css/portal-door.css?v=32" />
-    <link rel="stylesheet" href="./css/controls.css?v=32" />
+    <link rel="stylesheet" href="./css/controls.css?v=33" />
+    <link rel="stylesheet" href="./css/control-center.css?v=33" />
   </head>
   <body>
     <div class="preloader" id="preloader" aria-hidden="true">
@@ -245,65 +246,8 @@
       <div class="tunnel-rails"></div>
     </div>
 
-    <!-- GATE -->
-    <section class="gate" id="gate">
-      <div class="gate-poster-stack" id="gate-poster-stack" aria-hidden="true">
-        <div class="gate-hero-bg has-image" id="gate-hero-bg">
-          <div class="gate-hero-fill" aria-hidden="true"></div>
-          <div class="gate-hero-frame" id="gate-hero-frame">
-            <img
-              class="gate-hero-photo"
-              src="./assets/images/home_hero.jpg"
-              alt=""
-              width="434"
-              height="1024"
-              decoding="async"
-              fetchpriority="high"
-            />
-          </div>
-        </div>
-        <div class="gate-poster-duotone"></div>
-        <div class="gate-poster-scrim"></div>
-        <div class="gate-poster-vignette"></div>
-        <div class="gate-poster-grain"></div>
-      </div>
-      <div class="gate-content">
-        <div class="gate-brand">
-          <img src="./assets/images/hairlab_icon.png" alt="Hairqoo" width="64" height="64" />
-          <div class="wordmark">Hairqoo</div>
-        </div>
-        <div class="gate-editorial">
-          <div class="gate-col gate-col--left">
-            <h1 class="strand-text gate-headline-title gate-headline--left" data-i18n="gate.headlineLeft">
-              Twój biznes
-            </h1>
-            <button type="button" class="portal-tile glass" data-portal="salon">
-              <div class="portal-tile-icon" aria-hidden="true">✂</div>
-              <h2 data-i18n="gate.salonTitle">Portal Fryzjera</h2>
-              <p data-i18n="gate.salonDesc">Rezerwacje, wizyty i organizacja dnia salonu…</p>
-              <span class="enter-label" data-i18n="gate.salonEnter">Wejdź do labiryntu →</span>
-            </button>
-          </div>
-          <div class="gate-col gate-col--center">
-            <p class="gate-subtitle" data-i18n="gate.subtitle">
-              Rezerwacje, formuły, zdjęcia i podziękowania po wizycie — wszystko pod ręką, bez przełączania aplikacji.
-            </p>
-            <div class="gate-editorial-center" aria-hidden="true"></div>
-          </div>
-          <div class="gate-col gate-col--right">
-            <h1 class="strand-text gate-headline-title gate-headline--right" data-i18n="gate.headlineRight">
-              Twoje wizyty
-            </h1>
-            <button type="button" class="portal-tile glass" data-portal="client">
-              <div class="portal-tile-icon" aria-hidden="true">◇</div>
-              <h2 data-i18n="gate.clientTitle">Portal Klienta</h2>
-              <p data-i18n="gate.clientDesc">Umawiaj wizyty szybko…</p>
-              <span class="enter-label" data-i18n="gate.clientEnter">Wejdź do labiryntu →</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- HOMEPAGE / CONTROL CENTER (HAIRQOO 3.0 — render: js/control-center.js) -->
+    <section class="gate home-cc" id="gate" aria-label="Hairqoo Control Center"></section>
 
     <!-- LABYRINTH -->
     <main class="labyrinth" id="labyrinth">
@@ -1039,7 +983,7 @@
       </button>
     </div>
 
-    <script type="module" src="./js/main.js?v=32"></script>
+    <script type="module" src="./js/main.js?v=33"></script>
     <script nomodule>
       document.getElementById("boot-fallback").hidden = false;
     </script>

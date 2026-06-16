@@ -28,6 +28,8 @@
   --light-text: #1c1824;
   --light-primary: #5a45d4;
 
+  --success: #6ee7a8;
+
   /* Spacing */
   --space-xs: 4px;
   --space-sm: 12px;
@@ -35,15 +37,19 @@
   --space-lg: 28px;
   --space-xl: 36px;
   --space-xxl: 56px;
+  --space-3xl: 88px;
 
   /* Radii */
+  --radius-xl: 24px;
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
+  --radius-pill: 999px;
 
   /* Shadows */
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.22), 0 2px 12px rgba(123, 97, 255, 0.08);
   --shadow-glow: 0 0 40px rgba(123, 97, 255, 0.25);
+  --shadow-card: 0 16px 48px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
   /* Motion */
   --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
@@ -59,7 +65,10 @@
   --stagger: 120ms;
 
   /* Layout */
-  --header-h: 64px;
+  --header-h: 68px;
+  --content-max: 1240px;
+  --feed-max: 720px;
+  --z-header: 100;
   --thread-w: 48px;
   --phone-w: 280px;
   --phone-h: 560px;
