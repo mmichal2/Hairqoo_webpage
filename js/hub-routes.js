@@ -36,3 +36,8 @@ export function searchHref(query) {
 export function profileHref(id) {
   return `./profile.html?id=${encodeURIComponent(id)}`;
 }
+
+/** Kotwica sekcji na homepage (footer, powrót z podstron). */
+export function homeSectionHref(sectionKey) {
+  return `./index.html#${sectionKey}`;
+}
