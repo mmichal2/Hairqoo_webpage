@@ -1,7 +1,10 @@
 import { getEntityPool } from "./data-source.js";
 import { getCcDict } from "../cc-dict.js";
 import { getHairQooScore } from "../intelligence/score-system.js";
-import { rankSearchResults, tokenize, haystack } from "../intelligence/search-ranking.js";
+import {
+  searchEntities,
+  groupSearchResults,
+} from "./search-engine.js";
 import { getAwardNominee } from "../intelligence/awards-system.js";
 import {
   improveRankingFromFeedback,
@@ -100,31 +103,15 @@ export function getAwardLeader(category) {
 }
 
 export function search(query, filters = {}) {
-  const q = query.trim().toLowerCase();
-  const tokens = tokenize(q);
   const lang = typeof document !== "undefined" ? getLang() : "pl";
   const profile = getSessionProfile();
-  const network = pool();
-
-  let matched = network.filter((e) => {
-    if (filters.type && e.type !== filters.type) return false;
-    if (filters.country && e.country !== filters.country) return false;
-    if (filters.tags?.length && !filters.tags.some((t) => e.tags.includes(t))) return false;
-    if (!q || tokens.length === 0) return true;
-    const hay = haystack(e);
-    return tokens.some((t) => hay.includes(t));
+  const flat = searchEntities(query, filters, {
+    limit: filters.limit ?? 100,
+    lang,
+    profile,
+    network: pool(),
   });
-
-  const ranked = rankSearchResults(q, matched, { lang, profile, network });
-
-  const groups = new Map();
-  for (const e of ranked) {
-    const arr = groups.get(e.type) ?? [];
-    arr.push(e);
-    groups.set(e.type, arr);
-  }
-
-  return Array.from(groups.entries()).map(([type, items]) => ({ type, items }));
+  return groupSearchResults(flat);
 }
 
 export function filterEntities({ types, country, tags }) {
@@ -239,6 +226,22 @@ export function aiAsk(prompt, lang = "pl") {
 }
 
 export { getHairQooScore, getScoreTier, getVerifiedStatus } from "../intelligence/index.js";
+
+// Search engine API (ETAP 3)
+export {
+  searchEntities,
+  computeRelevanceScore,
+  computeScoreBreakdown,
+  rankSearchResults,
+  normalizeScores,
+  applyTypeBalance,
+  groupSearchResults,
+  tokenize,
+  matchesQuery,
+  SEARCHABLE_TYPES,
+  RANK_WEIGHTS,
+  REGIONS,
+} from "./search-engine.js";
 
 // Data layer API (ETAP 2)
 export {
