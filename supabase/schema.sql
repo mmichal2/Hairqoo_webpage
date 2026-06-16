@@ -225,6 +225,8 @@ ALTER TABLE search_index ENABLE ROW LEVEL SECURITY;
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY entities_public_read ON entities FOR SELECT USING (true);
+CREATE POLICY entities_anon_insert ON entities FOR INSERT WITH CHECK (true);
+CREATE POLICY entities_anon_update ON entities FOR UPDATE USING (true);
 CREATE POLICY search_index_public_read ON search_index FOR SELECT USING (true);
 
 CREATE POLICY interactions_anon_insert ON interactions FOR INSERT WITH CHECK (true);

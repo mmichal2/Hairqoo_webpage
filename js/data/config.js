@@ -4,8 +4,9 @@ export const DATA_CONFIG = {
   /** auto | mock | supabase */
   provider: "auto",
   supabase: {
-    url: "",
-    anonKey: "",
+    url: "https://vfihpdrcwzosvbdqylyy.supabase.co",
+    anonKey:
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmaWhwZHJjd3pvc3ZiZHF5bHl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MTkyNzEsImV4cCI6MjA4ODQ5NTI3MX0.3PXXdE_fyjaeK7NSY6bPyWDUS0WG-EsGyL5N29k3w5s",
   },
   sessionKey: "hairqoo_data_session",
   tables: {
