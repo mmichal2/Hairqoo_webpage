@@ -11,6 +11,8 @@ import {
 import { getEntityById, getByType } from "../data/queries.js";
 import { profileHref } from "../hub-routes.js";
 import { bootHubPage } from "../hub-boot.js";
+import { logUserInteraction } from "../intelligence/ai-learning.js";
+import { updatePassportProgress, getPassportUser } from "../intelligence/passport-system.js";
 
 function render(root) {
   const p = new URLSearchParams(window.location.search);
@@ -77,6 +79,29 @@ function render(root) {
     ${renderHubTabbar(d)}
   `;
   bindSearchTags(root);
+
+  logUserInteraction("view", entity.id, {
+    entityType: entity.type,
+    country: entity.country,
+    tags: entity.tags,
+  });
+  if (entity.type === "event") {
+    updatePassportProgress(getPassportUser(), { type: "event_attend", entityId: entity.id, label: entity.title });
+  } else if (entity.type === "academy") {
+    updatePassportProgress(getPassportUser(), { type: "education_complete", entityId: entity.id, label: entity.title });
+  }
+
+  const viewedAt = Date.now();
+  const logDwell = () => {
+    const seconds = Math.round((Date.now() - viewedAt) / 1000);
+    if (seconds >= 3) {
+      logUserInteraction("dwell", entity.id, { seconds, entityType: entity.type });
+    }
+  };
+  window.addEventListener("pagehide", logDwell, { once: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") logDwell();
+  });
 }
 
 bootHubPage(render);

@@ -5,6 +5,7 @@ import {
   getByType,
   getCountriesAggregated,
   getCalendarEventsByView,
+  getAwardLeader,
 } from "./data/queries.js";
 import { seeAllHref, entityHref } from "./hub-routes.js";
 import { openAIWithPrompt } from "./ai-assistant.js";
@@ -17,6 +18,7 @@ import {
   renderHubFooter,
   renderHubTabbar,
   bindSearchTags,
+  bindAwardVotes,
 } from "./hub-shared.js";
 
 const MONTHS_PL = ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"];
@@ -68,9 +70,9 @@ function renderHomepage(root) {
   const educationItems = [...getByType("academy", 4), ...getByType("event", 4)].slice(0, 8);
   const careerItems = [...getByType("salon", 2), ...getByType("academy", 2)];
   const awardTypes = [
-    { key: "educatorOfYear", type: "educator" },
-    { key: "eventOfYear", type: "event" },
-    { key: "productOfYear", type: "product" },
+    { key: "educatorOfYear", type: "educator", category: "educator_of_year" },
+    { key: "eventOfYear", type: "event", category: "event_of_year" },
+    { key: "productOfYear", type: "product", category: "product_of_year" },
   ];
   const navLinks = [
     ["discover", d.nav.discover],
@@ -124,9 +126,9 @@ function renderHomepage(root) {
 
   const awards = awardTypes
     .map((cat) => {
-      const nominee = getByType(cat.type, 1)[0];
+      const nominee = getAwardLeader(cat.category) ?? getByType(cat.type, 1)[0];
       if (!nominee) return "";
-      return `<article class="cc-glass cc-award" data-award="${cat.type}">
+      return `<article class="cc-glass cc-award" data-award="${cat.type}" data-entity-id="${esc(nominee.id)}">
         <span style="font-size:0.78rem;text-transform:uppercase;color:var(--outline)">${esc(d.awards[cat.key])}</span>
         <div style="display:flex;align-items:center;gap:12px">
           <span style="font-size:1.8rem">🏆</span>
@@ -332,14 +334,7 @@ function bindInteractions(root, labyrinth) {
     });
   });
 
-  root.querySelectorAll(".cc-award__vote").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const d = dict();
-      btn.textContent = d.awards.voted;
-      btn.classList.add("cc-award__vote--voted");
-      btn.disabled = true;
-    });
-  });
+  bindAwardVotes(root, dict().awards);
 
   const newsletterForm = document.getElementById("cc-newsletter-form");
   newsletterForm?.addEventListener("submit", (e) => {

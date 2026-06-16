@@ -1,4 +1,5 @@
 import { entityMedia } from "./asset-catalog.js";
+import { VERIFICATION_TYPES, VERIFICATION_LEVELS } from "../intelligence/verified-trust.js";
 
 function engagement(base) {
   return {
@@ -210,6 +211,13 @@ const LANG_CYCLE = ["pl", "pl", "en", "es", "pt", "fr"];
 
 export const MOCK_ENTITIES = SEEDS.map((s, i) => {
   const id = `${s.type}-${i + 1}`;
+  const verified = Boolean(s.verified);
+  const verificationType = verified ? (VERIFICATION_TYPES[s.type] ?? null) : null;
+  const verificationLevel = !verified
+    ? VERIFICATION_LEVELS.pending
+    : (s.score ?? 0) >= 90 || (s.rating ?? 0) >= 4.8
+      ? VERIFICATION_LEVELS.premium_verified
+      : VERIFICATION_LEVELS.verified;
   return {
     id,
     type: s.type,
@@ -222,7 +230,9 @@ export const MOCK_ENTITIES = SEEDS.map((s, i) => {
     media: [entityMedia(s.type, id, s.title)],
     rating: s.rating,
     score: s.score,
-    verified: Boolean(s.verified),
+    verified,
+    verificationType,
+    verificationLevel,
     dateCreated: new Date(2026, 0, 1 + i * 3).toISOString(),
     dateEvent: s.dateEvent,
     engagement: engagement(s.pop),

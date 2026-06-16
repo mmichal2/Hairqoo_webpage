@@ -4,6 +4,7 @@ import { aiAsk } from "./data/queries.js";
 import { entityHref, searchHref, seeAllHref } from "./hub-routes.js";
 import { esc } from "./hub-shared.js";
 import { bindVoiceButton } from "./speech-recognition.js";
+import { logUserInteraction } from "./intelligence/ai-learning.js";
 
 const state = {
   open: false,
@@ -38,7 +39,7 @@ function renderThread() {
     if (msg.entities?.length) {
       extra += `<ul class="cc-ai-entity-list">${msg.entities
         .map(
-          (e) => `<li><a class="cc-ai-entity-link" href="${entityHref(e)}">
+          (e) => `<li><a class="cc-ai-entity-link" href="${entityHref(e)}" data-ai-entity-id="${esc(e.id)}" data-ai-entity-type="${esc(e.type)}">
             <span class="cc-ai-entity-title">${esc(e.title)}</span>
             ${e.location ? `<span class="cc-ai-entity-meta">${esc(e.location)}</span>` : ""}
           </a></li>`
@@ -95,6 +96,15 @@ function refreshUI() {
   bindDrawerEvents();
   const thread = document.getElementById("cc-ai-thread");
   if (thread) thread.scrollTop = thread.scrollHeight;
+
+  thread?.querySelectorAll("[data-ai-entity-id]").forEach((link) => {
+    link.addEventListener("click", () => {
+      logUserInteraction("click", link.dataset.aiEntityId, {
+        entityType: link.dataset.aiEntityType,
+        source: "ai-assistant",
+      });
+    });
+  });
 }
 
 function bindDrawerEvents() {

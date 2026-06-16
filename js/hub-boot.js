@@ -2,9 +2,11 @@ import { initTheme } from "./theme.js";
 import { initControls } from "./controls.js";
 import { applyI18n } from "./i18n.js";
 import { initAIAssistant } from "./ai-assistant.js";
+import { initIntelligence } from "./intelligence/index.js";
 
 /** Wspólny bootstrap stron hubu (bez labiryntu). */
 export function bootHubPage(render) {
+  initIntelligence();
   initTheme();
   initControls({
     onLangChange: () => {

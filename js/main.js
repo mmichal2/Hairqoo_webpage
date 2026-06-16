@@ -8,11 +8,13 @@ import { initTheme } from "./theme.js";
 import { applyI18n } from "./i18n.js";
 import { initControlCenter } from "./control-center.js";
 import { initAIAssistant } from "./ai-assistant.js";
+import { initIntelligence } from "./intelligence/index.js";
 
 let labyrinthInstance = null;
 
 try {
   initTheme();
+  initIntelligence();
   initPosterField(document.getElementById("poster-stars"));
   initGatePoster();
   applyI18n(document.getElementById("preloader") || document);

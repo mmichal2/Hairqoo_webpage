@@ -6,12 +6,13 @@ import {
   renderHubHeader,
   renderHubTabbar,
   bindSearchTags,
-  renderEntityCard,
+  bindAwardVotes,
 } from "../hub-shared.js";
 import {
   getCalendarEventsByView,
   getCountriesAggregated,
   getByType,
+  getAwardLeader,
 } from "../data/queries.js";
 import { entityHref, homeSectionHref } from "../hub-routes.js";
 import { bootHubPage } from "../hub-boot.js";
@@ -83,16 +84,16 @@ function renderMap(d) {
 
 function renderAwards(d) {
   const cats = [
-    { key: "educatorOfYear", type: "educator" },
-    { key: "eventOfYear", type: "event" },
-    { key: "productOfYear", type: "product" },
+    { key: "educatorOfYear", type: "educator", category: "educator_of_year" },
+    { key: "eventOfYear", type: "event", category: "event_of_year" },
+    { key: "productOfYear", type: "product", category: "product_of_year" },
   ];
   return `<div class="cc-awards__grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-md)">
     ${cats
       .map((cat) => {
-        const nominee = getByType(cat.type, 1)[0];
+        const nominee = getAwardLeader(cat.category) ?? getByType(cat.type, 1)[0];
         if (!nominee) return "";
-        return `<article class="cc-glass cc-award">
+        return `<article class="cc-glass cc-award" data-award="${cat.type}" data-entity-id="${esc(nominee.id)}">
           <span style="font-size:0.78rem;text-transform:uppercase;color:var(--outline)">${esc(d.awards[cat.key])}</span>
           <div style="display:flex;align-items:center;gap:12px">
             <span style="font-size:1.8rem">🏆</span>
@@ -180,13 +181,7 @@ function render(root) {
       if (list) list.innerHTML = renderCalendarRows(view);
     });
   });
-  root.querySelectorAll(".cc-award__vote").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      btn.textContent = d.awards.voted;
-      btn.classList.add("cc-award__vote--voted");
-      btn.disabled = true;
-    });
-  });
+  bindAwardVotes(root, d.awards);
   document.getElementById("hub-newsletter-form")?.addEventListener("submit", (e) => {
     e.preventDefault();
     e.target.innerHTML = `<p class="cc-newsletter__success">${esc(d.newsletter.success)}</p>`;

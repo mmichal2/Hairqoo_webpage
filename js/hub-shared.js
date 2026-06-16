@@ -192,3 +192,6 @@ export function bindSearchTags(root) {
   });
   bindVoiceButtons(root);
 }
+
+export { initIntelligence, bindAwardVotes } from "./intelligence/index.js";
+export { getPassportProgress } from "./intelligence/passport-system.js";
