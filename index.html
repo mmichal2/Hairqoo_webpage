@@ -22,7 +22,11 @@
         window.scrollTo(0, 0);
 
         if (location.hash) {
-          history.replaceState(null, "", location.pathname + location.search);
+          var h = location.hash.slice(1);
+          /* Zachowaj kotwice sekcji homepage (#discover, #events…); czyść tylko stare hash-e labiryntu */
+          if (/^(salon|client)(\/|$)/.test(h)) {
+            history.replaceState(null, "", location.pathname + location.search);
+          }
         }
 
         try {
@@ -96,8 +100,9 @@
     <link rel="stylesheet" href="./css/tunnel.css?v=32" />
     <link rel="stylesheet" href="./css/scroll-cue.css?v=32" />
     <link rel="stylesheet" href="./css/portal-door.css?v=32" />
-    <link rel="stylesheet" href="./css/controls.css?v=33" />
-    <link rel="stylesheet" href="./css/control-center.css?v=33" />
+    <link rel="stylesheet" href="./css/controls.css?v=35" />
+    <link rel="stylesheet" href="./css/control-center.css?v=35" />
+    <link rel="stylesheet" href="./css/ai-assistant.css?v=35" />
   </head>
   <body>
     <div class="preloader" id="preloader" aria-hidden="true">
@@ -983,7 +988,7 @@
       </button>
     </div>
 
-    <script type="module" src="./js/main.js?v=33"></script>
+    <script type="module" src="./js/main.js?v=35"></script>
     <script nomodule>
       document.getElementById("boot-fallback").hidden = false;
     </script>

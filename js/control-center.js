@@ -1,13 +1,23 @@
 import { getLang } from "./i18n.js";
-import { getCcDict } from "./cc-dict.js";
 import {
   getFeedPage,
   getTrending,
   getByType,
-  getTrendingTags,
   getCountriesAggregated,
-  getCalendarEvents,
+  getCalendarEventsByView,
 } from "./data/queries.js";
+import { seeAllHref, entityHref } from "./hub-routes.js";
+import { openAIWithPrompt } from "./ai-assistant.js";
+import {
+  esc,
+  dict,
+  renderEntityCard,
+  renderFeedItem,
+  renderSearchBar,
+  renderHubFooter,
+  renderHubTabbar,
+  bindSearchTags,
+} from "./hub-shared.js";
 
 const MONTHS_PL = ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"];
 const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -22,108 +32,34 @@ const PULSE_POS = [
 let feedCursor = null;
 let feedLoading = false;
 
-function esc(s) {
-  return String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function fmtNum(n) {
-  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(".0", "")}k`;
-  return String(n);
-}
-
-function dict() {
-  return getCcDict(getLang());
-}
-
-function mediaStyle(entity) {
-  const m = entity.media?.[0];
-  if (!m?.focalPoint) return "";
-  return `object-position: ${m.focalPoint}`;
-}
-
-function isTallCard(type) {
-  return ["educator", "salon", "brand", "academy"].includes(type);
-}
-
-function isVideoCard(type) {
-  return type === "video" || type === "post";
-}
-
-function renderEntityCard(entity, d) {
-  const img = entity.media?.[0]?.url ?? "./assets/images/sections/hero-home.jpg";
-  const typeLabel = d.entityTypes[entity.type] ?? entity.type;
-  const tall = isTallCard(entity.type);
-  const video = isVideoCard(entity.type);
-  const score = entity.score
-    ? `<span class="cc-score">${entity.score}</span>`
-    : "";
-  const meta = [entity.country, entity.location].filter(Boolean).join(" · ");
-
-  return `<a class="cc-glass cc-glass--interactive cc-card" href="#discover" data-entity="${esc(entity.id)}">
-    <div class="cc-card__media${tall ? " cc-card__media--tall" : ""}${video ? " cc-card__media--video" : ""}">
-      <img src="${esc(img)}" alt="${esc(entity.title)}" loading="lazy" style="${mediaStyle(entity)}" />
-      <span class="cc-card__typeTag">${esc(typeLabel)}</span>
-      ${video ? '<div class="cc-card__play"><span>▶</span></div>' : ""}
-    </div>
-    <div class="cc-card__body">
-      <h3 class="cc-card__title">${esc(entity.title)}</h3>
-      <p class="cc-card__desc">${esc(entity.description)}</p>
-      <div class="cc-card__meta">${esc(meta)} ${score}</div>
-    </div>
-  </a>`;
-}
-
-function renderFeedItem(entity, d) {
-  const img = entity.media?.[0]?.url ?? "./assets/images/sections/hero-home.jpg";
-  const typeLabel = d.entityTypes[entity.type] ?? entity.type;
-  const tags = entity.tags.map((t) => `<span class="cc-feed__tag">#${esc(t)}</span>`).join("");
-  const eng = entity.engagement;
-
-  return `<article class="cc-glass cc-feed__item">
-    <div class="cc-feed__media">
-      <img src="${esc(img)}" alt="${esc(entity.title)}" loading="lazy" style="${mediaStyle(entity)}" />
-      <span class="cc-feed__type">${esc(typeLabel)}</span>
-    </div>
-    <div class="cc-feed__body">
-      <h3 class="cc-feed__title">${esc(entity.title)}</h3>
-      <p class="cc-feed__desc">${esc(entity.description)}</p>
-      <div class="cc-feed__footer">
-        <div class="cc-feed__engagement">
-          <span>👁 ${fmtNum(eng.views)}</span>
-          <span>♥ ${fmtNum(eng.likes)}</span>
-        </div>
-        <div class="cc-feed__tags">${tags}</div>
-      </div>
-    </div>
-  </article>`;
-}
-
-function sectionHeader(title, subtitle, anchor, seeAll, d) {
+function sectionHeader(title, subtitle, sectionKey, seeAll) {
   return `<header class="cc-section__header">
     <div>
       <h2 class="cc-section__title strand-text">${esc(title)}</h2>
       <p class="cc-section__subtitle">${esc(subtitle)}</p>
     </div>
-    <a class="cc-section__action" href="#${anchor}">${esc(seeAll)} →</a>
+    <a class="cc-section__action" href="${seeAllHref(sectionKey)}">${esc(seeAll)} →</a>
   </header>`;
 }
 
-function renderSearchBar(id, d, compact = false) {
-  const tags = getTrendingTags(6);
-  const tagHtml = tags
-    .map((t) => `<button type="button" class="cc-search__tag" data-search-tag="${esc(t)}">#${esc(t)}</button>`)
+function renderCalendarRows(view = "month") {
+  const d = dict();
+  const months = getLang() === "en" ? MONTHS_EN : MONTHS_PL;
+  return getCalendarEventsByView(view, 6)
+    .map((ev) => {
+      const dt = new Date(ev.dateEvent);
+      return `<li class="cc-calendar__row">
+        <div class="cc-calendar__date">
+          <span class="cc-calendar__day">${dt.getDate()}</span>
+          <span class="cc-calendar__mon">${months[dt.getMonth()]}</span>
+        </div>
+        <div>
+          <a href="${entityHref(ev)}" style="color:var(--text);font-weight:600;text-decoration:none">${esc(ev.title)}</a>
+          <div style="font-size:0.82rem;color:var(--outline)">${esc(ev.location ?? "")}</div>
+        </div>
+      </li>`;
+    })
     .join("");
-  return `<div class="cc-search${compact ? " cc-search--compact" : ""}" id="${id}">
-    <div class="cc-search__row">
-      <input class="cc-search__input" type="search" placeholder="${esc(d.search.placeholder)}" aria-label="${esc(d.search.placeholder)}" />
-      <button type="button" class="cc-search__submit">${esc(d.search.submit)}</button>
-    </div>
-    <div class="cc-search__trending" aria-label="${esc(d.search.trending)}">${tagHtml}</div>
-  </div>`;
 }
 
 function renderHomepage(root) {
@@ -152,36 +88,21 @@ function renderHomepage(root) {
   ];
 
   const navHtml = navLinks
-    .map(([id, label]) => `<a class="cc-header__navLink" href="#${id}">${esc(label)}</a>`)
+    .map(([id, label]) => `<a class="cc-header__navLink" href="${seeAllHref(id)}">${esc(label)}</a>`)
     .join("");
 
   const aiPrompts = d.ai.prompts
     .map((p) => `<button type="button" class="cc-ai__prompt">${esc(p)}</button>`)
     .join("");
 
-  const calendarRows = getCalendarEvents(6)
-    .map((ev) => {
-      const dt = new Date(ev.dateEvent);
-      const months = getLang() === "en" ? MONTHS_EN : MONTHS_PL;
-      return `<li class="cc-calendar__row">
-        <div class="cc-calendar__date">
-          <span class="cc-calendar__day">${dt.getDate()}</span>
-          <span class="cc-calendar__mon">${months[dt.getMonth()]}</span>
-        </div>
-        <div>
-          <strong>${esc(ev.title)}</strong>
-          <div style="font-size:0.82rem;color:var(--outline)">${esc(ev.location ?? "")}</div>
-        </div>
-      </li>`;
-    })
-    .join("");
+  const calendarRows = renderCalendarRows("month");
 
   const mapCountries = getCountriesAggregated()
     .map(
-      (c) => `<div class="cc-map__country">
+      (c) => `<a class="cc-map__country" href="./map.html?country=${encodeURIComponent(c.country)}" style="text-decoration:none;color:inherit">
         <span>${esc(c.country)}</span>
         <span class="cc-map__count">${c.count}</span>
-      </div>`
+      </a>`
     )
     .join("");
 
@@ -231,7 +152,7 @@ function renderHomepage(root) {
   root.innerHTML = `
     <header class="cc-header">
       <div class="cc-header__inner">
-        <a class="cc-header__brand" href="#">
+        <a class="cc-header__brand" href="./index.html">
           <img class="cc-header__logo" src="./assets/images/hairlab_icon.png" alt="" width="30" height="30" />
           <span class="cc-header__brandText">${esc(d.brand)}</span>
         </a>
@@ -239,7 +160,7 @@ function renderHomepage(root) {
       </div>
     </header>
 
-    <div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d, true)}</div>
+    <div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d)}</div>
 
     <section class="cc-hero">
       <div class="cc-container">
@@ -291,35 +212,36 @@ function renderHomepage(root) {
           <h2 class="cc-section__title strand-text">${esc(d.sections.discover)}</h2>
           <p class="cc-section__subtitle">${esc(d.sections.discoverSub)}</p>
         </div>
+        <a class="cc-section__action" href="${seeAllHref("discover")}">${esc(d.sections.seeAll)} →</a>
       </header>
       <div class="cc-feed" id="cc-feed">${feedSeed.map((e) => renderFeedItem(e, d)).join("")}</div>
       <p class="cc-feed__state" id="cc-feed-state" hidden></p>
     </section>
 
     <section class="cc-section cc-container" id="trending">
-      ${sectionHeader(d.sections.trending, d.sections.trendingSub, "discover", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.trending, d.sections.trendingSub, "discover", d.sections.seeAll)}
       <div class="cc-hscroll">${getTrending(8).map((e) => renderEntityCard(e, d)).join("")}</div>
     </section>
 
     <section class="cc-section cc-container" id="events">
-      ${sectionHeader(d.sections.events, d.sections.eventsSub, "events", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.events, d.sections.eventsSub, "events", d.sections.seeAll)}
       <div class="cc-hscroll">${getByType("event", 8).map((e) => renderEntityCard(e, d)).join("")}</div>
     </section>
 
     <section class="cc-section cc-container" id="calendar">
-      ${sectionHeader(d.sections.calendar, d.sections.calendarSub, "calendar", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.calendar, d.sections.calendarSub, "calendar", d.sections.seeAll)}
       <div class="cc-glass cc-calendar__panel" style="padding:var(--space-lg)">
-        <div class="cc-calendar__tabs">
-          <button type="button" class="cc-calendar__tab cc-calendar__tab--on">${esc(d.calendar.month)}</button>
-          <button type="button" class="cc-calendar__tab">${esc(d.calendar.week)}</button>
-          <button type="button" class="cc-calendar__tab">${esc(d.calendar.year)}</button>
+        <div class="cc-calendar__tabs" data-calendar-tabs>
+          <button type="button" class="cc-calendar__tab cc-calendar__tab--on" data-calendar-view="month">${esc(d.calendar.month)}</button>
+          <button type="button" class="cc-calendar__tab" data-calendar-view="week">${esc(d.calendar.week)}</button>
+          <button type="button" class="cc-calendar__tab" data-calendar-view="year">${esc(d.calendar.year)}</button>
         </div>
-        <ul style="list-style:none;margin:0;padding:0">${calendarRows}</ul>
+        <ul id="cc-calendar-list" style="list-style:none;margin:0;padding:0">${calendarRows}</ul>
       </div>
     </section>
 
     <section class="cc-section cc-container" id="map">
-      ${sectionHeader(d.sections.map, d.sections.mapSub, "map", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.map, d.sections.mapSub, "map", d.sections.seeAll)}
       <div class="cc-glass cc-map__panel">
         <div class="cc-map__globe"><div class="cc-map__grid"></div>${pulses}</div>
         <div>
@@ -330,42 +252,42 @@ function renderHomepage(root) {
     </section>
 
     <section class="cc-section cc-container" id="education">
-      ${sectionHeader(d.sections.education, d.sections.educationSub, "education", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.education, d.sections.educationSub, "education", d.sections.seeAll)}
       <div class="cc-hscroll">${educationItems.map((e) => renderEntityCard(e, d)).join("")}</div>
     </section>
 
     <section class="cc-section cc-container" id="educators">
-      ${sectionHeader(d.sections.educators, d.sections.educatorsSub, "educators", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.educators, d.sections.educatorsSub, "educators", d.sections.seeAll)}
       <div class="cc-hscroll">${getByType("educator", 8).map((e) => renderEntityCard(e, d)).join("")}</div>
     </section>
 
     <section class="cc-section cc-container" id="products">
-      ${sectionHeader(d.sections.products, d.sections.productsSub, "products", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.products, d.sections.productsSub, "products", d.sections.seeAll)}
       <div class="cc-hscroll">${getByType("product", 8).map((e) => renderEntityCard(e, d)).join("")}</div>
     </section>
 
     <section class="cc-section cc-container" id="community">
-      ${sectionHeader(d.sections.community, d.sections.communitySub, "community", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.community, d.sections.communitySub, "community", d.sections.seeAll)}
       <div class="cc-hscroll">${getByType("post", 8).map((e) => renderEntityCard(e, d)).join("")}</div>
     </section>
 
     <section class="cc-section cc-container" id="career">
-      ${sectionHeader(d.sections.career, d.sections.careerSub, "career", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.career, d.sections.careerSub, "career", d.sections.seeAll)}
       <div class="cc-grid">${jobs}</div>
     </section>
 
     <section class="cc-section cc-container" id="tv">
-      ${sectionHeader(d.sections.tv, d.sections.tvSub, "tv", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.tv, d.sections.tvSub, "tv", d.sections.seeAll)}
       <div class="cc-hscroll">${getByType("video", 8).map((e) => renderEntityCard(e, d)).join("")}</div>
     </section>
 
     <section class="cc-section cc-container" id="awards">
-      ${sectionHeader(d.sections.awards, d.sections.awardsSub, "awards", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.awards, d.sections.awardsSub, "awards", d.sections.seeAll)}
       <div class="cc-awards__grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-md)">${awards}</div>
     </section>
 
     <section class="cc-section cc-container" id="passport">
-      ${sectionHeader(d.sections.passport, d.sections.passportSub, "passport", d.sections.seeAll, d)}
+      ${sectionHeader(d.sections.passport, d.sections.passportSub, "passport", d.sections.seeAll)}
       <div class="cc-glass cc-passport">
         <ol style="list-style:none;margin:0;padding:0">${passportItems}</ol>
       </div>
@@ -386,71 +308,28 @@ function renderHomepage(root) {
       </div>
     </div>
 
-    <footer class="cc-footer">
-      <div class="cc-container">
-        <div class="cc-footer__top" style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:var(--space-xl)">
-          <div>
-            <div class="cc-footer__brand">${esc(d.brand)}</div>
-            <p class="cc-footer__tagline">${esc(d.tagline)}</p>
-          </div>
-          <div>
-            <div class="cc-footer__colTitle">${esc(d.footer.product)}</div>
-            <a class="cc-footer__link" href="#discover">${esc(d.nav.discover)}</a>
-            <a class="cc-footer__link" href="#events">${esc(d.nav.events)}</a>
-          </div>
-          <div>
-            <div class="cc-footer__colTitle">${esc(d.footer.company)}</div>
-            <a class="cc-footer__link" href="#career">${esc(d.nav.career)}</a>
-            <a class="cc-footer__link" href="#passport">${esc(d.nav.passport)}</a>
-          </div>
-          <div>
-            <div class="cc-footer__colTitle">${esc(d.footer.legal)}</div>
-            <a class="cc-footer__link" href="./privacy.html">${esc(d.footer.privacy)}</a>
-            <a class="cc-footer__link" href="./terms.html">${esc(d.footer.terms)}</a>
-          </div>
-        </div>
-        <div class="cc-footer__bottom">
-          <span>© ${new Date().getFullYear()} ${esc(d.brand)}. ${esc(d.footer.rights)}</span>
-          <div style="display:flex;gap:14px"><span>@hairqoo</span></div>
-        </div>
-      </div>
-    </footer>
-
-    <nav class="cc-tabbar" aria-label="${esc(d.layout.mobileNav)}">
-      <a class="cc-tabbar__tab cc-tabbar__tab--active" href="#"><span class="cc-tabbar__icon">⌂</span>${esc(d.layout.homeTab)}</a>
-      <a class="cc-tabbar__tab" href="#discover"><span class="cc-tabbar__icon">✦</span>${esc(d.nav.discover)}</a>
-      <a class="cc-tabbar__tab" href="#events"><span class="cc-tabbar__icon">📅</span>${esc(d.nav.events)}</a>
-      <a class="cc-tabbar__tab" href="#map"><span class="cc-tabbar__icon">🌍</span>${esc(d.nav.map)}</a>
-      <a class="cc-tabbar__tab" href="#educators"><span class="cc-tabbar__icon">🎓</span>${esc(d.nav.educators)}</a>
-    </nav>
+    ${renderHubFooter(d)}
+    ${renderHubTabbar(d, "home")}
   `;
 }
 
 function bindInteractions(root, labyrinth) {
-  root.querySelectorAll("[data-search-tag]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const q = btn.dataset.searchTag;
-      root.querySelectorAll(".cc-search__input").forEach((input) => {
-        input.value = q;
-      });
-      document.getElementById("discover")?.scrollIntoView({ behavior: "smooth" });
-    });
-  });
-
-  root.querySelectorAll(".cc-search__submit").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.getElementById("discover")?.scrollIntoView({ behavior: "smooth" });
-    });
-  });
+  bindSearchTags(root);
 
   root.querySelectorAll(".cc-ai__prompt").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.getElementById("discover")?.scrollIntoView({ behavior: "smooth" });
-    });
+    btn.addEventListener("click", () => openAIWithPrompt(btn.textContent.trim()));
   });
+  document.getElementById("cc-ai-open")?.addEventListener("click", () => openAIWithPrompt());
 
-  document.getElementById("cc-ai-open")?.addEventListener("click", () => {
-    document.getElementById("discover")?.scrollIntoView({ behavior: "smooth" });
+  root.querySelectorAll("[data-calendar-view]").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const view = tab.dataset.calendarView;
+      root.querySelectorAll("[data-calendar-view]").forEach((t) => {
+        t.classList.toggle("cc-calendar__tab--on", t === tab);
+      });
+      const list = document.getElementById("cc-calendar-list");
+      if (list) list.innerHTML = renderCalendarRows(view);
+    });
   });
 
   root.querySelectorAll(".cc-award__vote").forEach((btn) => {
@@ -487,7 +366,6 @@ function bindInteractions(root, labyrinth) {
     observer.observe(sentinel);
   }
 
-  // Re-bind portal tiles for labyrinth (after innerHTML replace)
   root.querySelectorAll("[data-portal]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       if (!labyrinth || labyrinth.isTransitioning) return;
@@ -521,6 +399,13 @@ function loadMoreFeed(feedEl, feedState) {
   feedLoading = false;
 }
 
+function scrollToSectionHash() {
+  const id = window.location.hash.replace("#", "");
+  if (!id) return;
+  const el = document.getElementById(id);
+  if (el) requestAnimationFrame(() => el.scrollIntoView({ behavior: "smooth" }));
+}
+
 export function initControlCenter(labyrinth) {
   const gate = document.getElementById("gate");
   if (!gate) return;
@@ -531,9 +416,11 @@ export function initControlCenter(labyrinth) {
   const root = document.getElementById("cc-app");
   renderHomepage(root);
   bindInteractions(root, labyrinth);
+  scrollToSectionHash();
 
   window.addEventListener("hairqoo:lang", () => {
     renderHomepage(root);
     bindInteractions(root, labyrinth);
+    scrollToSectionHash();
   });
 }

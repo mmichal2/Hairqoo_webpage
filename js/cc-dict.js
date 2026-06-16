@@ -1,4 +1,8 @@
-/** Tłumaczenia Control Center (hairqoo3) — PL + EN */
+/** Tłumaczenia Control Center (hairqoo3) — PL, EN, ES, FR, PT */
+import es from "./cc-locales/es.js";
+import fr from "./cc-locales/fr.js";
+import pt from "./cc-locales/pt.js";
+
 export const CC_DICT = {
   pl: {
     brand: "Hairqoo",
@@ -26,11 +30,21 @@ export const CC_DICT = {
       placeholder: "Szukaj wydarzeń, edukatorów, produktów, technik…",
       trending: "Na czasie",
       submit: "Szukaj",
+      voice: "Wyszukiwanie głosowe",
+      voiceListening: "Słucham…",
+      voiceDenied: "Brak dostępu do mikrofonu",
+      allResults: "Wszystkie wyniki",
+      noResults: "Brak wyników",
+      resultsFor: "Wyniki dla",
     },
     ai: {
       title: "Asystent AI",
       subtitle: "Zapytaj naturalnym językiem — znajdę wydarzenia, edukatorów i produkty.",
+      placeholder: "np. Pokaż kursy balayage w Polsce w tym miesiącu",
+      send: "Wyślij",
       open: "Otwórz asystenta AI",
+      thinking: "Analizuję…",
+      suggestionsTitle: "Sugestie",
       prompts: [
         "Kursy balayage w Polsce w tym miesiącu",
         "Top edukatorzy barberingu",
@@ -94,7 +108,18 @@ export const CC_DICT = {
       terms: "Regulamin",
       cookies: "Cookies",
     },
-    common: { loading: "Ładowanie…", verified: "Zweryfikowane" },
+    common: {
+      loading: "Ładowanie…",
+      verified: "Zweryfikowane",
+      backHome: "Wróć na stronę główną",
+      country: "Kraj",
+      allCountries: "Wszystkie kraje",
+      noFilterResults: "Brak wyników dla wybranych filtrów.",
+      similar: "Podobne",
+      close: "Zamknij",
+      profile: "Profil",
+      items: "pozycji",
+    },
     feed: { end: "To wszystko na teraz ✦" },
     calendar: { month: "Miesiąc", week: "Tydzień", year: "Rok" },
     awards: {
@@ -127,6 +152,28 @@ export const CC_DICT = {
       post: "Post",
       video: "Wideo",
     },
+    profile: {
+      label: "Profil",
+      itemsInEcosystem: "pozycji w ekosystemie Hairqoo",
+    },
+    errors: {
+      searchFailed: "Nie udało się wyszukać. Spróbuj ponownie.",
+      aiFailed: "Coś poszło nie tak. Spróbuj ponownie.",
+      aiNoMatch: "Nie znalazłem dopasowań — spróbuj doprecyzować zapytanie.",
+    },
+    aiAnswers: {
+      found: "Znalazłem {count} dopasowanych pozycji ({type}). Oto najlepsze propozycje:",
+      foundOne: "Znalazłem 1 dopasowaną pozycję ({type}). Oto najlepsza propozycja:",
+      typeEvent: "wydarzenia",
+      typeEducator: "edukatorzy",
+      typeProduct: "produkty",
+      typeVideo: "wideo",
+      typeDefault: "wyniki",
+      allResults: "Wszystkie wyniki",
+      eventsLink: "Wydarzenia",
+      educatorsLink: "Edukatorzy",
+      productsLink: "Produkty",
+    },
     layout: { homeTab: "Start", mobileNav: "Nawigacja mobilna", mainNav: "Główna nawigacja" },
   },
   en: {
@@ -155,11 +202,21 @@ export const CC_DICT = {
       placeholder: "Search events, educators, products, techniques…",
       trending: "Trending",
       submit: "Search",
+      voice: "Voice search",
+      voiceListening: "Listening…",
+      voiceDenied: "Microphone access denied",
+      allResults: "All results",
+      noResults: "No results",
+      resultsFor: "Results for",
     },
     ai: {
       title: "AI Assistant",
       subtitle: "Ask in natural language — I'll find events, educators and products.",
+      placeholder: "e.g. Show balayage courses in Poland this month",
+      send: "Send",
       open: "Open AI assistant",
+      thinking: "Analysing…",
+      suggestionsTitle: "Suggestions",
       prompts: [
         "Balayage courses in Poland this month",
         "Top barbering educators",
@@ -223,7 +280,18 @@ export const CC_DICT = {
       terms: "Terms",
       cookies: "Cookies",
     },
-    common: { loading: "Loading…", verified: "Verified" },
+    common: {
+      loading: "Loading…",
+      verified: "Verified",
+      backHome: "Back to home",
+      country: "Country",
+      allCountries: "All countries",
+      noFilterResults: "No results for selected filters.",
+      similar: "Similar",
+      close: "Close",
+      profile: "Profile",
+      items: "items",
+    },
     feed: { end: "That's all for now ✦" },
     calendar: { month: "Month", week: "Week", year: "Year" },
     awards: {
@@ -256,8 +324,33 @@ export const CC_DICT = {
       post: "Post",
       video: "Video",
     },
+    profile: {
+      label: "Profile",
+      itemsInEcosystem: "items in the Hairqoo ecosystem",
+    },
+    errors: {
+      searchFailed: "Search failed. Please try again.",
+      aiFailed: "Something went wrong. Please try again.",
+      aiNoMatch: "No matches found — try refining your query.",
+    },
+    aiAnswers: {
+      found: "I found {count} matching items ({type}). Here are the best picks:",
+      foundOne: "I found 1 matching item ({type}). Here's the best pick:",
+      typeEvent: "events",
+      typeEducator: "educators",
+      typeProduct: "products",
+      typeVideo: "videos",
+      typeDefault: "results",
+      allResults: "All results",
+      eventsLink: "Events",
+      educatorsLink: "Educators",
+      productsLink: "Products",
+    },
     layout: { homeTab: "Home", mobileNav: "Mobile navigation", mainNav: "Main navigation" },
   },
+  es,
+  fr,
+  pt,
 };
 
 export function getCcDict(lang) {

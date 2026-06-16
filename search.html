@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hairqoo — Szukaj</title>
+    <meta name="theme-color" content="#13131A" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/tokens.css?v=35" />
+    <link rel="stylesheet" href="./css/base.css?v=35" />
+    <link rel="stylesheet" href="./css/control-center.css?v=35" />
+    <link rel="stylesheet" href="./css/ai-assistant.css?v=35" />
+    <link rel="stylesheet" href="./css/controls.css?v=35" />
+  </head>
+  <body class="hub-page">
+    <div class="portal-chrome" id="portal-chrome">
+      <div class="portal-chrome-inner">
+        <div class="lang-menu" data-lang-menu>
+          <button type="button" class="lang-menu-trigger" data-lang-trigger aria-haspopup="true" aria-label="Język">🌐</button>
+          <div class="lang-menu-panel" data-lang-panel role="menu" hidden></div>
+        </div>
+        <button type="button" class="theme-toggle" data-theme-toggle aria-label="Motyw">◐</button>
+      </div>
+    </div>
+    <div id="hub-root"></div>
+    <script type="module" src="./js/pages/search-page.js?v=35"></script>
+  </body>
+</html>

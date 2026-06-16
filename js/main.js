@@ -7,6 +7,7 @@ import { initControls } from "./controls.js";
 import { initTheme } from "./theme.js";
 import { applyI18n } from "./i18n.js";
 import { initControlCenter } from "./control-center.js";
+import { initAIAssistant } from "./ai-assistant.js";
 
 let labyrinthInstance = null;
 
@@ -26,6 +27,7 @@ try {
 
   labyrinthInstance = new Labyrinth();
   initControlCenter(labyrinthInstance);
+  initAIAssistant();
   initForm(labyrinthInstance);
   initThemeDemo();
   window.__hairqooAppReady = true;
