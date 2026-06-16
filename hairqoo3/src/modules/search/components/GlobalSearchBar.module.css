@@ -1,0 +1,111 @@
+.wrap {
+  position: relative;
+  width: 100%;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 18px;
+  border-radius: var(--radius-pill);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.wrap[data-open="true"] .bar {
+  border-color: rgba(201, 191, 255, 0.4);
+  box-shadow: var(--shadow-glow);
+}
+
+.icon {
+  font-size: 1.1rem;
+  opacity: 0.8;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--outline);
+}
+
+.submit {
+  flex-shrink: 0;
+  padding: 11px 22px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: var(--cosmic-void);
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  background: rgba(11, 11, 18, 0.95);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+  z-index: var(--z-overlay);
+}
+
+[data-theme="light"] .panel {
+  background: rgba(255, 255, 255, 0.97);
+}
+
+.panelLabel {
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--outline);
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--glass-border);
+  background: var(--surface-high);
+  color: var(--text);
+  font-size: 0.85rem;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.tag:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .submit {
+    padding: 11px 16px;
+  }
+}

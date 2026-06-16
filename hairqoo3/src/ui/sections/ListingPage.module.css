@@ -1,0 +1,27 @@
+.head {
+  padding-block: var(--space-xl) var(--space-md);
+}
+
+.title {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+  max-width: 56ch;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  padding-bottom: var(--space-lg);
+}
+
+.empty {
+  padding: var(--space-3xl) 0;
+  text-align: center;
+  color: var(--muted);
+}

@@ -1,0 +1,13 @@
+.head {
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.title {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+}

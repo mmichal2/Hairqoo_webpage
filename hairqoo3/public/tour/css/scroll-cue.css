@@ -1,0 +1,134 @@
+.scroll-cue {
+  position: fixed;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%) translateY(16px);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 500ms var(--ease-silk),
+    transform 500ms var(--ease-silk),
+    visibility 500ms;
+}
+
+.scroll-cue.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.scroll-cue.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scroll-cue[hidden] {
+  display: none !important;
+}
+
+.scroll-cue-ring {
+  position: absolute;
+  top: 2px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 191, 255, 0.35);
+  background: rgba(11, 11, 18, 0.72);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 0 30px rgba(123, 97, 255, 0.2),
+    inset 0 0 20px rgba(201, 191, 255, 0.06);
+  transition: box-shadow 300ms var(--ease-silk), border-color 300ms;
+}
+
+.scroll-cue:hover .scroll-cue-ring,
+.scroll-cue:focus-visible .scroll-cue-ring {
+  border-color: var(--primary);
+  box-shadow:
+    0 0 40px rgba(123, 97, 255, 0.45),
+    inset 0 0 24px rgba(201, 191, 255, 0.12);
+}
+
+.scroll-cue-arrow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  font-size: 1.35rem;
+  color: var(--primary);
+  animation: cueBounce 2.4s var(--ease-silk) infinite;
+}
+
+.scroll-cue-label {
+  position: relative;
+  z-index: 1;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--outline);
+  white-space: nowrap;
+}
+
+.scroll-cue.is-animating .scroll-cue-arrow {
+  animation: none;
+  opacity: 0.5;
+}
+
+.scroll-cue.is-finish .scroll-cue-arrow {
+  animation-duration: 3s;
+}
+
+@keyframes cueBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(7px);
+    opacity: 1;
+  }
+}
+
+[data-theme="light"] .scroll-cue-ring {
+  background: var(--primary);
+  border-color: rgba(90, 69, 212, 0.35);
+  box-shadow:
+    0 0 28px rgba(90, 69, 212, 0.22),
+    inset 0 0 12px rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] .scroll-cue-arrow {
+  color: var(--bg);
+}
+
+[data-theme="light"] .scroll-cue:hover .scroll-cue-ring,
+[data-theme="light"] .scroll-cue:focus-visible .scroll-cue-ring {
+  border-color: var(--primary);
+  box-shadow: 0 0 32px rgba(90, 69, 212, 0.2);
+}
+
+[data-theme="light"] .scroll-cue-label {
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue-arrow {
+    animation: none;
+  }
+}

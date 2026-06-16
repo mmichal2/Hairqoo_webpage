@@ -1,0 +1,107 @@
+.panel {
+  padding: var(--space-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background-image: url("/assets/images/sections/section-calendar.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.14;
+  filter: saturate(1.06) contrast(1.02);
+  z-index: 0;
+}
+
+.panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-high);
+  margin-bottom: var(--space-md);
+}
+
+.tab {
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.tabOn {
+  background: var(--surface-highest);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface-high);
+  border: 1px solid var(--glass-border);
+}
+
+.day {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.mon {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--outline);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.name {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.name:hover {
+  color: var(--primary);
+}
+
+.loc {
+  font-size: 0.82rem;
+  color: var(--outline);
+}

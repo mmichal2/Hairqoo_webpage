@@ -1,0 +1,127 @@
+/* Train-from-tunnel — cinematic chamber emergence */
+
+.tunnel-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms var(--ease-silk);
+}
+
+body.is-labyrinth-active .tunnel-veil.is-visible {
+  opacity: 1;
+}
+
+.tunnel-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 72% 58% at 50% 42%, transparent 0%, rgba(11, 11, 18, 0.22) 80%),
+    linear-gradient(180deg, transparent 0%, transparent 72%, rgba(11, 11, 18, 0.28) 100%);
+  opacity: calc(var(--tunnel-dark, 0) * 0.38);
+  transition: opacity 80ms linear;
+}
+
+[data-theme="light"] .tunnel-vignette {
+  background:
+    radial-gradient(ellipse 72% 58% at 50% 42%, transparent 0%, rgba(90, 69, 212, 0.04) 82%),
+    linear-gradient(180deg, transparent 0%, transparent 100%);
+  opacity: calc(var(--tunnel-dark, 0) * 0.16);
+}
+
+.tunnel-light {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: 140%;
+  height: 55%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(201, 191, 255, calc(0.08 + var(--emerge, 0) * 0.22)) 0%,
+    rgba(123, 97, 255, calc(0.02 + var(--emerge, 0) * 0.08)) 35%,
+    transparent 70%
+  );
+  filter: blur(2px);
+  opacity: calc(var(--tunnel-dark, 0) * 0.95);
+  transition: opacity 80ms linear;
+}
+
+body.portal-client-active .tunnel-light {
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(255, 183, 183, calc(0.06 + var(--emerge, 0) * 0.18)) 0%,
+    rgba(255, 146, 160, calc(0.02 + var(--emerge, 0) * 0.06)) 35%,
+    transparent 70%
+  );
+}
+
+.tunnel-rails {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(11, 11, 18, calc(0.1 + var(--tunnel-dark, 0) * 0.28)) 100%
+  );
+  mask-image: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+  opacity: calc(var(--tunnel-dark, 0) * 0.55);
+}
+
+[data-theme="light"] .tunnel-rails {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(90, 69, 212, calc(0.04 + var(--tunnel-dark, 0) * 0.1)) 100%
+  );
+  opacity: calc(var(--tunnel-dark, 0) * 0.32);
+}
+
+.labyrinth.is-tunnel-active {
+  --tunnel-shadow: 0 24px 80px rgba(0, 0, 0, calc(0.35 + var(--tunnel-dark, 0.4) * 0.35));
+}
+
+.chamber {
+  perspective: 1200px;
+}
+
+.chamber-inner {
+  transform-origin: 50% 42%;
+  transform:
+    scale(calc(0.86 + var(--ch-emerge, 0) * 0.14))
+    translateY(calc((1 - var(--ch-emerge, 0)) * 48px))
+    rotateX(calc((1 - var(--ch-emerge, 0)) * 4deg));
+  filter:
+    brightness(calc(0.78 + var(--ch-emerge, 0) * 0.22))
+    blur(calc((1 - var(--ch-emerge, 0)) * 2.5px));
+  box-shadow: var(--tunnel-shadow, none);
+  transition:
+    transform 120ms linear,
+    filter 120ms linear,
+    box-shadow 200ms var(--ease-silk);
+}
+
+.chamber.is-active .chamber-inner {
+  filter:
+    brightness(1)
+    blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chamber-inner {
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+
+  .tunnel-vignette,
+  .tunnel-light,
+  .tunnel-rails {
+    opacity: 0.3;
+    transition: none;
+  }
+}

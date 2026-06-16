@@ -1,0 +1,70 @@
+.cat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.cat::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background-image: url("/assets/images/sections/section-awards.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.14;
+  filter: saturate(1.08) contrast(1.02);
+  z-index: 0;
+}
+
+.cat > * {
+  position: relative;
+  z-index: 1;
+}
+
+.catName {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--outline);
+  font-weight: 600;
+}
+
+.nominee {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trophy {
+  font-size: 1.8rem;
+}
+
+.nomTitle {
+  margin: 0 0 6px;
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+
+.vote {
+  margin-top: auto;
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.88rem;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.vote:hover {
+  background: rgba(123, 97, 255, 0.12);
+}
+
+.voted {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: var(--cosmic-void);
+  border-color: transparent;
+}

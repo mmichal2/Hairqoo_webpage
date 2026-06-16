@@ -1,0 +1,93 @@
+.panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl);
+  padding: var(--space-xl);
+  background:
+    radial-gradient(ellipse 80% 120% at 0% 0%, rgba(123, 97, 255, 0.18), transparent 60%),
+    var(--glass-fill);
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background-image: url("/assets/images/sections/section-newsletter.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.14;
+  filter: saturate(1.06) contrast(1.02);
+  z-index: 0;
+}
+
+.panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.title {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.desc {
+  margin: 8px 0 0;
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+.form {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.input {
+  padding: 13px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--glass-border);
+  background: var(--surface-high);
+  color: var(--text);
+  font-size: 0.95rem;
+  min-width: 240px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--primary);
+}
+
+.cta {
+  padding: 13px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  color: var(--cosmic-void);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  white-space: nowrap;
+}
+
+.success {
+  font-weight: 600;
+  color: var(--success);
+}
+
+@media (max-width: 760px) {
+  .panel {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-lg);
+  }
+  .form {
+    width: 100%;
+    flex-direction: column;
+  }
+  .input {
+    min-width: 0;
+    width: 100%;
+  }
+  .cta {
+    width: 100%;
+  }
+}

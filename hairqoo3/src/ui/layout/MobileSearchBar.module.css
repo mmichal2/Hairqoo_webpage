@@ -1,0 +1,21 @@
+.wrap {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .wrap {
+    display: block;
+    position: sticky;
+    top: var(--header-h);
+    z-index: calc(var(--z-header) - 1);
+    padding: 10px var(--space-md);
+    background: rgba(11, 11, 18, 0.82);
+    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  [data-theme="light"] .wrap {
+    background: rgba(247, 244, 239, 0.86);
+  }
+}

@@ -1,0 +1,321 @@
+/* Gate floating controls + labyrinth header controls */
+
+.portal-chrome {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.portal-chrome > * {
+  pointer-events: auto;
+}
+
+.gate-controls,
+.labyrinth-home-exit {
+  top: calc(16px + env(safe-area-inset-top, 0px));
+}
+
+.gate-controls {
+  position: fixed;
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.labyrinth-home-exit {
+  position: fixed;
+  left: calc(16px + env(safe-area-inset-left, 0px));
+  display: none;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  border: 1px solid rgba(201, 191, 255, 0.28);
+  background: rgba(11, 11, 18, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition:
+    transform 200ms var(--ease-silk),
+    box-shadow 200ms var(--ease-silk),
+    border-color 200ms var(--ease-silk),
+    background 200ms var(--ease-silk);
+}
+
+body.is-labyrinth-active .labyrinth-home-exit:not([hidden]) {
+  display: inline-flex;
+}
+
+[data-theme="light"] .labyrinth-home-exit {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(90, 69, 212, 0.18);
+}
+
+.labyrinth-home-exit:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 24px rgba(123, 97, 255, 0.25);
+  transform: translateX(-2px);
+}
+
+.labyrinth-home-arrow {
+  font-size: 1.1rem;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.progress-ring.ctrl-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  flex-shrink: 0;
+  cursor: default;
+  pointer-events: none;
+  transition:
+    transform 280ms var(--ease-silk),
+    box-shadow 280ms var(--ease-silk);
+}
+
+body.is-labyrinth-active .progress-ring.ctrl-btn.is-visible {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-ring[hidden] {
+  display: none !important;
+}
+
+.progress-ring svg {
+  width: 36px;
+  height: 36px;
+  transform: rotate(-90deg);
+}
+
+.progress-ring circle {
+  fill: none;
+  stroke-width: 3;
+}
+
+.progress-ring .ring-bg {
+  stroke: var(--line);
+  opacity: 0.55;
+}
+
+.progress-ring .ring-fill {
+  stroke: url(#strandGradient);
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--duration-slow) var(--ease-out);
+}
+
+.progress-ring.is-animating {
+  transform: scale(1.08);
+  box-shadow: 0 0 28px rgba(123, 97, 255, 0.35);
+}
+
+[data-theme="light"] .progress-ring .ring-bg {
+  stroke: rgba(90, 69, 212, 0.22);
+  opacity: 1;
+}
+
+.ctrl-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  border: 1px solid rgba(201, 191, 255, 0.22);
+  background: rgba(11, 11, 18, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition:
+    transform 200ms var(--ease-silk),
+    box-shadow 200ms var(--ease-silk),
+    border-color 200ms var(--ease-silk),
+    background 200ms var(--ease-silk);
+}
+
+[data-theme="light"] .ctrl-btn {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(90, 69, 212, 0.18);
+}
+
+.ctrl-btn:hover,
+.ctrl-btn:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 0 24px rgba(123, 97, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.ctrl-btn:active {
+  transform: scale(0.96);
+}
+
+.lang-globe-icon {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.theme-toggle .theme-icon {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  transition:
+    opacity 360ms var(--ease-silk),
+    transform 360ms var(--ease-silk),
+    filter 360ms var(--ease-silk);
+}
+
+.theme-toggle .theme-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.theme-toggle .theme-icon-sun {
+  color: #f5c842;
+  opacity: 0;
+  transform: rotate(-40deg) scale(0.6);
+}
+
+.theme-toggle .theme-icon-moon {
+  color: var(--primary);
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle.is-light-active .theme-icon-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle.is-light-active .theme-icon-moon {
+  opacity: 0;
+  transform: rotate(40deg) scale(0.6);
+}
+
+.lang-menu {
+  position: relative;
+}
+
+.lang-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 196px;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: rgba(11, 11, 18, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow), 0 16px 40px rgba(0, 0, 0, 0.35);
+  z-index: 120;
+}
+
+[data-theme="light"] .lang-menu-panel {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.lang-menu.is-open .lang-menu-btn {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(123, 97, 255, 0.3);
+}
+
+.lang-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  color: var(--text);
+  transition: background 160ms var(--ease-silk);
+}
+
+.lang-menu-item:hover,
+.lang-menu-item:focus-visible {
+  background: rgba(201, 191, 255, 0.1);
+}
+
+.lang-menu-item.is-active {
+  background: rgba(123, 97, 255, 0.14);
+}
+
+.lang-menu-item.is-active .lang-menu-label {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.lang-menu-flag {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.lang-menu-label {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.lang-menu-check {
+  font-size: 0.85rem;
+  color: var(--primary);
+  opacity: 0;
+  transition: opacity 160ms;
+}
+
+.lang-menu-item.is-active .lang-menu-check {
+  opacity: 1;
+}
+
+html.is-theme-transitioning,
+html.is-theme-transitioning * {
+  transition:
+    background-color 480ms var(--ease-silk),
+    color 480ms var(--ease-silk),
+    border-color 480ms var(--ease-silk),
+    box-shadow 480ms var(--ease-silk) !important;
+}
+
+@media (max-width: 560px) {
+  .gate-controls,
+  .labyrinth-home-exit {
+    top: calc(12px + env(safe-area-inset-top, 0px));
+  }
+
+  .gate-controls {
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    gap: 8px;
+  }
+
+  .labyrinth-home-exit {
+    left: calc(12px + env(safe-area-inset-left, 0px));
+    height: 40px;
+    padding: 0 12px;
+    font-size: 0.8rem;
+  }
+
+  .labyrinth-home-label {
+    display: none;
+  }
+
+  .ctrl-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .lang-globe-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
