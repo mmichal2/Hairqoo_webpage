@@ -1,0 +1,83 @@
+/* Hairqoo brand lockup — monogram (shape + mint) + wordmark */
+
+.hairqoo-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.62em;
+  line-height: 0;
+}
+
+.hairqoo-brand__monogram {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  aspect-ratio: 965 / 1024;
+  overflow: hidden;
+}
+
+.hairqoo-brand__shape {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-gradient, linear-gradient(160deg, #ede8ff 0%, #917eff 100%));
+  -webkit-mask: url("../assets/brand/hairqoo_monogram_shape.svg") center / contain no-repeat;
+  mask: url("../assets/brand/hairqoo_monogram_shape.svg") center / contain no-repeat;
+}
+
+.hairqoo-brand__mint {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.hairqoo-brand__wordmark {
+  display: block;
+  flex-shrink: 0;
+  background: var(--brand-gradient, linear-gradient(160deg, #ede8ff 0%, #917eff 100%));
+  -webkit-mask: url("../assets/brand/hairqoo_wordmark_shape.svg") center / contain no-repeat;
+  mask: url("../assets/brand/hairqoo_wordmark_shape.svg") center / contain no-repeat;
+}
+
+.hairqoo-brand--sm .hairqoo-brand__monogram {
+  width: 30px;
+}
+
+.hairqoo-brand--sm .hairqoo-brand__wordmark {
+  width: 88px;
+  height: 23px;
+}
+
+.hairqoo-brand--md .hairqoo-brand__monogram {
+  width: 72px;
+}
+
+.hairqoo-brand--md .hairqoo-brand__wordmark {
+  width: 168px;
+  height: 44px;
+}
+
+.hairqoo-brand--lg .hairqoo-brand__monogram {
+  width: 96px;
+}
+
+.hairqoo-brand--lg .hairqoo-brand__wordmark {
+  width: 220px;
+  height: 57px;
+}
+
+.hairqoo-brand--monogram-only .hairqoo-brand__wordmark {
+  display: none;
+}
+
+.hairqoo-brand--wordmark-only .hairqoo-brand__monogram {
+  display: none;
+}
+
+@media (max-width: 680px) {
+  .hairqoo-brand--sm .hairqoo-brand__wordmark {
+    width: 72px;
+    height: 19px;
+  }
+}

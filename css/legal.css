@@ -1,0 +1,173 @@
+/* On-brand styl stron prawnych (privacy / terms / data-deletion) */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text);
+  background:
+    radial-gradient(120% 70% at 50% -10%, rgba(123, 97, 255, 0.14) 0%, transparent 55%),
+    var(--cosmic-void);
+  background-attachment: fixed;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.legal-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: 14px clamp(16px, 4vw, 32px);
+  background: rgba(11, 11, 18, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.legal-header__back {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.legal-header__back:hover {
+  color: var(--text);
+}
+
+.wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4rem) clamp(1.25rem, 4vw, 2rem) 4rem;
+}
+
+.wrap h1 {
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.6rem;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.wrap h2 {
+  font-family: "Manrope", sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+  margin: 2.5rem 0 0.85rem;
+  color: var(--text);
+}
+
+.wrap p {
+  margin: 0 0 1rem;
+  color: var(--muted);
+}
+
+.wrap ul {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+  color: var(--muted);
+}
+
+.wrap li {
+  margin-bottom: 0.4rem;
+}
+
+.wrap a {
+  color: var(--primary);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 191, 255, 0.3);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.wrap a:hover {
+  color: var(--secondary);
+  border-color: var(--secondary);
+}
+
+.meta {
+  color: var(--outline);
+  font-size: 0.92rem;
+  margin-bottom: 2.5rem;
+}
+
+.lang-label {
+  display: inline-block;
+  font-family: "Manrope", sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--brand-mint);
+  background: var(--brand-mint-soft);
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(89, 255, 162, 0.3);
+  margin: 2rem 0 1rem;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--glass-border);
+  margin: 3rem 0;
+}
+
+.wrap nav {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  font-size: 0.92rem;
+}
+
+.wrap nav a {
+  border-bottom: none;
+}
+
+.notice {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.2rem;
+  margin: 0 0 1.75rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.notice strong {
+  color: var(--text);
+}
+
+.box {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 1.25rem;
+  color: var(--muted);
+}
+
+code {
+  font-size: 0.92rem;
+  font-family: "Manrope", ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--brand-mint);
+  background: var(--brand-mint-soft);
+  padding: 0.12rem 0.4rem;
+  border-radius: 4px;
+}

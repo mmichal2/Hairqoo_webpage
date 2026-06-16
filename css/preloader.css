@@ -42,24 +42,12 @@
   padding: var(--space-md);
 }
 
-.preloader-logo {
-  width: 72px;
-  height: 72px;
+.preloader-stage .hairqoo-brand {
   margin: 0 auto var(--space-md);
   opacity: 0;
   transform: scale(0.6);
   filter: drop-shadow(0 0 30px rgba(201, 191, 255, 0.6));
   animation: logoIgnite 1s var(--ease-silk) 0.5s forwards;
-}
-
-.preloader-brand {
-  font-family: "Manrope", sans-serif;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: 0.35em;
-  text-indent: 0.35em;
-  opacity: 0;
-  animation: brandFade 800ms var(--ease-silk) 1s forwards;
 }
 
 .preloader-tag {
@@ -123,8 +111,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .preloader-horizon,
-  .preloader-logo,
-  .preloader-brand,
+  .preloader-stage .hairqoo-brand,
   .preloader-tag,
   .preloader-track,
   .preloader-fill,

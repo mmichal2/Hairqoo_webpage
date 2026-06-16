@@ -25,6 +25,15 @@ export function isDataReady() {
   return ready;
 }
 
+function withTimeout(promise, ms, label = "operation") {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+    }),
+  ]);
+}
+
 async function loadConfig() {
   if (typeof window !== "undefined" && window.__HAIRQOO_DATA_CONFIG) {
     applyDataConfig(window.__HAIRQOO_DATA_CONFIG);
@@ -47,7 +56,7 @@ export async function initDataLayer() {
 
     if (provider === "supabase") {
       try {
-        const rows = await fetchAllEntities();
+        const rows = await withTimeout(fetchAllEntities(), 8000, "Supabase fetch");
         if (rows.length > 0) {
           entityPool = enrichEntityPool(rows);
         } else {

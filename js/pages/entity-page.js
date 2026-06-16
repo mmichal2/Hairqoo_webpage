@@ -11,6 +11,7 @@ import {
 import { getEntityById, getByType } from "../data/queries.js";
 import { profileHref } from "../hub-routes.js";
 import { bootHubPage } from "../hub-boot.js";
+import { icon } from "../icons.js";
 import { logUserInteraction } from "../intelligence/ai-learning.js";
 import { updatePassportProgress, getPassportUser } from "../intelligence/passport-system.js";
 
@@ -50,7 +51,7 @@ function render(root) {
         <div class="cc-entity-head">
           <div class="cc-entity-badges">
             <span class="cc-entity-type">${esc(d.entityTypes[entity.type] ?? entity.type)}</span>
-            ${entity.verified ? `<span class="cc-score">${esc(d.common?.verified ?? "Zweryfikowane")}</span>` : ""}
+            ${entity.verified ? `<span class="cc-verified">${icon("verified")}${esc(d.common?.verified ?? "Zweryfikowane")}</span>` : ""}
             ${entity.score ? `<span class="cc-score">${entity.score}</span>` : ""}
           </div>
           <h1 class="cc-entity-title strand-text">${esc(entity.title)}</h1>
@@ -59,10 +60,10 @@ function render(root) {
           <p class="cc-entity-desc">${esc(entity.description)}</p>
           <ul class="cc-entity-tags">${tags}</ul>
           <div class="cc-glass cc-entity-stats">
-            <span>👁 ${fmtNum(eng.views)}</span>
-            <span>♥ ${fmtNum(eng.likes)}</span>
-            <span>🔖 ${fmtNum(eng.saves)}</span>
-            <span>↗ ${fmtNum(eng.shares)}</span>
+            <span>${icon("eye")} ${fmtNum(eng.views)}</span>
+            <span>${icon("heart")} ${fmtNum(eng.likes)}</span>
+            <span>${icon("bookmark")} ${fmtNum(eng.saves)}</span>
+            <span>${icon("share")} ${fmtNum(eng.shares)}</span>
           </div>
         </div>
         ${

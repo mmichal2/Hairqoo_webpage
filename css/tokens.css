@@ -23,6 +23,20 @@
   --strand-mauve: #d8b8e8;
   --strand-peach: #ffb7b7;
 
+  /* Brand identity — monogram/wordmark gradient + mint accent */
+  --brand-grad-start: #ede8ff;
+  --brand-grad-mid: #c9bfff;
+  --brand-grad-end: #917eff;
+  --brand-gradient: linear-gradient(
+    135deg,
+    var(--brand-grad-start) 0%,
+    var(--brand-grad-mid) 45%,
+    var(--brand-grad-end) 100%
+  );
+  --brand-mint: #59ffa2;
+  --brand-mint-soft: rgba(89, 255, 162, 0.16);
+  --brand-mint-ink: #0a7f4a;
+
   /* Light mode preview */
   --light-bg: #f7f4ef;
   --light-text: #1c1824;
@@ -74,4 +88,25 @@
   --phone-h: 560px;
   --chamber-min-h: 100vh;
   --chamber-min-h: 100dvh;
+}
+
+/* Tryb jasny — ciemniejszy gradient marki dla kontrastu (logo, nagłówki, CTA) */
+[data-theme="light"] {
+  --brand-grad-start: #7b61ff;
+  --brand-grad-mid: #6b50e0;
+  --brand-grad-end: #5a45d4;
+  --brand-gradient: linear-gradient(
+    135deg,
+    var(--brand-grad-start) 0%,
+    var(--brand-grad-mid) 50%,
+    var(--brand-grad-end) 100%
+  );
+  --brand-mint-soft: rgba(10, 127, 74, 0.12);
+}
+
+/* Mięta na jasnym tle wymaga ciemniejszego atramentu */
+[data-theme="light"] .cc-verified,
+[data-theme="light"] .legal-header + .wrap code,
+[data-theme="light"] code {
+  color: var(--brand-mint-ink);
 }

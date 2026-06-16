@@ -3,15 +3,32 @@ import { initPosterField } from "./poster.js";
 
 const STATUS_KEYS = ["preloader.s1", "preloader.s2", "preloader.s3", "preloader.s4"];
 
+function dismissPreloader(el, gate, onDone, { instant = false } = {}) {
+  document.body.classList.remove("is-preloading");
+  gate?.classList.add("is-poster-ready");
+  window.__hairqooMarkBootComplete?.();
+
+  if (!el) {
+    onDone?.();
+    return;
+  }
+
+  el.classList.add("is-done");
+  const delay = instant ? 0 : 950;
+  setTimeout(() => {
+    el.remove();
+    onDone?.();
+  }, delay);
+}
+
 export function runPreloader(onDone) {
   const el = document.getElementById("preloader");
   const statusEl = document.getElementById("preloader-status");
   const gate = document.getElementById("gate");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    gate?.classList.add("is-poster-ready");
-    window.__hairqooMarkBootComplete?.();
-    onDone?.();
+  if (!el || reducedMotion) {
+    dismissPreloader(el, gate, onDone, { instant: true });
     return;
   }
 
@@ -30,13 +47,6 @@ export function runPreloader(onDone) {
   setTimeout(() => {
     clearInterval(statusInterval);
     if (statusEl) statusEl.textContent = t("preloader.ready");
-    window.__hairqooMarkBootComplete?.();
-    el.classList.add("is-done");
-    document.body.classList.remove("is-preloading");
-    gate?.classList.add("is-poster-ready");
-    setTimeout(() => {
-      el.remove();
-      onDone?.();
-    }, 950);
+    dismissPreloader(el, gate, onDone);
   }, total);
 }

@@ -17,13 +17,16 @@ import {
   renderSearchBar,
   renderHubFooter,
   renderHubTabbar,
+  renderHubNav,
   bindSearchTags,
   bindAwardVotes,
 } from "./hub-shared.js";
+import { hairqooBrandMarkup } from "./brand-logo.js";
+import { icon } from "./icons.js";
 
 const MONTHS_PL = ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"];
 const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const PASSPORT_ICONS = ["🎓", "🎟", "✂", "✦"];
+const PASSPORT_ICONS = ["educators", "ticket", "salon", "sparkle"];
 const PULSE_POS = [
   { left: "28%", top: "38%" },
   { left: "52%", top: "32%" },
@@ -77,24 +80,7 @@ function renderHomepage(root) {
     { key: "eventOfYear", type: "event", category: "event_of_year" },
     { key: "productOfYear", type: "product", category: "product_of_year" },
   ];
-  const navLinks = [
-    ["discover", d.nav.discover],
-    ["events", d.nav.events],
-    ["calendar", d.nav.calendar],
-    ["map", d.nav.map],
-    ["education", d.nav.education],
-    ["educators", d.nav.educators],
-    ["products", d.nav.products],
-    ["community", d.nav.community],
-    ["career", d.nav.career],
-    ["tv", d.nav.tv],
-    ["awards", d.nav.awards],
-    ["passport", d.nav.passport],
-  ];
-
-  const navHtml = navLinks
-    .map(([id, label]) => `<a class="cc-header__navLink" href="${seeAllHref(id)}">${esc(label)}</a>`)
-    .join("");
+  const navHtml = renderHubNav(d);
 
   const aiPrompts = d.ai.prompts
     .map((p) => `<button type="button" class="cc-ai__prompt">${esc(p)}</button>`)
@@ -132,9 +118,9 @@ function renderHomepage(root) {
       const nominee = getAwardLeader(cat.category) ?? getByType(cat.type, 1)[0];
       if (!nominee) return "";
       return `<article class="cc-glass cc-award" data-award="${cat.type}" data-entity-id="${esc(nominee.id)}">
-        <span style="font-size:0.78rem;text-transform:uppercase;color:var(--outline)">${esc(d.awards[cat.key])}</span>
+        <span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--outline)">${esc(d.awards[cat.key])}</span>
         <div style="display:flex;align-items:center;gap:12px">
-          <span style="font-size:1.8rem">🏆</span>
+          <span class="cc-award__medal" aria-hidden="true">${icon("awards")}</span>
           <h3 style="margin:0">${esc(nominee.title)}</h3>
         </div>
         <button type="button" class="cc-award__vote">${esc(d.awards.vote)}</button>
@@ -145,7 +131,7 @@ function renderHomepage(root) {
   const passportItems = d.passport.items
     .map(
       (item, i) => `<li class="cc-passport__item">
-        <span class="cc-passport__icon">${PASSPORT_ICONS[i] ?? "✦"}</span>
+        <span class="cc-passport__icon">${icon(PASSPORT_ICONS[i] ?? "sparkle")}</span>
         <div>
           <span style="font-size:0.78rem;color:var(--primary);font-weight:600">${esc(item.year)}</span>
           <div>${esc(item.label)}</div>
@@ -155,17 +141,17 @@ function renderHomepage(root) {
     .join("");
 
   root.innerHTML = `
-    <header class="cc-header">
-      <div class="cc-header__inner">
-        <a class="cc-header__brand" href="./index.html">
-          <img class="cc-header__logo" src="./assets/images/hairlab_icon.png" alt="" width="30" height="30" />
-          <span class="cc-header__brandText">${esc(d.brand)}</span>
-        </a>
-        <nav class="cc-header__nav" aria-label="${esc(d.layout.mainNav)}">${navHtml}</nav>
-      </div>
-    </header>
-
-    <div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d)}</div>
+    <div class="cc-top-chrome">
+      <header class="cc-header">
+        <div class="cc-header__inner">
+          <a class="cc-header__brand" href="./index.html">
+            ${hairqooBrandMarkup({ size: "sm" })}
+          </a>
+          <nav class="cc-header__nav" aria-label="${esc(d.layout.mainNav)}">${navHtml}</nav>
+        </div>
+      </header>
+      <div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d)}</div>
+    </div>
 
     <section class="cc-hero">
       <div class="cc-container">
@@ -193,7 +179,7 @@ function renderHomepage(root) {
         <div class="cc-portals__col">
           <h2 class="cc-portals__headline strand-text">${esc(d.portals.businessHeadline)}</h2>
           <button type="button" class="cc-glass cc-glass--interactive cc-portal-tile cc-portal-tile--salon portal-tile" data-portal="salon">
-            <span class="cc-portal-tile__icon cc-portal-tile__icon--salon" aria-hidden="true">✂</span>
+            <span class="cc-portal-tile__icon cc-portal-tile__icon--salon" aria-hidden="true">${icon("salon")}</span>
             <h3 class="cc-portal-tile__title">${esc(d.portals.salonTitle)}</h3>
             <p class="cc-portal-tile__desc">${esc(d.portals.salonDesc)}</p>
             <span class="cc-portal-tile__cta">${esc(d.portals.salonCta)}</span>
@@ -202,7 +188,7 @@ function renderHomepage(root) {
         <div class="cc-portals__col">
           <h2 class="cc-portals__headline cc-portals__headline--right strand-text">${esc(d.portals.clientHeadline)}</h2>
           <button type="button" class="cc-glass cc-glass--interactive cc-portal-tile cc-portal-tile--client portal-tile" data-portal="client">
-            <span class="cc-portal-tile__icon cc-portal-tile__icon--client" aria-hidden="true">◇</span>
+            <span class="cc-portal-tile__icon cc-portal-tile__icon--client" aria-hidden="true">${icon("client")}</span>
             <h3 class="cc-portal-tile__title">${esc(d.portals.clientTitle)}</h3>
             <p class="cc-portal-tile__desc">${esc(d.portals.clientDesc)}</p>
             <span class="cc-portal-tile__cta">${esc(d.portals.clientCta)}</span>

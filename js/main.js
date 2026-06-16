@@ -13,10 +13,14 @@ import { initDataLayer } from "./data/data-source.js";
 
 let labyrinthInstance = null;
 
+function hideBootFallback() {
+  const banner = document.getElementById("boot-fallback");
+  if (banner) banner.hidden = true;
+}
+
 async function boot() {
   initTheme();
   initIntelligence();
-  await initDataLayer();
   initPosterField(document.getElementById("poster-stars"));
   initGatePoster();
   applyI18n(document.getElementById("preloader") || document);
@@ -29,14 +33,17 @@ async function boot() {
     },
   });
 
+  runPreloader();
+
+  const dataTask = initDataLayer();
   labyrinthInstance = new Labyrinth();
+  await dataTask;
   initControlCenter(labyrinthInstance);
   initAIAssistant();
   initForm(labyrinthInstance);
   initThemeDemo();
   window.__hairqooAppReady = true;
-
-  runPreloader();
+  hideBootFallback();
 }
 
 boot().catch((err) => {

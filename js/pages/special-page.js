@@ -16,10 +16,11 @@ import {
 } from "../data/queries.js";
 import { entityHref, homeSectionHref } from "../hub-routes.js";
 import { bootHubPage } from "../hub-boot.js";
+import { icon } from "../icons.js";
 
 const MONTHS_PL = ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"];
 const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const PASSPORT_ICONS = ["🎓", "🎟", "✂", "✦"];
+const PASSPORT_ICONS = ["educators", "ticket", "salon", "sparkle"];
 const PULSE_POS = [
   { left: "28%", top: "38%" },
   { left: "52%", top: "32%" },
@@ -94,9 +95,9 @@ function renderAwards(d) {
         const nominee = getAwardLeader(cat.category) ?? getByType(cat.type, 1)[0];
         if (!nominee) return "";
         return `<article class="cc-glass cc-award" data-award="${cat.type}" data-entity-id="${esc(nominee.id)}">
-          <span style="font-size:0.78rem;text-transform:uppercase;color:var(--outline)">${esc(d.awards[cat.key])}</span>
+          <span style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--outline)">${esc(d.awards[cat.key])}</span>
           <div style="display:flex;align-items:center;gap:12px">
-            <span style="font-size:1.8rem">🏆</span>
+            <span class="cc-award__medal" aria-hidden="true">${icon("awards")}</span>
             <h3 style="margin:0"><a href="${entityHref(nominee)}" style="color:inherit">${esc(nominee.title)}</a></h3>
           </div>
           <button type="button" class="cc-award__vote">${esc(d.awards.vote)}</button>
@@ -112,7 +113,7 @@ function renderPassport(d) {
       ${d.passport.items
         .map(
           (item, i) => `<li class="cc-passport__item">
-            <span class="cc-passport__icon">${PASSPORT_ICONS[i] ?? "✦"}</span>
+            <span class="cc-passport__icon">${icon(PASSPORT_ICONS[i] ?? "sparkle")}</span>
             <div>
               <span style="font-size:0.78rem;color:var(--primary);font-weight:600">${esc(item.year)}</span>
               <div>${esc(item.label)}</div>

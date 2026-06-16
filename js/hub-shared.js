@@ -3,6 +3,18 @@ import { getCcDict } from "./cc-dict.js";
 import { getTrendingTags } from "./data/queries.js";
 import { entityHref, homeSectionHref, searchHref, seeAllHref } from "./hub-routes.js";
 import { bindVoiceButtons, isSpeechSupported } from "./speech-recognition.js";
+import { hairqooBrandMarkup } from "./brand-logo.js";
+import { icon } from "./icons.js";
+
+/** Główne pozycje nawigacji w headerze (reszta dostępna w stopce). */
+export const PRIMARY_NAV = [
+  "discover",
+  "events",
+  "calendar",
+  "map",
+  "educators",
+  "products",
+];
 
 export function esc(s) {
   return String(s ?? "")
@@ -47,7 +59,7 @@ export function renderEntityCard(entity, d) {
     <div class="cc-card__media${tall ? " cc-card__media--tall" : ""}${video ? " cc-card__media--video" : ""}">
       <img src="${esc(img)}" alt="${esc(entity.title)}" loading="lazy" style="${mediaStyle(entity)}" />
       <span class="cc-card__typeTag">${esc(typeLabel)}</span>
-      ${video ? '<div class="cc-card__play"><span>▶</span></div>' : ""}
+      ${video ? `<div class="cc-card__play"><span>${icon("play")}</span></div>` : ""}
     </div>
     <div class="cc-card__body">
       <h3 class="cc-card__title">${esc(entity.title)}</h3>
@@ -74,8 +86,8 @@ export function renderFeedItem(entity, d) {
       <p class="cc-feed__desc">${esc(entity.description)}</p>
       <div class="cc-feed__footer">
         <div class="cc-feed__engagement">
-          <span>👁 ${fmtNum(eng.views)}</span>
-          <span>♥ ${fmtNum(eng.likes)}</span>
+          <span>${icon("eye")} ${fmtNum(eng.views)}</span>
+          <span>${icon("heart")} ${fmtNum(eng.likes)}</span>
         </div>
         <div class="cc-feed__tags">${tags}</div>
       </div>
@@ -89,7 +101,7 @@ export function renderSearchBar(id, d) {
     .map((t) => `<button type="button" class="cc-search__tag" data-search-tag="${esc(t)}">#${esc(t)}</button>`)
     .join("");
   const voiceBtn = isSpeechSupported()
-    ? `<button type="button" class="cc-voice-btn" data-voice-btn data-voice-for="${esc(id)}" aria-label="${esc(d.search.voice ?? "Voice")}">🎙</button>`
+    ? `<button type="button" class="cc-voice-btn" data-voice-btn data-voice-for="${esc(id)}" aria-label="${esc(d.search.voice ?? "Voice")}">${icon("mic")}</button>`
     : "";
   return `<form class="cc-search" id="${id}-form" action="./search.html" method="get">
     <div class="cc-search__row">
@@ -102,45 +114,37 @@ export function renderSearchBar(id, d) {
 }
 
 export function renderHubHeader(d, activeSection = null) {
-  const navLinks = [
-    ["discover", d.nav.discover],
-    ["events", d.nav.events],
-    ["calendar", d.nav.calendar],
-    ["map", d.nav.map],
-    ["education", d.nav.education],
-    ["educators", d.nav.educators],
-    ["products", d.nav.products],
-    ["community", d.nav.community],
-    ["career", d.nav.career],
-    ["tv", d.nav.tv],
-    ["awards", d.nav.awards],
-    ["passport", d.nav.passport],
-  ];
-  const navHtml = navLinks
-    .map(([id, label]) => {
-      const href = activeSection === id ? "#" : seeAllHref(id);
-      return `<a class="cc-header__navLink" href="${href}">${esc(label)}</a>`;
-    })
-    .join("");
+  return `<div class="cc-top-chrome">
+    <header class="cc-header">
+      <div class="cc-header__inner">
+        <a class="cc-header__brand" href="./index.html">
+          ${hairqooBrandMarkup({ size: "sm" })}
+        </a>
+        <nav class="cc-header__nav" aria-label="${esc(d.layout.mainNav)}">${renderHubNav(d, activeSection)}</nav>
+      </div>
+    </header>
+    <div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d)}</div>
+  </div>`;
+}
 
-  return `<header class="cc-header">
-    <div class="cc-header__inner">
-      <a class="cc-header__brand" href="./index.html">
-        <img class="cc-header__logo" src="./assets/images/hairlab_icon.png" alt="" width="30" height="30" />
-        <span class="cc-header__brandText">${esc(d.brand)}</span>
-      </a>
-      <nav class="cc-header__nav" aria-label="${esc(d.layout.mainNav)}">${navHtml}</nav>
-    </div>
-  </header>
-  <div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d)}</div>`;
+/** Wspólna nawigacja headera — używana przez homepage i podstrony hub. */
+export function renderHubNav(d, activeSection = null) {
+  return PRIMARY_NAV.map((id) => {
+    const label = d.nav[id] ?? id;
+    const isActive = activeSection === id;
+    const href = isActive ? "#" : seeAllHref(id);
+    return `<a class="cc-header__navLink${isActive ? " cc-header__navLink--active" : ""}"${
+      isActive ? ' aria-current="page"' : ""
+    } href="${href}">${esc(label)}</a>`;
+  }).join("");
 }
 
 export function renderHubFooter(d) {
   return `<footer class="cc-footer">
     <div class="cc-container">
-      <div class="cc-footer__top" style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:var(--space-xl)">
-        <div>
-          <div class="cc-footer__brand">${esc(d.brand)}</div>
+      <div class="cc-footer__top">
+        <div class="cc-footer__intro">
+          <div class="cc-footer__brand">${hairqooBrandMarkup({ size: "sm" })}</div>
           <p class="cc-footer__tagline">${esc(d.tagline)}</p>
         </div>
         <div>
@@ -169,16 +173,16 @@ export function renderHubFooter(d) {
 
 export function renderHubTabbar(d, active = "home") {
   const tabs = [
-    { id: "home", href: "./index.html", icon: "⌂", label: d.layout.homeTab },
-    { id: "discover", href: "./listing.html?section=discover", icon: "✦", label: d.nav.discover },
-    { id: "events", href: "./listing.html?section=events", icon: "📅", label: d.nav.events },
-    { id: "map", href: "./map.html", icon: "🌍", label: d.nav.map },
-    { id: "educators", href: "./listing.html?section=educators", icon: "🎓", label: d.nav.educators },
+    { id: "home", href: "./index.html", icon: "home", label: d.layout.homeTab },
+    { id: "discover", href: "./listing.html?section=discover", icon: "discover", label: d.nav.discover },
+    { id: "events", href: "./listing.html?section=events", icon: "events", label: d.nav.events },
+    { id: "map", href: "./map.html", icon: "map", label: d.nav.map },
+    { id: "educators", href: "./listing.html?section=educators", icon: "educators", label: d.nav.educators },
   ];
   const html = tabs
     .map(
       (t) =>
-        `<a class="cc-tabbar__tab${active === t.id ? " cc-tabbar__tab--active" : ""}" href="${t.href}"><span class="cc-tabbar__icon">${t.icon}</span>${esc(t.label)}</a>`
+        `<a class="cc-tabbar__tab${active === t.id ? " cc-tabbar__tab--active" : ""}" href="${t.href}"><span class="cc-tabbar__icon">${icon(t.icon)}</span>${esc(t.label)}</a>`
     )
     .join("");
   return `<nav class="cc-tabbar" aria-label="${esc(d.layout.mobileNav)}">${html}</nav>`;

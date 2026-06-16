@@ -12,11 +12,12 @@
 }
 
 .gate-controls,
-.labyrinth-home-exit {
+.portal-chrome-inner {
   top: calc(16px + env(safe-area-inset-top, 0px));
 }
 
-.gate-controls {
+.gate-controls,
+.portal-chrome-inner {
   position: fixed;
   right: calc(16px + env(safe-area-inset-right, 0px));
   display: flex;
@@ -25,6 +26,7 @@
 }
 
 .labyrinth-home-exit {
+  top: calc(16px + env(safe-area-inset-top, 0px));
   position: fixed;
   left: calc(16px + env(safe-area-inset-left, 0px));
   display: none;
@@ -289,11 +291,13 @@ html.is-theme-transitioning * {
 
 @media (max-width: 560px) {
   .gate-controls,
+  .portal-chrome-inner,
   .labyrinth-home-exit {
     top: calc(12px + env(safe-area-inset-top, 0px));
   }
 
-  .gate-controls {
+  .gate-controls,
+  .portal-chrome-inner {
     right: calc(12px + env(safe-area-inset-right, 0px));
     gap: 8px;
   }

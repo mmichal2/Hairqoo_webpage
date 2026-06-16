@@ -86,8 +86,9 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./css/tokens.css?v=43" />
-    <link rel="stylesheet" href="./css/base.css?v=43" />
+    <link rel="stylesheet" href="./css/tokens.css?v=45" />
+    <link rel="stylesheet" href="./css/brand.css?v=3" />
+    <link rel="stylesheet" href="./css/base.css?v=46" />
     <link rel="stylesheet" href="./css/gate.css?v=43" />
     <link rel="stylesheet" href="./css/gate-poster.css?v=43" />
     <link rel="stylesheet" href="./css/chambers.css?v=43" />
@@ -95,13 +96,13 @@
     <link rel="stylesheet" href="./css/mockups.css?v=43" />
     <link rel="stylesheet" href="./css/finale.css?v=43" />
     <link rel="stylesheet" href="./css/motion.css?v=43" />
-    <link rel="stylesheet" href="./css/preloader.css?v=43" />
+    <link rel="stylesheet" href="./css/preloader.css?v=44" />
     <link rel="stylesheet" href="./css/poster.css?v=43" />
     <link rel="stylesheet" href="./css/tunnel.css?v=43" />
     <link rel="stylesheet" href="./css/scroll-cue.css?v=43" />
     <link rel="stylesheet" href="./css/portal-door.css?v=43" />
-    <link rel="stylesheet" href="./css/controls.css?v=43" />
-    <link rel="stylesheet" href="./css/control-center.css?v=44" />
+    <link rel="stylesheet" href="./css/controls.css?v=44" />
+    <link rel="stylesheet" href="./css/control-center.css?v=46" />
     <link rel="stylesheet" href="./css/ai-assistant.css?v=43" />
   </head>
   <body>
@@ -109,14 +110,17 @@
       <canvas class="poster-stars" id="preloader-stars" aria-hidden="true"></canvas>
       <div class="preloader-horizon" aria-hidden="true"></div>
       <div class="preloader-core">
-        <img
-          class="preloader-logo"
-          src="./assets/images/hairlab_icon.png"
-          alt=""
-          width="72"
-          height="72"
-        />
-        <div class="preloader-brand strand-text">HAIRQOO</div>
+        <span class="hairqoo-brand hairqoo-brand--md" role="img" aria-label="Hairqoo">
+          <span class="hairqoo-brand__monogram" aria-hidden="true">
+            <span class="hairqoo-brand__shape"></span>
+            <img
+              class="hairqoo-brand__mint"
+              src="./assets/brand/hairqoo_monogram_mint.svg"
+              alt=""
+            />
+          </span>
+          <span class="hairqoo-brand__wordmark" aria-hidden="true"></span>
+        </span>
         <p class="preloader-tag" data-i18n="preloader.tag">MISJA: PIĘKNO</p>
         <div class="preloader-track" aria-hidden="true">
           <div class="preloader-fill"></div>
@@ -988,7 +992,7 @@
       </button>
     </div>
 
-    <script type="module" src="./js/main.js?v=44"></script>
+    <script type="module" src="./js/main.js?v=48"></script>
     <script nomodule>
       document.getElementById("boot-fallback").hidden = false;
     </script>

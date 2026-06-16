@@ -8,6 +8,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Defs SVG (gradienty) — zero wysokości w layoucie; bez tego #gate schodzi ~25px w dół */
+body > svg[aria-hidden="true"] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -174,12 +183,7 @@ button {
 }
 
 .strand-text {
-  background: linear-gradient(
-    90deg,
-    var(--strand-lavender) 0%,
-    var(--strand-mauve) 52%,
-    var(--strand-peach) 100%
-  );
+  background: var(--brand-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
