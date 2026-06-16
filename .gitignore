@@ -1,0 +1,9 @@
+# Lokalne artefakty — produkcja to katalog główny repo (main), NIE podfolder
+hairqoo3/
+node_modules/
+.next/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
