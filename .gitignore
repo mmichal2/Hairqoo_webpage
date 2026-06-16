@@ -2,8 +2,10 @@
 hairqoo3/
 node_modules/
 .next/
+supabase/.temp/
 .DS_Store
 Thumbs.db
 *.log
 .env
 .env.*
+js/data/config.local.js

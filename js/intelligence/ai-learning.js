@@ -79,6 +79,12 @@ export function logUserInteraction(type, entityId, meta = {}) {
     updatePassportProgress(getPassportUser(), { type: "entity_view", entityId });
   }
 
+  queueMicrotask(() => {
+    import("../data/interactions.js")
+      .then(({ trackInteractionRemote }) => trackInteractionRemote(type, entityId, meta))
+      .catch(() => {});
+  });
+
   return entry;
 }
 

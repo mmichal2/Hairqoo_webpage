@@ -9,12 +9,14 @@ import { applyI18n } from "./i18n.js";
 import { initControlCenter } from "./control-center.js";
 import { initAIAssistant } from "./ai-assistant.js";
 import { initIntelligence } from "./intelligence/index.js";
+import { initDataLayer } from "./data/data-source.js";
 
 let labyrinthInstance = null;
 
-try {
+async function boot() {
   initTheme();
   initIntelligence();
+  await initDataLayer();
   initPosterField(document.getElementById("poster-stars"));
   initGatePoster();
   applyI18n(document.getElementById("preloader") || document);
@@ -35,8 +37,17 @@ try {
   window.__hairqooAppReady = true;
 
   runPreloader();
-} catch (err) {
+}
+
+boot().catch((err) => {
   console.error("Hairqoo init failed:", err);
   window.__hairqooAppReady = false;
   if (window.__hairqooReleaseGate) window.__hairqooReleaseGate();
-}
+});
+
+window.addEventListener("hairqoo:data-ready", () => {
+  const root = document.getElementById("cc-app");
+  if (root && labyrinthInstance) {
+    initControlCenter(labyrinthInstance);
+  }
+});
