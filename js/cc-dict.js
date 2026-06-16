@@ -28,6 +28,7 @@ export const CC_DICT = {
     },
     search: {
       placeholder: "Szukaj wydarzeń, edukatorów, produktów, technik…",
+      placeholderShort: "Szukaj…",
       trending: "Na czasie",
       submit: "Szukaj",
       voice: "Wyszukiwanie głosowe",
@@ -200,6 +201,7 @@ export const CC_DICT = {
     },
     search: {
       placeholder: "Search events, educators, products, techniques…",
+      placeholderShort: "Search…",
       trending: "Trending",
       submit: "Search",
       voice: "Voice search",

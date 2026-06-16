@@ -150,7 +150,7 @@ function renderHomepage(root) {
           <nav class="cc-header__nav" aria-label="${esc(d.layout.mainNav)}">${navHtml}</nav>
         </div>
       </header>
-      <div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d)}</div>
+      <div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d, { compact: true })}</div>
     </div>
 
     <section class="cc-hero">

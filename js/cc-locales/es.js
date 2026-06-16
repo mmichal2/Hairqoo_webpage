@@ -22,6 +22,7 @@ export default {
   },
   search: {
     placeholder: "Buscar eventos, educadores, productos, técnicas…",
+    placeholderShort: "Buscar…",
     trending: "Tendencias",
     submit: "Buscar",
     voice: "Búsqueda por voz",

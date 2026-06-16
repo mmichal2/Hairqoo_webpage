@@ -95,7 +95,7 @@ export function renderFeedItem(entity, d) {
   </article>`;
 }
 
-export function renderSearchBar(id, d) {
+export function renderSearchBar(id, d, { compact = false } = {}) {
   const tags = getTrendingTags(6);
   const tagHtml = tags
     .map((t) => `<button type="button" class="cc-search__tag" data-search-tag="${esc(t)}">#${esc(t)}</button>`)
@@ -103,9 +103,10 @@ export function renderSearchBar(id, d) {
   const voiceBtn = isSpeechSupported()
     ? `<button type="button" class="cc-voice-btn" data-voice-btn data-voice-for="${esc(id)}" aria-label="${esc(d.search.voice ?? "Voice")}">${icon("mic")}</button>`
     : "";
+  const placeholder = compact && d.search.placeholderShort ? d.search.placeholderShort : d.search.placeholder;
   return `<form class="cc-search" id="${id}-form" action="./search.html" method="get">
     <div class="cc-search__row">
-      <input class="cc-search__input" id="${esc(id)}" name="q" type="search" placeholder="${esc(d.search.placeholder)}" aria-label="${esc(d.search.placeholder)}" />
+      <input class="cc-search__input" id="${esc(id)}" name="q" type="search" placeholder="${esc(placeholder)}" aria-label="${esc(d.search.placeholder)}" />
       ${voiceBtn}
       <button type="submit" class="cc-search__submit" aria-label="${esc(d.search.submit)}">
         <span class="cc-search__submitLabel">${esc(d.search.submit)}</span>
@@ -119,7 +120,7 @@ export function renderSearchBar(id, d) {
 export function renderHubHeader(d, activeSection = null, { mobileSearch = true } = {}) {
   const slimClass = mobileSearch ? "" : " cc-top-chrome--slim";
   const searchBlock = mobileSearch
-    ? `<div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d)}</div>`
+    ? `<div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d, { compact: true })}</div>`
     : "";
   return `<div class="cc-top-chrome${slimClass}">
     <header class="cc-header">
