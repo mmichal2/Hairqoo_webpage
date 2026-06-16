@@ -231,6 +231,21 @@
   height: 20px;
 }
 
+.cc-search__submit--icon {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  gap: 0;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--brand-gradient);
+}
+
+.cc-search__submit--icon .cc-search__submitIcon {
+  display: grid;
+  place-items: center;
+}
+
 .cc-search__trending {
   display: flex;
   flex-wrap: nowrap;
@@ -725,17 +740,22 @@ body.is-labyrinth-active #gate {
     display: none;
   }
 
-  .cc-search__submitIcon {
+  .cc-search__submit:not(.cc-search__submit--icon) .cc-search__submitIcon {
     display: grid;
     place-items: center;
   }
 
-  .cc-search__submit {
+  .cc-search__submit:not(.cc-search__submit--icon) {
     width: 44px;
     height: 44px;
     padding: 0;
     border-radius: 50%;
     background: var(--brand-gradient);
+  }
+
+  .cc-search__submit--icon {
+    width: 44px;
+    height: 44px;
   }
 
   .cc-tabbar {

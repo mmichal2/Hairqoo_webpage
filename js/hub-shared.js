@@ -104,14 +104,19 @@ export function renderSearchBar(id, d, { compact = false } = {}) {
     ? `<button type="button" class="cc-voice-btn" data-voice-btn data-voice-for="${esc(id)}" aria-label="${esc(d.search.voice ?? "Voice")}">${icon("mic")}</button>`
     : "";
   const placeholder = compact && d.search.placeholderShort ? d.search.placeholderShort : d.search.placeholder;
+  const submitBtn = compact
+    ? `<button type="submit" class="cc-search__submit cc-search__submit--icon" aria-label="${esc(d.search.submit)}">
+        <span class="cc-search__submitIcon" aria-hidden="true">${icon("search")}</span>
+      </button>`
+    : `<button type="submit" class="cc-search__submit" aria-label="${esc(d.search.submit)}">
+        <span class="cc-search__submitLabel">${esc(d.search.submit)}</span>
+        <span class="cc-search__submitIcon" aria-hidden="true">${icon("search")}</span>
+      </button>`;
   return `<form class="cc-search" id="${id}-form" action="./search.html" method="get">
     <div class="cc-search__row">
       <input class="cc-search__input" id="${esc(id)}" name="q" type="search" placeholder="${esc(placeholder)}" aria-label="${esc(d.search.placeholder)}" />
       ${voiceBtn}
-      <button type="submit" class="cc-search__submit" aria-label="${esc(d.search.submit)}">
-        <span class="cc-search__submitLabel">${esc(d.search.submit)}</span>
-        <span class="cc-search__submitIcon" aria-hidden="true">${icon("search")}</span>
-      </button>
+      ${submitBtn}
     </div>
     <div class="cc-search__trending" aria-label="${esc(d.search.trending)}">${tagHtml}</div>
   </form>`;
