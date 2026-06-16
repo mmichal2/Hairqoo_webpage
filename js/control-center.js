@@ -31,6 +31,8 @@ const PULSE_POS = [
   { left: "38%", top: "58%" },
 ];
 
+const DISCOVER_FEED_LIMIT = 18;
+
 let feedCursor = null;
 let feedLoading = false;
 
@@ -66,7 +68,8 @@ function renderCalendarRows(view = "month") {
 
 function renderHomepage(root) {
   const d = dict();
-  const feedSeed = getFeedPage(null).items;
+  const feedPage = getFeedPage(null, DISCOVER_FEED_LIMIT);
+  const feedSeed = feedPage.items;
   const educationItems = [...getByType("academy", 4), ...getByType("event", 4)].slice(0, 8);
   const careerItems = [...getByType("salon", 2), ...getByType("academy", 2)];
   const awardTypes = [
@@ -345,7 +348,7 @@ function bindInteractions(root, labyrinth) {
 
   const feedEl = document.getElementById("cc-feed");
   const feedState = document.getElementById("cc-feed-state");
-  feedCursor = String(getFeedPage(null).items.length);
+  feedCursor = getFeedPage(null, DISCOVER_FEED_LIMIT).nextCursor ?? "done";
   feedLoading = false;
   if (feedEl) {
     const observer = new IntersectionObserver(
