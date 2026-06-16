@@ -17,7 +17,7 @@
 .gate-hero-fill {
   position: absolute;
   inset: -12%;
-  background: var(--cosmic-void) url("../assets/images/home_hero.png") center / cover no-repeat;
+  background: var(--cosmic-void) url("../assets/images/home_hero.jpg") center / cover no-repeat;
   filter: blur(42px) saturate(1.15) contrast(1.04);
   transform: scale(1.12);
   opacity: 0.58;
