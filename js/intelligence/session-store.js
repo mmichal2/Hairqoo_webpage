@@ -4,7 +4,7 @@ const STORAGE_KEY = "hairqoo_intelligence";
 
 const DEFAULT_STORE = {
   scoreSignals: {},
-  awards: { votes: {}, cycles: {} },
+  awards: { votes: {}, cycles: {}, userVotes: {} },
   passport: null,
   ai: {
     interactions: [],
@@ -14,6 +14,15 @@ const DEFAULT_STORE = {
     typeAffinity: {},
     tagAffinity: {},
     countryAffinity: {},
+  },
+  personalization: {
+    session: null,
+    userVectors: {},
+    rankingWeights: {},
+  },
+  brain: {
+    graph: { nodes: {}, edges: [] },
+    centralityCache: {},
   },
 };
 

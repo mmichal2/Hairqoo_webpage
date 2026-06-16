@@ -1,19 +1,37 @@
 import { getEntityPool } from "./data-source.js";
 import { getCcDict } from "../cc-dict.js";
-import { getHairQooScore } from "../intelligence/score-system.js";
+import { getHairQooScoreValue } from "../intelligence/score-system.js";
 import {
   searchEntities,
   groupSearchResults,
+  rankSearchResults,
+  applyTypeBalance,
+  normalizeScores,
+  tokenize,
+  matchesQuery,
 } from "./search-engine.js";
+import { rankSearchResultsPersonalized } from "../intelligence/personalization/personalized-search.js";
 import { getAwardNominee } from "../intelligence/awards-system.js";
 import {
-  improveRankingFromFeedback,
   inferBehavioralTypeHint,
   logUserInteraction,
   updateAIContext,
 } from "../intelligence/ai-learning.js";
 import { getSessionProfile } from "../intelligence/session-store.js";
 import { getLang } from "../i18n.js";
+import { getDataSessionId } from "./interactions.js";
+import {
+  enhanceAIContext,
+  personalizedAIResponse,
+} from "../intelligence/personalization/ai-personalization.js";
+import { getPersonalizedFeed } from "../intelligence/personalization/personalized-feed.js";
+import { rankByGlobalIntelligence } from "../intelligence/global/global-scoring.js";
+import { mapSemanticMeaningAcrossLanguages } from "../intelligence/global/semantic-layer.js";
+import {
+  buildAIContext,
+  enhanceAIResponseWithGraph,
+  buildGlobalBrainResponse,
+} from "../intelligence/global/ai-brain-context.js";
 
 function pool() {
   return getEntityPool();
@@ -21,8 +39,8 @@ function pool() {
 
 function entityRank(a, b) {
   const network = pool();
-  const sa = getHairQooScore(a, network);
-  const sb = getHairQooScore(b, network);
+  const sa = getHairQooScoreValue(a, network);
+  const sb = getHairQooScoreValue(b, network);
   return sb - sa || (b.engagement?.views ?? 0) - (a.engagement?.views ?? 0);
 }
 
@@ -38,20 +56,11 @@ export function getByType(type, limit = 8) {
 }
 
 export function getTrending(limit = 8) {
-  const profile = getSessionProfile();
-  const network = pool();
-  const ranked = improveRankingFromFeedback(
-    network.map((e) => ({
-      ...e,
-      finalScore: (e.engagement?.views ?? 0) / 5000 + getHairQooScore(e, network) / 200,
-    })),
-    { profile }
-  );
-  return ranked.sort((a, b) => b.finalScore - a.finalScore).slice(0, limit);
+  return getPersonalizedFeed(getDataSessionId(), { mode: "hybrid_mix", limit });
 }
 
 export function getFeedPage(cursor = null, pageSize = 5) {
-  const ranked = [...pool()].sort(entityRank);
+  const ranked = getPersonalizedFeed(getDataSessionId(), { mode: "for_you", limit: 500 });
   const start = cursor ? Number.parseInt(cursor, 10) || 0 : 0;
   const slice = ranked.slice(start, start + pageSize);
   const next = start + pageSize;
@@ -105,13 +114,40 @@ export function getAwardLeader(category) {
 export function search(query, filters = {}) {
   const lang = typeof document !== "undefined" ? getLang() : "pl";
   const profile = getSessionProfile();
-  const flat = searchEntities(query, filters, {
+  const userId = getDataSessionId();
+  const network = pool();
+
+  const base = searchEntities(query, filters, {
     limit: filters.limit ?? 100,
     lang,
     profile,
-    network: pool(),
+    network,
   });
-  return groupSearchResults(flat);
+
+  const querySemantic = mapSemanticMeaningAcrossLanguages(query);
+  const personalized = rankSearchResultsPersonalized(query, base, userId, {
+    lang,
+    profile,
+    network,
+  });
+
+  const globalRanked = rankByGlobalIntelligence(personalized, query, userId, {
+    lang,
+    profile,
+    network,
+    querySemantic,
+    userCountry: profile.preferredCountries?.[0] ?? null,
+  });
+
+  const limit = filters.limit ?? 100;
+  const balanced = applyTypeBalance(globalRanked, limit);
+  const flat = normalizeScores(balanced);
+  const grouped = groupSearchResults(flat);
+  grouped._globalBrain = {
+    queryLanguage: querySemantic.language,
+    normalizedQuery: querySemantic.normalizedQuery,
+  };
+  return grouped;
 }
 
 export function filterEntities({ types, country, tags }) {
@@ -180,16 +216,19 @@ export function aiAsk(prompt, lang = "pl") {
   logUserInteraction("search", null, { query: prompt });
   updateAIContext({ searchQuery: prompt });
 
+  const sessionId = getDataSessionId();
+  const userContext = enhanceAIContext(sessionId, prompt);
+  const brainContext = buildAIContext(prompt, sessionId);
   const groups = search(prompt);
   let entities = groups.flatMap((g) => g.items);
   if (type) {
     const typed = entities.filter((e) => e.type === type);
     if (typed.length) entities = typed;
   }
-  entities = improveRankingFromFeedback(entities, { profile: getSessionProfile() })
-    .sort((a, b) => b.finalScore - a.finalScore)
-    .slice(0, 4);
+  entities = personalizedAIResponse(prompt, userContext, entities);
+  entities = enhanceAIResponseWithGraph(prompt, userContext, entities).slice(0, 4);
   if (entities.length === 0) entities = getTrending(4);
+  const globalBrain = buildGlobalBrainResponse(entities, prompt, sessionId);
 
   const typeLabel = type
     ? ({
@@ -222,10 +261,33 @@ export function aiAsk(prompt, lang = "pl") {
   if (type === "product")
     links.push({ label: dict.aiAnswers?.productsLink ?? "Produkty", href: "/products" });
 
-  return { answer, entities, links };
+  return {
+    answer,
+    entities: globalBrain.entities,
+    links,
+    brainContext,
+    globalBrain: {
+      entities: globalBrain.entities,
+      relatedEntities: globalBrain.relatedEntities,
+      graphConnections: globalBrain.graphConnections,
+      scoreBreakdown: globalBrain.scoreBreakdown,
+      regionContext: globalBrain.regionContext,
+      languageContext: globalBrain.languageContext,
+    },
+  };
 }
 
-export { getHairQooScore, getScoreTier, getVerifiedStatus } from "../intelligence/index.js";
+export {
+  getHairQooScore,
+  getHairQooScoreValue,
+  getScoreTier,
+  getVerifiedStatus,
+  computeTrustScore,
+  voteForAward,
+  getPassportSummary,
+  enrichEntityIntelligence,
+  getEntityIntelligenceContract,
+} from "../intelligence/index.js";
 
 // Search engine API (ETAP 3)
 export {
@@ -255,3 +317,31 @@ export {
 } from "./api.js";
 export { trackInteraction } from "./interactions.js";
 export { initDataLayer, refreshDataLayer, getDataProvider, isDataReady } from "./data-source.js";
+
+// Global Brain API (ETAP 6)
+export {
+  initGlobalBrain,
+  retrieveContext,
+  buildContextWindow,
+  buildAIContext,
+  computeGlobalIntelligenceScore,
+  rankByGlobalIntelligence,
+  computeGraphCentrality,
+  detectQueryLanguage,
+} from "../intelligence/global/index.js";
+
+// Personalization API (ETAP 5)
+export {
+  initPersonalization,
+  initSession,
+  getSessionContext,
+  resetSession,
+  rankSearchResultsPersonalized,
+  computeUserAffinity,
+  getPersonalizedFeed,
+  generateFeedRanking,
+  buildUserVector,
+  getUserPreferenceVector,
+  enhanceAIContext,
+  personalizedAIResponse,
+} from "../intelligence/personalization/index.js";

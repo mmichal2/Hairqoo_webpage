@@ -1,11 +1,19 @@
-/** HairQoo Intelligence Layer — bootstrap + public API. */
+/** HairQoo Intelligence Layer — ETAP 4 public API + bootstrap. */
 
 export { readStore, writeStore, getSessionProfile } from "./session-store.js";
 export {
+  computeHairQooScore,
   getHairQooScore,
+  getHairQooScoreValue,
   getScoreTier,
   updateScore,
   enrichEntityScore,
+  engagementComponent,
+  qualityComponent,
+  trustComponent,
+  popularityComponent,
+  recencyComponent,
+  interactionVelocity,
   SCORE_TIERS,
   SCORE_REFERENCE_DATE,
 } from "./score-system.js";
@@ -13,15 +21,18 @@ export {
   getVerifiedStatus,
   applyVerifiedBoost,
   getVerifiedSearchBoost,
+  computeTrustScore,
   VERIFICATION_TYPES,
   VERIFICATION_LEVELS,
 } from "./verified-trust.js";
-export { computeRelevanceScore, rankSearchResults, tokenize, haystack } from "./search-ranking.js";
+export { computeRelevanceScore, rankSearchResultsWithFeedback } from "./search-ranking.js";
 export {
   AWARD_CATEGORIES,
   vote,
+  voteForAward,
   getAwardRankings,
   computeAwardScore,
+  computeAwardRankPotential,
   getAwardNominee,
   hasVoted,
   getUserVote,
@@ -33,28 +44,97 @@ export {
   getPassportUser,
   calculateUserXP,
   getUserLevel,
+  calculateUserLevel,
   getLevelProgress,
   updatePassportProgress,
+  updatePassportProgressById,
   getPassportProgress,
+  getPassportSummary,
 } from "./passport-system.js";
+export {
+  enrichEntityIntelligence,
+  enrichEntityPool,
+  getEntityIntelligenceContract,
+  computePopularityIndex,
+} from "./entity-intelligence.js";
 export {
   logUserInteraction,
   updateAIContext,
   improveRankingFromFeedback,
   getAIContext,
   inferBehavioralTypeHint,
+  getUserPreferenceVector,
 } from "./ai-learning.js";
 
+export {
+  initPersonalization,
+  initSession,
+  getSessionContext,
+  updateSessionMemory,
+  resetSession,
+  storeInteractionEvent,
+  buildUserVector,
+  updateUserVector,
+  compareEntityToUserVector,
+  updateLearningModel,
+  adjustRankingWeights,
+  getRankingWeights,
+  rankSearchResultsPersonalized,
+  computeUserAffinity,
+  getPersonalizedFeed,
+  generateFeedRanking,
+  filterFeedByPreferences,
+  enhanceAIContext,
+  personalizedAIResponse,
+} from "./personalization/index.js";
+
 import { logUserInteraction } from "./ai-learning.js";
-import { updatePassportProgress, getPassportUser } from "./passport-system.js";
-import { vote as castVote, AWARD_CATEGORIES, getUserVote } from "./awards-system.js";
+import { updatePassportProgressById } from "./passport-system.js";
+import { voteForAward, getUserVote, AWARD_CATEGORIES } from "./awards-system.js";
+import { getDataSessionId } from "../data/interactions.js";
+import { initPersonalization } from "./personalization/index.js";
+import { initGlobalBrain } from "./global/index.js";
+import { getEntityPool } from "../data/data-source.js";
+
+export {
+  initGlobalBrain,
+  createEntityGraph,
+  addEntityRelation,
+  getEntityConnections,
+  findRelatedEntities,
+  getEntityGraph,
+  retrieveContext,
+  buildContextWindow,
+  rankKnowledgeChunks,
+  getRegionalRanking,
+  normalizeGlobalScores,
+  applyCountryBiasBoost,
+  getRegionContext,
+  detectQueryLanguage,
+  mapSemanticMeaningAcrossLanguages,
+  unifyEntityTagsAcrossLanguages,
+  computeGlobalIntelligenceScore,
+  rankByGlobalIntelligence,
+  computeGraphCentrality,
+  computeInfluenceScore,
+  buildAIContext,
+  enhanceAIResponseWithGraph,
+  buildGlobalBrainResponse,
+  GLOBAL_REGIONS,
+  FUSION_WEIGHTS,
+} from "./global/index.js";
 
 let initialized = false;
 
-/** Wire global interaction hooks (delegation — no UI changes). */
 export function initIntelligence() {
   if (initialized || typeof document === "undefined") return;
   initialized = true;
+  initPersonalization();
+  initGlobalBrain();
+
+  window.addEventListener("hairqoo:data-ready", () => {
+    initGlobalBrain(getEntityPool());
+  });
 
   document.addEventListener("click", (e) => {
     const link = e.target.closest("a[href*='entity.html']");
@@ -77,11 +157,6 @@ export function initIntelligence() {
   });
 }
 
-/**
- * Bind award vote buttons already rendered in the DOM.
- * @param {HTMLElement} root
- * @param {{ awards: { vote: string, voted: string } }} dictSlice
- */
 export function bindAwardVotes(root, dictSlice) {
   const categoryByType = {
     educator: "educator_of_year",
@@ -96,6 +171,7 @@ export function bindAwardVotes(root, dictSlice) {
     const category = categoryByType[awardType];
     if (!entityId || !category) return;
 
+    const sessionId = getDataSessionId();
     if (getUserVote(category) === entityId) {
       btn.textContent = dictSlice.voted;
       btn.classList.add("cc-award__vote--voted");
@@ -104,8 +180,8 @@ export function bindAwardVotes(root, dictSlice) {
 
     btn.addEventListener("click", () => {
       if (btn.disabled) return;
-      castVote(entityId, category);
-      updatePassportProgress(getPassportUser(), { type: "award_vote", entityId, meta: { category } });
+      voteForAward(sessionId, entityId, category);
+      updatePassportProgressById(sessionId, { type: "award_vote", entityId, meta: { category } });
       btn.textContent = dictSlice.voted;
       btn.classList.add("cc-award__vote--voted");
       btn.disabled = true;

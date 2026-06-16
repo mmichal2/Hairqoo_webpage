@@ -26,6 +26,10 @@ export function getDataSessionId() {
   return id;
 }
 
+function isUuid(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(value ?? ""));
+}
+
 /**
  * @param {string|null} userId
  * @param {string|null} entityId — legacy_id
@@ -42,7 +46,7 @@ export async function trackInteraction(userId, entityId, actionType, metadata = 
 
   const sessionId = getDataSessionId();
   const row = {
-    user_id: userId || null,
+    user_id: userId && isUuid(userId) ? userId : null,
     session_id: sessionId,
     entity_legacy_id: entityId || null,
     action_type: actionType,

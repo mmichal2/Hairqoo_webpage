@@ -4,8 +4,8 @@
  * No UI — pure ranking pipeline over ETAP 2 entity pool.
  */
 
-import { getHairQooScore } from "../intelligence/score-system.js";
-import { getVerifiedStatus, VERIFICATION_LEVELS } from "../intelligence/verified-trust.js";
+import { getHairQooScoreValue, popularityComponent } from "../intelligence/score-system.js";
+import { getVerifiedStatus, computeTrustScore, VERIFICATION_LEVELS } from "../intelligence/verified-trust.js";
 import { getSessionProfile } from "../intelligence/session-store.js";
 import { getEntityPool } from "./data-source.js";
 import { getLang } from "../i18n.js";
@@ -166,24 +166,18 @@ function keywordScore(tokens, entity) {
 function resolveHairQooScore(entity, network) {
   const fromRanking = entity.ranking?.hairQooScore;
   if (fromRanking != null && fromRanking > 0) return Math.min(100, fromRanking) / 100;
-  const fromScore = entity.score ?? entity.hairqooScore;
-  if (fromScore != null && fromScore > 0) return Math.min(100, fromScore) / 100;
-  return getHairQooScore(entity, network) / 100;
+  return getHairQooScoreValue(entity, network) / 100;
 }
 
 function verifiedBoostScore(entity) {
   const { level } = getVerifiedStatus(entity);
   if (level === VERIFICATION_LEVELS.premium_verified) return 1;
   if (level === VERIFICATION_LEVELS.verified) return 0.65;
-  return 0;
+  return computeTrustScore(entity) * 0.4;
 }
 
 function popularityScore(entity) {
-  const m = entity.metrics ?? entity.engagement ?? {};
-  const views = Math.min((m.views ?? 0) / 4000, 1);
-  const clicks = Math.min((m.clicks ?? m.likes ?? 0) / 500, 1);
-  const saves = Math.min((m.saves ?? 0) / 200, 1);
-  return views * 0.5 + clicks * 0.35 + saves * 0.15;
+  return popularityComponent(entity) / 100;
 }
 
 function recencyScore(entity) {

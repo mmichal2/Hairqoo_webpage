@@ -1,8 +1,16 @@
-/** AI learning layer — session feedback + ranking adaptation. */
+/** AI learning layer — ETAP 5 personalization integration. */
 
 import { readStore, writeStore, getSessionProfile } from "./session-store.js";
 import { updateScore } from "./score-system.js";
 import { updatePassportProgress, getPassportUser } from "./passport-system.js";
+import { getDataSessionId } from "../data/interactions.js";
+import {
+  updateLearningModel,
+} from "./personalization/learning-loop.js";
+import { getUserPreferenceVector } from "./personalization/user-vector.js";
+import { getSessionContext } from "./personalization/session-memory.js";
+import { compareEntityToUserVector, buildUserVector } from "./personalization/user-vector.js";
+import { getRankingWeights } from "./personalization/learning-loop.js";
 
 const MAX_INTERACTIONS = 200;
 const MAX_SEARCH_HISTORY = 30;
@@ -18,10 +26,14 @@ const INTERACTION_WEIGHTS = {
 
 export function getAIContext() {
   const store = readStore();
+  const userId = getDataSessionId();
   return {
     interactions: store.ai.interactions.slice(-50),
     profile: getSessionProfile(),
     passport: getPassportUser(),
+    session: getSessionContext(userId),
+    userVector: buildUserVector(userId),
+    rankingWeights: getRankingWeights(userId),
   };
 }
 
@@ -40,11 +52,18 @@ function bumpAffinity(map, key, amount = 1) {
   map[key] = (map[key] ?? 0) + amount;
 }
 
+/**
+ * Log interaction — ETAP 5 unified entry (backward compatible signature).
+ * @param {string} type
+ * @param {string|null} entityId
+ * @param {object} [meta]
+ */
 export function logUserInteraction(type, entityId, meta = {}) {
+  const userId = meta.userId ?? getDataSessionId();
   const entry = {
     type,
     entityId: entityId ?? null,
-    meta,
+    meta: { ...meta, userId },
     at: new Date("2026-06-16T12:00:00.000Z").toISOString(),
   };
 
@@ -68,11 +87,15 @@ export function logUserInteraction(type, entityId, meta = {}) {
     return store;
   });
 
-  if (entityId && (type === "click" || type === "view")) {
-    updateScore(entityId, { clicks: type === "click" ? 1 : 0, views: type === "view" ? 1 : 0 });
+  updateLearningModel(userId, { type, entityId, meta: entry.meta });
+
+  if (entityId) {
+    import("./global/entity-graph.js")
+      .then(({ strengthenEdgeFromInteraction }) => strengthenEdgeFromInteraction(entityId, type))
+      .catch(() => {});
   }
+
   if (entityId && type === "save") {
-    updateScore(entityId, { saves: 1 });
     updatePassportProgress(getPassportUser(), { type: "entity_save", entityId });
   }
   if (type === "view" && entityId) {
@@ -81,38 +104,47 @@ export function logUserInteraction(type, entityId, meta = {}) {
 
   queueMicrotask(() => {
     import("../data/interactions.js")
-      .then(({ trackInteractionRemote }) => trackInteractionRemote(type, entityId, meta))
+      .then(({ trackInteractionRemote }) => trackInteractionRemote(type, entityId, entry.meta))
       .catch(() => {});
   });
 
   return entry;
 }
 
-/**
- * Re-rank entities using lightweight behavioral feedback.
- * @param {Array<{ id: string, finalScore?: number, relevanceScore?: number, type?: string, tags?: string[] }>} entities
- */
 export function improveRankingFromFeedback(entities, ctx = {}) {
+  const userId = ctx.userId ?? getDataSessionId();
+  const session = getSessionContext(userId);
+  const vector = buildUserVector(userId);
+  const weights = getRankingWeights(userId);
   const profile = ctx.profile ?? getSessionProfile();
   const store = readStore();
   const dwell = store.ai.entityDwell;
-  const saved = new Set(store.ai.savedEntities);
+  const saved = new Set([...store.ai.savedEntities, ...session.savedEntities]);
 
   return entities.map((entity) => {
     let boost = 0;
-    if (saved.has(entity.id)) boost += 0.1;
-    if (dwell[entity.id]) boost += Math.min(0.12, dwell[entity.id] * 0.008);
-    if (profile.preferredTypes.includes(entity.type)) boost += 0.06;
+    if (saved.has(entity.id)) boost += weights.savedSimilarity ?? 0.1;
+    if (dwell[entity.id] || session.entityDwell?.[entity.id]) {
+      const d = dwell[entity.id] ?? session.entityDwell?.[entity.id] ?? 0;
+      boost += Math.min(0.12, d * 0.008);
+    }
+    boost += compareEntityToUserVector(entity, vector) * (weights.personalization ?? 0.12);
+    if (profile.preferredTypes.includes(entity.type)) boost += weights.typeAffinity ?? 0.06;
     const tagOverlap = (entity.tags ?? []).filter((t) => profile.preferredTags.includes(t)).length;
     boost += Math.min(0.08, tagOverlap * 0.03);
 
-    const base = entity.finalScore ?? entity.relevanceScore ?? 0;
+    const base = entity.finalScore ?? entity.relevanceScore ?? entity.personalizedScore ?? 0;
     return { ...entity, finalScore: Math.min(1, base + boost), feedbackBoost: boost };
   });
 }
 
-/** Intent hint from accumulated behavior (for aiAsk). */
 export function inferBehavioralTypeHint() {
+  const userId = getDataSessionId();
+  const vector = buildUserVector(userId);
+  const top = Object.entries(vector.entityTypeWeights).sort((a, b) => b[1] - a[1])[0];
+  if (top) return top[0];
   const { preferredTypes } = getSessionProfile();
   return preferredTypes[0] ?? null;
 }
+
+export { getUserPreferenceVector };

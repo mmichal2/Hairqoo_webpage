@@ -1,8 +1,10 @@
-/** Awards — seasonal competition + vote aggregation engine. */
+/** Awards — ETAP 4 global competition engine. */
 
 import { readStore, writeStore } from "./session-store.js";
-import { getHairQooScore } from "./score-system.js";
+import { getHairQooScoreValue, interactionVelocity } from "./score-system.js";
+import { getVerifiedStatus, computeTrustScore } from "./verified-trust.js";
 import { logUserInteraction } from "./ai-learning.js";
+import { trackInteractionRemote } from "../data/interactions.js";
 
 export const AWARD_CATEGORIES = {
   educator_of_year: { key: "educatorOfYear", entityType: "educator", cycle: "yearly" },
@@ -30,66 +32,100 @@ function cycleKey(category) {
   return `${category}:${getCurrentSeason(cycle)}`;
 }
 
-/** Cast a vote (one per category per cycle, client-side). */
-export function vote(entityId, category) {
+function voteCountFor(entityId, category) {
+  const bucket = readStore().awards.votes[cycleKey(category)] ?? {};
+  return bucket[entityId] ?? 0;
+}
+
+/**
+ * Cast award vote — persists locally + ETAP 2 interaction layer.
+ */
+export function voteForAward(userId, entityId, category) {
   const key = cycleKey(category);
   writeStore((store) => {
     if (!store.awards.votes[key]) store.awards.votes[key] = {};
     const bucket = store.awards.votes[key];
     bucket[entityId] = (bucket[entityId] ?? 0) + 1;
     store.awards.cycles[key] = getCurrentSeason(categoryMeta(category).cycle);
+    if (!store.awards.userVotes) store.awards.userVotes = {};
+    const uvKey = `${category}:${getCurrentSeason(categoryMeta(category).cycle)}`;
+    store.awards.userVotes[uvKey] = entityId;
     return store;
   });
-  logUserInteraction("vote", entityId, { category });
+
+  logUserInteraction("vote", entityId, { category, userId });
+  trackInteractionRemote("vote", entityId, { category, userId });
+
   return getAwardRankings(category);
 }
 
-/** Ranked list for a category in the current season. */
-export function getAwardRankings(category) {
+/** @deprecated use voteForAward */
+export function vote(entityId, category) {
+  return voteForAward(null, entityId, category);
+}
+
+export function computeAwardScore(entity, category) {
+  if (!entity || !category) return 0;
+
+  const votes = voteCountFor(entity.id, category);
+  const voteScore = Math.min(1, votes / 10);
+  const hq = getHairQooScoreValue(entity) / 100;
+  const trust = computeTrustScore(entity);
+  const velocity = interactionVelocity(entity.id);
+  const verifiedBonus = getVerifiedStatus(entity).verified ? 0.05 : 0;
+
+  const total =
+    voteScore * 0.5 + hq * 0.22 + trust * 0.13 + velocity * 0.1 + verifiedBonus;
+
+  return Math.min(1, Math.round(total * 1000) / 1000);
+}
+
+/** Ranked list with computed award scores for current season. */
+export function getAwardRankings(category, candidates = []) {
   const key = cycleKey(category);
   const bucket = readStore().awards.votes[key] ?? {};
-  return Object.entries(bucket)
-    .map(([entityId, votes]) => ({ entityId, votes, awardScore: votes }))
-    .sort((a, b) => b.votes - a.votes || a.entityId.localeCompare(b.entityId));
+  const entityIds = new Set([
+    ...Object.keys(bucket),
+    ...candidates.map((e) => e.id),
+  ]);
+
+  const byId = new Map(candidates.map((e) => [e.id, e]));
+
+  return Array.from(entityIds)
+    .map((entityId) => {
+      const entity = byId.get(entityId) ?? { id: entityId };
+      const votes = bucket[entityId] ?? 0;
+      const awardScore = computeAwardScore(entity, category);
+      return { entityId, votes, awardScore, category, season: getCurrentSeason(categoryMeta(category).cycle) };
+    })
+    .sort((a, b) => b.awardScore - a.awardScore || b.votes - a.votes || a.entityId.localeCompare(b.entityId));
 }
 
-/** Combined base quality + community votes. */
-export function computeAwardScore(entity, category = null) {
-  const base = getHairQooScore(entity) / 100;
-  if (!category) return base;
-
-  const rankings = getAwardRankings(category);
-  const row = rankings.find((r) => r.entityId === entity.id);
-  const voteBoost = row ? Math.min(0.4, row.votes * 0.08) : 0;
-  return Math.min(1, base * 0.6 + voteBoost + (entity.verified ? 0.05 : 0));
-}
-
-/** Leading nominee for UI (votes first, then HairQoo Score). */
 export function getAwardNominee(category, candidates = []) {
   const { entityType } = categoryMeta(category);
   const pool = candidates.filter((e) => e.type === entityType);
   if (!pool.length) return null;
 
-  const rankings = getAwardRankings(category);
-  const voteMap = new Map(rankings.map((r) => [r.entityId, r.votes]));
+  const rankings = getAwardRankings(category, pool);
+  const scoreMap = new Map(rankings.map((r) => [r.entityId, r.awardScore]));
 
-  return [...pool].sort((a, b) => {
-    const va = voteMap.get(a.id) ?? 0;
-    const vb = voteMap.get(b.id) ?? 0;
-    if (vb !== va) return vb - va;
-    return computeAwardScore(b, category) - computeAwardScore(a, category);
-  })[0];
+  return [...pool].sort(
+    (a, b) => (scoreMap.get(b.id) ?? 0) - (scoreMap.get(a.id) ?? 0)
+  )[0];
 }
 
 export function hasVoted(category) {
-  const key = cycleKey(category);
-  const bucket = readStore().awards.votes[key] ?? {};
-  return Object.keys(bucket).length > 0;
+  const uvKey = `${category}:${getCurrentSeason(categoryMeta(category).cycle)}`;
+  return Boolean(readStore().awards.userVotes?.[uvKey]);
 }
 
 export function getUserVote(category) {
-  const key = cycleKey(category);
-  const bucket = readStore().awards.votes[key] ?? {};
-  const top = Object.entries(bucket).sort((a, b) => b[1] - a[1])[0];
-  return top ? top[0] : null;
+  const uvKey = `${category}:${getCurrentSeason(categoryMeta(category).cycle)}`;
+  return readStore().awards.userVotes?.[uvKey] ?? null;
+}
+
+export function computeAwardRankPotential(entity, categories = Object.keys(AWARD_CATEGORIES)) {
+  const relevant = categories.filter((cat) => categoryMeta(cat).entityType === entity.type);
+  if (!relevant.length) return 0;
+  return Math.max(...relevant.map((cat) => computeAwardScore(entity, cat)));
 }

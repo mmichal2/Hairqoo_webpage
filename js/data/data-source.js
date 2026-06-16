@@ -6,6 +6,7 @@
 import { MOCK_ENTITIES } from "./entities.js";
 import { fetchAllEntities, resolveProvider } from "./api.js";
 import { applyDataConfig } from "./config.js";
+import { enrichEntityPool } from "../intelligence/entity-intelligence.js";
 
 let entityPool = MOCK_ENTITIES;
 let provider = "mock";
@@ -48,22 +49,28 @@ export async function initDataLayer() {
       try {
         const rows = await fetchAllEntities();
         if (rows.length > 0) {
-          entityPool = rows;
+          entityPool = enrichEntityPool(rows);
         } else {
           console.warn("[HairQoo] Supabase empty — using mock entities");
-          entityPool = MOCK_ENTITIES;
+          entityPool = enrichEntityPool(MOCK_ENTITIES);
           provider = "mock-fallback";
         }
       } catch (err) {
         console.warn("[HairQoo] Supabase fetch failed — mock fallback:", err.message);
-        entityPool = MOCK_ENTITIES;
+        entityPool = enrichEntityPool(MOCK_ENTITIES);
         provider = "mock-fallback";
       }
     } else {
-      entityPool = MOCK_ENTITIES;
+      entityPool = enrichEntityPool(MOCK_ENTITIES);
     }
 
     ready = true;
+    try {
+      const { initGlobalBrain } = await import("../intelligence/global/index.js");
+      initGlobalBrain(entityPool);
+    } catch (err) {
+      console.warn("[HairQoo] Global brain init deferred:", err.message);
+    }
     if (typeof window !== "undefined") {
       window.__HAIRQOO_DATA = { provider, count: entityPool.length, ready: true };
       window.dispatchEvent(new CustomEvent("hairqoo:data-ready", { detail: { provider, count: entityPool.length } }));
