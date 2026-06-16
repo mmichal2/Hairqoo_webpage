@@ -107,14 +107,21 @@ export function renderSearchBar(id, d) {
     <div class="cc-search__row">
       <input class="cc-search__input" id="${esc(id)}" name="q" type="search" placeholder="${esc(d.search.placeholder)}" aria-label="${esc(d.search.placeholder)}" />
       ${voiceBtn}
-      <button type="submit" class="cc-search__submit">${esc(d.search.submit)}</button>
+      <button type="submit" class="cc-search__submit" aria-label="${esc(d.search.submit)}">
+        <span class="cc-search__submitLabel">${esc(d.search.submit)}</span>
+        <span class="cc-search__submitIcon" aria-hidden="true">${icon("search")}</span>
+      </button>
     </div>
     <div class="cc-search__trending" aria-label="${esc(d.search.trending)}">${tagHtml}</div>
   </form>`;
 }
 
-export function renderHubHeader(d, activeSection = null) {
-  return `<div class="cc-top-chrome">
+export function renderHubHeader(d, activeSection = null, { mobileSearch = true } = {}) {
+  const slimClass = mobileSearch ? "" : " cc-top-chrome--slim";
+  const searchBlock = mobileSearch
+    ? `<div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d)}</div>`
+    : "";
+  return `<div class="cc-top-chrome${slimClass}">
     <header class="cc-header">
       <div class="cc-header__inner">
         <a class="cc-header__brand" href="./index.html">
@@ -123,7 +130,7 @@ export function renderHubHeader(d, activeSection = null) {
         <nav class="cc-header__nav" aria-label="${esc(d.layout.mainNav)}">${renderHubNav(d, activeSection)}</nav>
       </div>
     </header>
-    <div class="cc-mobile-search cc-container">${renderSearchBar("cc-search-mobile", d)}</div>
+    ${searchBlock}
   </div>`;
 }
 

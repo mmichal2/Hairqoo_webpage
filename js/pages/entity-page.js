@@ -24,7 +24,7 @@ function render(root) {
 
   if (!entity) {
     root.innerHTML = `
-      ${renderHubHeader(d)}
+      ${renderHubHeader(d, null, { mobileSearch: false })}
       <main class="cc-container cc-listing-page">
         <p class="cc-listing-empty">Nie znaleziono pozycji.</p>
         <a class="cc-back-link" href="./index.html">← ${esc(d.common?.backHome ?? "Wróć")}</a>
@@ -41,7 +41,7 @@ function render(root) {
   const eng = entity.engagement;
 
   root.innerHTML = `
-    ${renderHubHeader(d)}
+    ${renderHubHeader(d, null, { mobileSearch: false })}
     <main class="cc-container cc-entity-page">
       <a class="cc-back-link" href="./index.html">← ${esc(d.common?.backHome ?? "Wróć na stronę główną")}</a>
       <article class="cc-entity-detail">

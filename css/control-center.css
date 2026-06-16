@@ -76,6 +76,12 @@
   padding-inline: var(--space-md);
 }
 
+/* Rezerwa pod fixed gate-controls (theme + język) — cały sticky chrome */
+.cc-top-chrome {
+  padding-right: var(--gate-controls-reserve);
+  box-sizing: border-box;
+}
+
 .cc-header__brand {
   display: inline-flex;
   align-items: center;
@@ -202,6 +208,11 @@
 }
 
 .cc-search__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
   padding: 14px 22px;
   border-radius: var(--radius-pill);
   font-weight: 600;
@@ -211,12 +222,28 @@
   cursor: pointer;
 }
 
+.cc-search__submitIcon {
+  display: none;
+}
+
+.cc-search__submitIcon .hq-icon {
+  width: 20px;
+  height: 20px;
+}
+
 .cc-search__trending {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
-  justify-content: center;
   margin-top: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+
+.cc-search__trending::-webkit-scrollbar {
+  display: none;
 }
 
 .cc-search__tag {
@@ -631,10 +658,24 @@ body.is-labyrinth-active #gate {
     position: sticky;
     top: 0;
     z-index: var(--z-header);
+    padding-top: env(safe-area-inset-top, 0px);
     background: rgba(11, 11, 18, 0.9);
     border-bottom: 1px solid var(--glass-border);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
+  }
+
+  /* Podstrony hub — tylko logo (bez duplikatu wyszukiwarki) */
+  .cc-top-chrome--slim .cc-mobile-search {
+    display: none !important;
+  }
+
+  .cc-top-chrome--slim .cc-header__inner {
+    height: 48px;
+  }
+
+  .cc-top-chrome .cc-header__inner {
+    height: 52px;
   }
 
   [data-theme="light"] .cc-top-chrome {
@@ -647,10 +688,6 @@ body.is-labyrinth-active #gate {
     border-bottom: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-  }
-
-  .cc-top-chrome .cc-header__inner {
-    height: 52px;
   }
 
   .cc-top-chrome .cc-mobile-search {
@@ -1352,4 +1389,130 @@ body.hub-page {
 .cc-passport__icon .hq-icon {
   width: 22px;
   height: 22px;
+}
+
+/* ============================================================
+   MOBILE POLISH — feed, listing, search, tabbar
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .cc-feed {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
+  }
+
+  .cc-listing-page {
+    padding-block: var(--space-md) var(--space-2xl);
+  }
+
+  .cc-listing-head {
+    margin-bottom: var(--space-md);
+  }
+
+  .cc-listing-title {
+    font-size: clamp(1.55rem, 6vw, 2rem);
+    margin-top: 0.35rem;
+  }
+
+  .cc-listing-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+  }
+
+  .cc-tag-chips {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+
+  .cc-tag-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cc-filter-chip {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .cc-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .cc-tabbar__tab {
+    position: relative;
+    padding: 8px 2px 10px;
+    min-height: 52px;
+    font-size: 0.64rem;
+    letter-spacing: 0.01em;
+  }
+
+  .cc-tabbar__tab--active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 22%;
+    right: 22%;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--brand-gradient);
+  }
+
+  .cc-tabbar__tab--active {
+    color: var(--text);
+  }
+
+  .cc-tabbar__tab--active .cc-tabbar__icon {
+    color: var(--primary);
+  }
+}
+
+@media (max-width: 640px) {
+  .cc-feed {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .cc-search__input {
+    padding: 12px 14px;
+    font-size: 0.9rem;
+    min-width: 0;
+  }
+
+  .cc-search__row {
+    gap: 6px;
+  }
+
+  .cc-voice-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 520px) {
+  .cc-search__submitLabel {
+    display: none;
+  }
+
+  .cc-search__submitIcon {
+    display: grid;
+    place-items: center;
+  }
+
+  .cc-search__submit {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--brand-gradient);
+  }
+
+  .cc-header__brand .hairqoo-brand__wordmark {
+    display: none;
+  }
 }

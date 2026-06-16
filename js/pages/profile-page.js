@@ -20,7 +20,7 @@ function render(root) {
   const owned = id ? getEntitiesByOwner(id) : [];
 
   root.innerHTML = `
-    ${renderHubHeader(d)}
+    ${renderHubHeader(d, null, { mobileSearch: false })}
     <main class="cc-container cc-listing-page">
       <a class="cc-back-link" href="./index.html">← ${esc(d.common?.backHome ?? "Wróć")}</a>
       <header class="cc-listing-head">

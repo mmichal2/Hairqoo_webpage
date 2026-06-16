@@ -59,7 +59,7 @@ function render(root) {
       : `<div class="cc-grid">${items.map((e) => renderEntityCard(e, d)).join("")}</div>`;
 
   root.innerHTML = `
-    ${renderHubHeader(d, section)}
+    ${renderHubHeader(d, section, { mobileSearch: false })}
     <main class="cc-container cc-listing-page">
       <header class="cc-listing-head">
         <a class="cc-back-link" href="./index.html">← ${esc(d.common?.backHome ?? "Wróć na stronę główną")}</a>

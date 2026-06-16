@@ -158,7 +158,7 @@ function render(root) {
   else if (page === "newsletter") content = renderNewsletter(d);
 
   root.innerHTML = `
-    ${renderHubHeader(d, page)}
+    ${renderHubHeader(d, page, { mobileSearch: false })}
     <main class="cc-container cc-listing-page">
       <header class="cc-listing-head">
         <a class="cc-back-link" href="${page === "newsletter" ? "./index.html" : homeSectionHref(page)}">← ${esc(d.common?.backHome ?? "Wróć")}</a>

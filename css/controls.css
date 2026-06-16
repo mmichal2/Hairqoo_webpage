@@ -1,5 +1,10 @@
 /* Gate floating controls + labyrinth header controls */
 
+:root {
+  /* Szerokość zarezerwowana pod fixed theme + język (2× przycisk + gap + margines) */
+  --gate-controls-reserve: calc(122px + env(safe-area-inset-right, 0px));
+}
+
 .portal-chrome {
   position: fixed;
   inset: 0;
@@ -290,6 +295,10 @@ html.is-theme-transitioning * {
 }
 
 @media (max-width: 560px) {
+  :root {
+    --gate-controls-reserve: calc(108px + env(safe-area-inset-right, 0px));
+  }
+
   .gate-controls,
   .portal-chrome-inner,
   .labyrinth-home-exit {
@@ -321,5 +330,12 @@ html.is-theme-transitioning * {
   .lang-globe-icon {
     width: 24px;
     height: 24px;
+  }
+}
+
+/* Theme + język tylko w rzędzie logo — nie nachodzą na search / CTA */
+@media (max-width: 900px) {
+  body:has(.cc-top-chrome) .gate-controls {
+    top: calc(6px + env(safe-area-inset-top, 0px));
   }
 }

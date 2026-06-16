@@ -28,6 +28,7 @@ body {
   justify-content: space-between;
   gap: var(--space-md);
   padding: 14px clamp(16px, 4vw, 32px);
+  padding-right: max(clamp(16px, 4vw, 32px), var(--gate-controls-reserve, 16px));
   background: rgba(11, 11, 18, 0.72);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
