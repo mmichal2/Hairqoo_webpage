@@ -8,6 +8,7 @@ import {
   bindSearchTags,
   renderSearchBar,
   renderSearchRankingExplanation,
+  bindCollapsibleInsights,
 } from "../hub-shared.js?version=6.6.0";
 import { search } from "../data/queries.js?version=6.6.0";
 import { bootHubPage } from "../hub-boot.js?version=6.6.0";
@@ -47,6 +48,7 @@ function render(root) {
     ${renderHubTabbar(d, "discover")}
   `;
   bindSearchTags(root);
+  bindCollapsibleInsights(root);
 }
 
 bootHubPage(render);

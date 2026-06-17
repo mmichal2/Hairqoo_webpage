@@ -54,10 +54,28 @@ export const CC_DICT = {
       ],
     },
     aiVisibility: {
+      whyThisAppears: "Dlaczego to widzę?",
       whySeeing: "Dlaczego to widzę?",
       rankingTitle: "Wyjaśnienie rankingu AI",
       rankingLead: "Podgląd score breakdown dla najlepszego dopasowania (tylko odczyt).",
+      discoverContext: "Podgląd rankingu AI dla spersonalizowanego feedu Odkrywaj.",
+      trendingContext: "Podgląd rankingu AI dla trendów na platformie.",
+      searchContext: "Podgląd score breakdown dla najlepszego dopasowania wyszukiwania.",
       panelTitle: "Ranking AI",
+      statusTitle: "Status systemu AI",
+      statusActive: "Aktywny",
+      statusSignals: "Przetwarzanie sygnałów globalnych",
+      statusLearning: "Uczenie z interakcji",
+      expandHint: "Najedź lub dotknij, aby rozwinąć",
+      brainPlaceholder: "Zadaj pytanie AI, aby zobaczyć live ranking breakdown.",
+      brainNodes: "Węzły grafu",
+      labels: {
+        hairQooScore: "HairQoo Score",
+        verified: "Status weryfikacji",
+        popularity: "Popularność",
+        countryBoost: "Boost kraju",
+        recencyBoost: "Boost świeżości",
+      },
       hairQooScore: "HairQoo Score",
       verified: "Status weryfikacji",
       verifiedYes: "Zweryfikowany",
@@ -65,7 +83,6 @@ export const CC_DICT = {
       popularity: "Popularność",
       countryBoost: "Boost kraju",
       recencyBoost: "Boost świeżości",
-      brainNodes: "Węzły grafu",
     },
     portals: {
       businessHeadline: "Twój biznes",
@@ -244,10 +261,28 @@ export const CC_DICT = {
       ],
     },
     aiVisibility: {
+      whyThisAppears: "Why am I seeing this?",
       whySeeing: "Why am I seeing this?",
       rankingTitle: "AI ranking explanation",
       rankingLead: "Score breakdown preview for the top match (read-only).",
+      discoverContext: "AI ranking preview for your personalised Discover feed.",
+      trendingContext: "AI ranking preview for platform trending picks.",
+      searchContext: "Score breakdown preview for the top search match.",
       panelTitle: "AI ranking",
+      statusTitle: "AI System Status",
+      statusActive: "Active",
+      statusSignals: "Processing global signals",
+      statusLearning: "Learning from interactions",
+      expandHint: "Hover or tap to expand",
+      brainPlaceholder: "Ask the AI assistant to see a live ranking breakdown.",
+      brainNodes: "Graph nodes",
+      labels: {
+        hairQooScore: "HairQoo Score",
+        verified: "Verified status",
+        popularity: "Popularity",
+        countryBoost: "Country boost",
+        recencyBoost: "Recency boost",
+      },
       hairQooScore: "HairQoo Score",
       verified: "Verified status",
       verifiedYes: "Verified",
@@ -255,7 +290,6 @@ export const CC_DICT = {
       popularity: "Popularity",
       countryBoost: "Country boost",
       recencyBoost: "Recency boost",
-      brainNodes: "Graph nodes",
     },
     portals: {
       businessHeadline: "Your business",
@@ -390,5 +424,10 @@ export const CC_DICT = {
 };
 
 export function getCcDict(lang) {
-  return CC_DICT[lang] ?? CC_DICT.en ?? CC_DICT.pl;
+  const base = CC_DICT[lang] ?? CC_DICT.en ?? CC_DICT.pl;
+  const enVis = CC_DICT.en?.aiVisibility ?? {};
+  return {
+    ...base,
+    aiVisibility: { ...enVis, ...(base.aiVisibility ?? {}) },
+  };
 }

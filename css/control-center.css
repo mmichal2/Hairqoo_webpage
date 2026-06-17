@@ -1142,20 +1142,82 @@ body.hub-page {
 }
 
 /* ETAP 6.6 — AI visibility layer (read-only) */
+.cc-card__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.cc-ai-status {
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(123, 97, 255, 0.22);
+  background: rgba(123, 97, 255, 0.06);
+}
+
+.cc-ai-status__title {
+  margin: 0 0 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--outline);
+}
+
+.cc-ai-status__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.cc-ai-status__list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .cc-ai-insight {
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px solid var(--glass-border);
 }
 
-.cc-ai-insight__title {
-  display: block;
+.cc-ai-insight--collapsible .cc-ai-insight__panel {
+  display: none;
+  margin-top: 8px;
+}
+
+.cc-ai-insight--collapsible:hover .cc-ai-insight__panel,
+.cc-ai-insight--collapsible:focus-within .cc-ai-insight__panel,
+.cc-ai-insight--collapsible.cc-ai-insight--open .cc-ai-insight__panel {
+  display: grid;
+}
+
+.cc-ai-insight__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
   font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.cc-ai-insight__hint {
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
   color: var(--outline);
-  margin-bottom: 6px;
+  font-size: 0.62rem;
 }
 
 .cc-ai-insight__grid {
@@ -1182,6 +1244,11 @@ body.hub-page {
   padding: var(--space-lg);
 }
 
+.cc-ai-explain--compact {
+  margin-bottom: var(--space-md);
+  padding: var(--space-md);
+}
+
 .cc-ai-explain__title {
   margin: 0 0 6px;
   font-size: 1.1rem;
@@ -1196,10 +1263,6 @@ body.hub-page {
 .cc-ai-explain__entity {
   margin: 0 0 8px;
   font-size: 0.92rem;
-}
-
-.cc-card .cc-ai-insight {
-  pointer-events: none;
 }
 
 /* --- Feed --- */

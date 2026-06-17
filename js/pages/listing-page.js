@@ -7,6 +7,8 @@ import {
   renderHubHeader,
   renderHubTabbar,
   bindSearchTags,
+  renderFeedRankingExplanation,
+  bindCollapsibleInsights,
 } from "../hub-shared.js?version=6.6.0";
 import { filterEntities, getCountries, getTrendingTags } from "../data/queries.js?version=6.6.0";
 import { bootHubPage } from "../hub-boot.js?version=6.6.0";
@@ -56,7 +58,7 @@ function render(root) {
   const grid =
     items.length === 0
       ? `<p class="cc-listing-empty">${esc(d.common?.noFilterResults ?? "Brak wyników")}</p>`
-      : `<div class="cc-grid">${items.map((e) => renderEntityCard(e, d)).join("")}</div>`;
+      : `${section === "discover" ? renderFeedRankingExplanation(items, d, "discover") : ""}<div class="cc-grid">${items.map((e) => renderEntityCard(e, d)).join("")}</div>`;
 
   root.innerHTML = `
     ${renderHubHeader(d, section, { mobileSearch: false })}
@@ -86,6 +88,7 @@ function render(root) {
     ${renderHubTabbar(d, section === "discover" ? "discover" : section)}
   `;
   bindSearchTags(root);
+  bindCollapsibleInsights(root);
 }
 
 bootHubPage(render);

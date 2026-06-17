@@ -44,6 +44,10 @@ function withTimeout(promise, ms, label = "operation") {
 }
 
 function applySearchIndexBoosts(scoreMap) {
+  /**
+   * search_index (Supabase) = PRIMARY boost layer — applied first when remote data is available.
+   * In-memory ranking (search-engine / global brain) = FALLBACK layer only when index scores are absent.
+   */
   if (!scoreMap?.size) return;
   entityPool = entityPool.map((entity) => {
     const boost = scoreMap.get(entity.id);

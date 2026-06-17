@@ -319,8 +319,36 @@
   color: var(--muted);
 }
 
+.cc-ai-brain-panel__placeholder {
+  margin: 12px 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 .cc-ai-brain-panel__meta {
   margin: 10px 0 0;
   font-size: 0.75rem;
   color: var(--outline);
+}
+
+.cc-ai-status-fab {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .cc-ai-status-fab {
+    display: block;
+    position: fixed;
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    z-index: 8999;
+    width: min(240px, 42vw);
+    pointer-events: none;
+  }
+
+  .cc-ai-status-fab .cc-ai-status {
+    margin: 0;
+    opacity: 0.92;
+  }
 }

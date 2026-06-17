@@ -553,9 +553,4 @@ export function applyFinaleI18n(portal, root = document) {
     const val = t(`finale.${portal}.${key}`);
     if (typeof val === "string") el.textContent = val;
   });
-  const footer = document.querySelector(".site-footer [data-i18n-finale]");
-  if (footer) {
-    const val = t(`finale.${portal}.footer`);
-    if (typeof val === "string") footer.textContent = val;
-  }
 }

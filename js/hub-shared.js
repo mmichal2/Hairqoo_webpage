@@ -55,44 +55,98 @@ export function readAIVisibility(entity) {
   };
 }
 
+function aiLabels(d) {
+  const v = d.aiVisibility ?? {};
+  return { ...v, ...(v.labels ?? {}) };
+}
+
 function pctLabel(value) {
   return value == null ? "—" : `${value}`;
 }
 
-/** Compact score row for cards and feed items. */
-export function renderEntityAIInsight(entity, d) {
+/** PRE-ETAP 7 — always-visible AI system status (read-only UI). */
+export function renderAISystemStatus(d) {
+  const v = d.aiVisibility ?? {};
+  const s = v.status ?? {};
+  return `<div class="cc-ai-status" role="status" aria-live="polite">
+    <p class="cc-ai-status__title">${esc(s.title ?? v.statusTitle ?? "AI System Status")}</p>
+    <ul class="cc-ai-status__list">
+      <li><span aria-hidden="true">✓</span> ${esc(s.active ?? v.statusActive ?? "Active")}</li>
+      <li><span aria-hidden="true">✓</span> ${esc(s.signals ?? v.statusSignals ?? "Processing global signals")}</li>
+      <li><span aria-hidden="true">✓</span> ${esc(s.learning ?? v.statusLearning ?? "Learning from interactions")}</li>
+    </ul>
+  </div>`;
+}
+
+/** Unified “why this result” block — collapsed by default, expand on hover/tap. */
+export function renderWhyThisResult(entity, d) {
   const vis = readAIVisibility(entity);
   if (!vis) return "";
-  const labels = d.aiVisibility ?? {};
+  const L = aiLabels(d);
   const verifiedLabel = vis.verified
-    ? (labels.verifiedYes ?? "Verified")
-    : (labels.verifiedNo ?? "Unverified");
-  return `<div class="cc-ai-insight" aria-label="${esc(labels.panelTitle ?? "AI ranking")}">
-    <span class="cc-ai-insight__title">${esc(labels.whySeeing ?? "Why am I seeing this?")}</span>
-    <dl class="cc-ai-insight__grid">
-      <div><dt>${esc(labels.hairQooScore ?? "HairQoo Score")}</dt><dd>${pctLabel(vis.hairQooScore)}</dd></div>
-      <div><dt>${esc(labels.verified ?? "Verified")}</dt><dd>${esc(verifiedLabel)}</dd></div>
-      <div><dt>${esc(labels.popularity ?? "Popularity")}</dt><dd>${pctLabel(vis.popularity)}</dd></div>
-      <div><dt>${esc(labels.countryBoost ?? "Country boost")}</dt><dd>${pctLabel(vis.countryBoost)}</dd></div>
-      <div><dt>${esc(labels.recencyBoost ?? "Recency boost")}</dt><dd>${pctLabel(vis.recencyBoost)}</dd></div>
+    ? (L.verifiedYes ?? "Verified")
+    : (L.verifiedNo ?? "Unverified");
+  const trigger = esc(L.whyThisAppears ?? L.whySeeing ?? "Why am I seeing this?");
+  const hint = esc(L.expandHint ?? "Hover or tap to expand");
+  return `<div class="cc-ai-insight cc-ai-insight--collapsible" tabindex="0" role="group" aria-label="${esc(L.panelTitle ?? "AI ranking")}">
+    <span class="cc-ai-insight__trigger">${trigger}<span class="cc-ai-insight__hint">${hint}</span></span>
+    <dl class="cc-ai-insight__grid cc-ai-insight__panel">
+      <div><dt>${esc(L.hairQooScore ?? "HairQoo Score")}</dt><dd>${pctLabel(vis.hairQooScore)}</dd></div>
+      <div><dt>${esc(L.verified ?? "Verified")}</dt><dd>${esc(verifiedLabel)}</dd></div>
+      <div><dt>${esc(L.popularity ?? "Popularity")}</dt><dd>${pctLabel(vis.popularity)}</dd></div>
+      <div><dt>${esc(L.countryBoost ?? "Country boost")}</dt><dd>${pctLabel(vis.countryBoost)}</dd></div>
+      <div><dt>${esc(L.recencyBoost ?? "Recency boost")}</dt><dd>${pctLabel(vis.recencyBoost)}</dd></div>
     </dl>
   </div>`;
+}
+
+/** Section-level ranking explanation (discover / trending / search). */
+export function renderFeedRankingExplanation(items, d, context = "discover") {
+  const top = items?.[0];
+  if (!top) return "";
+  const L = aiLabels(d);
+  const contextLead =
+    context === "trending"
+      ? (L.trendingContext ?? L.rankingLead)
+      : context === "search"
+        ? (L.searchContext ?? L.rankingLead)
+        : (L.discoverContext ?? L.rankingLead);
+  return `<aside class="cc-ai-explain cc-glass cc-ai-explain--compact" aria-labelledby="cc-ai-explain-${context}">
+    <h2 id="cc-ai-explain-${context}" class="cc-ai-explain__title">${esc(L.rankingTitle ?? "AI ranking explanation")}</h2>
+    ${renderAISystemStatus(d)}
+    <p class="cc-ai-explain__lead">${esc(contextLead ?? "Score breakdown preview (read-only).")}</p>
+    <p class="cc-ai-explain__entity"><strong>${esc(top.title)}</strong></p>
+    ${renderWhyThisResult(top, d)}
+  </aside>`;
+}
+
+/** @deprecated use renderWhyThisResult */
+export function renderEntityAIInsight(entity, d) {
+  return renderWhyThisResult(entity, d);
 }
 
 /** Search page — AI ranking explanation for top result (display only). */
 export function renderSearchRankingExplanation(query, groups, d) {
   if (!query?.trim()) return "";
   const flat = groups.flatMap((g) => g.items ?? []);
-  const top = flat[0];
-  if (!top) return "";
-  const vis = readAIVisibility(top);
-  const labels = d.aiVisibility ?? {};
-  return `<aside class="cc-ai-explain cc-glass" aria-labelledby="cc-ai-explain-title">
-    <h2 id="cc-ai-explain-title" class="cc-ai-explain__title">${esc(labels.rankingTitle ?? "AI ranking explanation")}</h2>
-    <p class="cc-ai-explain__lead">${esc(labels.rankingLead ?? "Score breakdown preview for the top match (read-only).")}</p>
-    <p class="cc-ai-explain__entity"><strong>${esc(top.title)}</strong></p>
-    ${renderEntityAIInsight(top, d)}
-  </aside>`;
+  return renderFeedRankingExplanation(flat, d, "search");
+}
+
+export function bindCollapsibleInsights(root = document) {
+  root.querySelectorAll(".cc-ai-insight--collapsible").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      el.classList.toggle("cc-ai-insight--open");
+    });
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        e.stopPropagation();
+        el.classList.toggle("cc-ai-insight--open");
+      }
+    });
+  });
 }
 
 export function dict() {
@@ -120,9 +174,10 @@ export function renderEntityCard(entity, d) {
   const video = isVideoCard(entity.type);
   const score = entity.score ? `<span class="cc-score">${entity.score}</span>` : "";
   const meta = [entity.country, entity.location].filter(Boolean).join(" · ");
-  const aiInsight = renderEntityAIInsight(entity, d);
+  const aiInsight = renderWhyThisResult(entity, d);
 
-  return `<a class="cc-glass cc-glass--interactive cc-card" href="${entityHref(entity)}">
+  return `<div class="cc-glass cc-glass--interactive cc-card">
+    <a class="cc-card__link" href="${entityHref(entity)}">
     <div class="cc-card__media${tall ? " cc-card__media--tall" : ""}${video ? " cc-card__media--video" : ""}">
       <img src="${esc(img)}" alt="${esc(entity.title)}" loading="lazy" style="${mediaStyle(entity)}" />
       <span class="cc-card__typeTag">${esc(typeLabel)}</span>
@@ -132,9 +187,10 @@ export function renderEntityCard(entity, d) {
       <h3 class="cc-card__title">${esc(entity.title)}</h3>
       <p class="cc-card__desc">${esc(entity.description)}</p>
       <div class="cc-card__meta">${esc(meta)} ${score}</div>
-      ${aiInsight}
     </div>
-  </a>`;
+    </a>
+    ${aiInsight}
+  </div>`;
 }
 
 export function renderFeedItem(entity, d) {
@@ -143,7 +199,7 @@ export function renderFeedItem(entity, d) {
   const tags = entity.tags.map((t) => `<span class="cc-feed__tag">#${esc(t)}</span>`).join("");
   const eng = entity.engagement;
   const href = entityHref(entity);
-  const aiInsight = renderEntityAIInsight(entity, d);
+  const aiInsight = renderWhyThisResult(entity, d);
 
   return `<article class="cc-glass cc-feed__item">
     <a class="cc-feed__media" href="${href}" style="display:block;color:inherit">

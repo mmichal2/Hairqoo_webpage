@@ -20,6 +20,9 @@ import {
   renderHubNav,
   bindSearchTags,
   bindAwardVotes,
+  renderAISystemStatus,
+  renderFeedRankingExplanation,
+  bindCollapsibleInsights,
 } from "./hub-shared.js?version=6.6.0";
 import { hairqooBrandMarkup } from "./brand-logo.js?version=6.6.0";
 import { icon } from "./icons.js?version=6.6.0";
@@ -43,6 +46,8 @@ let ccLabyrinth = null;
 let ccLangBound = false;
 
 function teardownFeedObserver() {
+  window.__FEED_OBSERVER__?.disconnect();
+  window.__FEED_OBSERVER__ = null;
   feedObserver?.disconnect();
   feedObserver = null;
   document.getElementById("cc-feed-sentinel")?.remove();
@@ -137,6 +142,8 @@ function renderHomepage(root) {
     })
     .join("");
 
+  const trendingItems = getTrending(8);
+
   root.innerHTML = `
     <div class="cc-top-chrome">
       <header class="cc-header">
@@ -165,6 +172,7 @@ function renderHomepage(root) {
           <div class="cc-ai__badge">AI</div>
           <h2 class="cc-ai__title strand-text">${esc(d.ai.title)}</h2>
           <p class="cc-ai__subtitle">${esc(d.ai.subtitle)}</p>
+          ${renderAISystemStatus(d)}
           <div class="cc-ai__prompts">${aiPrompts}</div>
           <button type="button" class="cc-ai__openBtn" id="cc-ai-open">${esc(d.ai.open)}</button>
         </div>
@@ -202,13 +210,15 @@ function renderHomepage(root) {
         </div>
         <a class="cc-section__action" href="${seeAllHref("discover")}">${esc(d.sections.seeAll)} →</a>
       </header>
+      ${renderFeedRankingExplanation(feedSeed, d, "discover")}
       <div class="cc-feed" id="cc-feed">${feedSeed.map((e) => renderFeedItem(e, d)).join("")}</div>
       <p class="cc-feed__state" id="cc-feed-state" hidden></p>
     </section>
 
     <section class="cc-section cc-container" id="trending">
       ${sectionHeader(d.sections.trending, d.sections.trendingSub, "discover", d.sections.seeAll)}
-      <div class="cc-hscroll">${getTrending(8).map((e) => renderEntityCard(e, d)).join("")}</div>
+      ${renderFeedRankingExplanation(trendingItems, d, "trending")}
+      <div class="cc-hscroll">${trendingItems.map((e) => renderEntityCard(e, d)).join("")}</div>
     </section>
 
     <section class="cc-section cc-container" id="events">
@@ -341,11 +351,14 @@ function bindInteractions(root, labyrinth) {
       },
       { rootMargin: "200px" }
     );
+    window.__FEED_OBSERVER__ = feedObserver;
     const sentinel = document.createElement("div");
     sentinel.id = "cc-feed-sentinel";
     feedEl.after(sentinel);
     feedObserver.observe(sentinel);
   }
+
+  bindCollapsibleInsights(root);
 
   root.querySelectorAll("[data-portal]").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -401,12 +414,14 @@ export function refreshControlCenter() {
 }
 
 export function initControlCenter(labyrinth) {
+  if (window.__CONTROL_CENTER_INIT__) return;
+  window.__CONTROL_CENTER_INIT__ = true;
+
   const gate = document.getElementById("gate");
   if (!gate) return;
 
   ccLabyrinth = labyrinth;
   gate.classList.add("home-cc", "is-poster-ready");
-  document.body.classList.add("is-home-cc");
 
   if (!document.getElementById("cc-app")) {
     gate.innerHTML = '<div class="cc-app" id="cc-app"></div>';

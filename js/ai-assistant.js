@@ -2,7 +2,7 @@ import { getLang } from "./i18n.js?version=6.6.0";
 import { getCcDict } from "./cc-dict.js?version=6.6.0";
 import { aiAsk } from "./data/queries.js?version=6.6.0";
 import { entityHref, searchHref, seeAllHref } from "./hub-routes.js?version=6.6.0";
-import { esc } from "./hub-shared.js?version=6.6.0";
+import { esc, renderAISystemStatus, bindCollapsibleInsights } from "./hub-shared.js?version=6.6.0";
 import { bindVoiceButton } from "./speech-recognition.js?version=6.6.0";
 import { logUserInteraction } from "./intelligence/ai-learning.js?version=6.6.0";
 
@@ -36,15 +36,23 @@ export function getGlobalBrainSummaryReadOnly() {
 
 function renderBrainInsightPanel() {
   const d = dict();
-  const g = brainSnapshot.globalBrain;
-  if (!g?.entities?.length) return "";
   const labels = d.aiVisibility ?? {};
+  const g = brainSnapshot.globalBrain;
+
+  if (!g?.entities?.length) {
+    return `<div class="cc-ai-brain-panel cc-ai-brain-panel--placeholder" aria-label="${esc(labels.panelTitle ?? "AI Brain")}">
+      ${renderAISystemStatus(d)}
+      <p class="cc-ai-brain-panel__placeholder">${esc(labels.brainPlaceholder ?? "Ask the AI assistant to see a live ranking breakdown.")}</p>
+    </div>`;
+  }
+
   const top = g.entities[0];
+  const L = { ...labels, ...(labels.labels ?? {}) };
   const rows = [
-    { label: labels.hairQooScore ?? "HairQoo Score", value: top.globalBrain?.scoreBreakdown?.hairQooScore },
-    { label: labels.popularity ?? "Popularity", value: top.globalBrain?.scoreBreakdown?.engagementScore },
-    { label: labels.countryBoost ?? "Country boost", value: top.globalBrain?.scoreBreakdown?.regionalBoost },
-    { label: labels.recencyBoost ?? "Recency boost", value: top.globalBrain?.scoreBreakdown?.searchRelevanceScore },
+    { label: L.hairQooScore ?? "HairQoo Score", value: top.globalBrain?.scoreBreakdown?.hairQooScore },
+    { label: L.popularity ?? "Popularity", value: top.globalBrain?.scoreBreakdown?.engagementScore },
+    { label: L.countryBoost ?? "Country boost", value: top.globalBrain?.scoreBreakdown?.regionalBoost },
+    { label: L.recencyBoost ?? "Recency boost", value: top.globalBrain?.scoreBreakdown?.searchRelevanceScore },
   ]
     .map((row) => {
       const val = row.value == null ? "—" : Math.round(row.value * 100);
@@ -53,7 +61,8 @@ function renderBrainInsightPanel() {
     .join("");
 
   return `<div class="cc-ai-brain-panel" aria-label="${esc(labels.panelTitle ?? "AI Brain")}">
-    <h3 class="cc-ai-brain-panel__title">${esc(labels.whySeeing ?? "Why am I seeing this?")}</h3>
+    ${renderAISystemStatus(d)}
+    <h3 class="cc-ai-brain-panel__title">${esc(labels.whyThisAppears ?? labels.whySeeing ?? "Why am I seeing this?")}</h3>
     <p class="cc-ai-brain-panel__subtitle">${esc(labels.rankingTitle ?? "AI ranking explanation")}</p>
     <dl class="cc-ai-insight__grid">${rows}</dl>
     <p class="cc-ai-brain-panel__meta">${esc(labels.brainNodes ?? "Graph nodes")}: ${brainSnapshot.brainContext?.graph?.nodeCount ?? 0}</p>
@@ -141,6 +150,7 @@ function refreshUI() {
   if (!host) return;
   host.innerHTML = renderDrawer();
   bindDrawerEvents();
+  bindCollapsibleInsights(host);
   const thread = document.getElementById("cc-ai-thread");
   if (thread) thread.scrollTop = thread.scrollHeight;
 
@@ -238,6 +248,8 @@ export async function send(prompt) {
 }
 
 export function initAIAssistant() {
+  if (window.__AI_INIT__) return;
+  window.__AI_INIT__ = true;
   if (document.getElementById("cc-ai-root")) return;
 
   const d = dict();
@@ -247,6 +259,7 @@ export function initAIAssistant() {
     <span aria-hidden="true">✦</span>
     <span class="cc-ai-fab__label">${esc(d.ai.title)}</span>
   </button>
+  <div class="cc-ai-status-fab" aria-hidden="true">${renderAISystemStatus(d)}</div>
   <div id="cc-ai-host"></div>`;
   document.body.appendChild(root);
 
@@ -254,11 +267,13 @@ export function initAIAssistant() {
 
   window.addEventListener("hairqoo:lang", () => {
     const fab = document.getElementById("cc-ai-fab");
+    const statusFab = document.querySelector(".cc-ai-status-fab");
     const d2 = dict();
     if (fab) {
       fab.setAttribute("aria-label", d2.ai.open);
       fab.querySelector(".cc-ai-fab__label").textContent = d2.ai.title;
     }
+    if (statusFab) statusFab.innerHTML = renderAISystemStatus(d2);
     refreshUI();
   });
 }
