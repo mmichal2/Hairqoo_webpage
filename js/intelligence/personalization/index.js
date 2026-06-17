@@ -32,15 +32,12 @@ export {
 export { enhanceAIContext, personalizedAIResponse } from "./ai-personalization.js";
 
 import { initSession } from "./session-memory.js";
-import { updateLearningModel } from "./learning-loop.js";
 import { getDataSessionId } from "../../data/interactions.js";
+import { logUserInteraction } from "../ai-learning.js";
 
 export function initPersonalization(userId = null) {
   return initSession(userId ?? getDataSessionId());
 }
 
-/** Unified ETAP 5 interaction entry point. */
-export function logUserInteraction(userId, eventType, entityId, metadata = {}) {
-  const id = userId ?? getDataSessionId();
-  return updateLearningModel(id, { type: eventType, entityId, meta: metadata });
-}
+/** ETAP 6.5 — single interaction pipeline (delegates to ai-learning.js). */
+export { logUserInteraction };

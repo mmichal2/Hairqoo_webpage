@@ -45,8 +45,9 @@ import { getEntityPool } from "../../data/data-source.js";
 
 let brainReady = false;
 
-export function initGlobalBrain(entities = null) {
-  if (brainReady && !entities) {
+export function initGlobalBrain(entities = null, options = {}) {
+  const force = options.force ?? Boolean(entities);
+  if (brainReady && !force) {
     const g = getEntityGraph();
     return { ready: true, nodes: Object.keys(g.nodes ?? {}).length, edges: g.edges?.length ?? 0 };
   }

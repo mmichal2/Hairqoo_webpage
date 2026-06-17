@@ -3,9 +3,10 @@
  * Fire-and-forget; never blocks UI.
  */
 
-import { DATA_CONFIG, resolveProvider } from "./config.js";
+import { DATA_CONFIG } from "./config.js";
 import { supabaseRequest, buildQuery } from "./supabase-client.js";
 import { updateEntityMetrics } from "./api.js";
+import { isLocalDatastoreActive } from "./provider-state.js";
 
 const METRIC_MAP = {
   view: { views: 1 },
@@ -37,11 +38,11 @@ function isUuid(value) {
  * @param {object} [metadata]
  */
 export async function trackInteraction(userId, entityId, actionType, metadata = {}) {
-  if (resolveProvider() === "mock") {
+  if (isLocalDatastoreActive()) {
     if (entityId && METRIC_MAP[actionType]) {
       await updateEntityMetrics(entityId, METRIC_MAP[actionType]).catch(() => {});
     }
-    return { ok: true, provider: "mock" };
+    return { ok: true, provider: "local" };
   }
 
   const sessionId = getDataSessionId();

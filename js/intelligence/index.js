@@ -94,7 +94,6 @@ import { voteForAward, getUserVote, AWARD_CATEGORIES } from "./awards-system.js"
 import { getDataSessionId } from "../data/interactions.js";
 import { initPersonalization } from "./personalization/index.js";
 import { initGlobalBrain } from "./global/index.js";
-import { getEntityPool } from "../data/data-source.js";
 
 export {
   initGlobalBrain,
@@ -130,11 +129,6 @@ export function initIntelligence() {
   if (initialized || typeof document === "undefined") return;
   initialized = true;
   initPersonalization();
-  initGlobalBrain();
-
-  window.addEventListener("hairqoo:data-ready", () => {
-    initGlobalBrain(getEntityPool());
-  });
 
   document.addEventListener("click", (e) => {
     const link = e.target.closest("a[href*='entity.html']");

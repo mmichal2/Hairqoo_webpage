@@ -23,10 +23,10 @@ import {
 } from "./hub-shared.js";
 import { hairqooBrandMarkup } from "./brand-logo.js";
 import { icon } from "./icons.js";
+import { renderPassportPanel } from "./hub-passport.js";
 
 const MONTHS_PL = ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"];
 const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const PASSPORT_ICONS = ["educators", "ticket", "salon", "sparkle"];
 const PULSE_POS = [
   { left: "28%", top: "38%" },
   { left: "52%", top: "32%" },
@@ -126,18 +126,6 @@ function renderHomepage(root) {
         <button type="button" class="cc-award__vote">${esc(d.awards.vote)}</button>
       </article>`;
     })
-    .join("");
-
-  const passportItems = d.passport.items
-    .map(
-      (item, i) => `<li class="cc-passport__item">
-        <span class="cc-passport__icon">${icon(PASSPORT_ICONS[i] ?? "sparkle")}</span>
-        <div>
-          <span style="font-size:0.78rem;color:var(--primary);font-weight:600">${esc(item.year)}</span>
-          <div>${esc(item.label)}</div>
-        </div>
-      </li>`
-    )
     .join("");
 
   root.innerHTML = `
@@ -279,9 +267,7 @@ function renderHomepage(root) {
 
     <section class="cc-section cc-container" id="passport">
       ${sectionHeader(d.sections.passport, d.sections.passportSub, "passport", d.sections.seeAll)}
-      <div class="cc-glass cc-passport">
-        <ol style="list-style:none;margin:0;padding:0">${passportItems}</ol>
-      </div>
+      ${renderPassportPanel(d)}
     </section>
 
     <div class="cc-section-pad">

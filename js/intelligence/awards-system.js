@@ -5,6 +5,10 @@ import { getHairQooScoreValue, interactionVelocity } from "./score-system.js";
 import { getVerifiedStatus, computeTrustScore } from "./verified-trust.js";
 import { logUserInteraction } from "./ai-learning.js";
 import { trackInteractionRemote } from "../data/interactions.js";
+import { submitAwardVote, fetchAwardVoteCounts } from "../data/api.js";
+import { getDataSessionId } from "../data/interactions.js";
+import { getSessionUser } from "../data/users-store.js";
+import { isRemoteDatastoreActive } from "../data/provider-state.js";
 
 export const AWARD_CATEGORIES = {
   educator_of_year: { key: "educatorOfYear", entityType: "educator", cycle: "yearly" },
@@ -33,28 +37,64 @@ function cycleKey(category) {
 }
 
 function voteCountFor(entityId, category) {
+  const remote = remoteVoteCounts[category];
+  if (remote && remote[entityId] != null) return remote[entityId];
   const bucket = readStore().awards.votes[cycleKey(category)] ?? {};
   return bucket[entityId] ?? 0;
 }
 
+/** Remote award_votes cache (ETAP 6.5). */
+const remoteVoteCounts = {};
+
+export async function hydrateAwardVotes(category) {
+  if (!isRemoteDatastoreActive()) return null;
+  const season = getCurrentSeason(categoryMeta(category).cycle);
+  const counts = await fetchAwardVoteCounts(category, season);
+  if (counts) remoteVoteCounts[category] = counts;
+  return counts;
+}
+
+export async function hydrateAllAwardVotes() {
+  for (const category of Object.keys(AWARD_CATEGORIES)) {
+    await hydrateAwardVotes(category).catch(() => {});
+  }
+}
+
 /**
- * Cast award vote — persists locally + ETAP 2 interaction layer.
+ * Cast award vote — award_votes (remote) or local store (offline mock).
  */
 export function voteForAward(userId, entityId, category) {
-  const key = cycleKey(category);
+  const sessionId = userId ?? getDataSessionId();
+  const season = getCurrentSeason(categoryMeta(category).cycle);
+  const uvKey = `${category}:${season}`;
+
   writeStore((store) => {
-    if (!store.awards.votes[key]) store.awards.votes[key] = {};
-    const bucket = store.awards.votes[key];
-    bucket[entityId] = (bucket[entityId] ?? 0) + 1;
-    store.awards.cycles[key] = getCurrentSeason(categoryMeta(category).cycle);
     if (!store.awards.userVotes) store.awards.userVotes = {};
-    const uvKey = `${category}:${getCurrentSeason(categoryMeta(category).cycle)}`;
     store.awards.userVotes[uvKey] = entityId;
+    if (!isRemoteDatastoreActive()) {
+      const key = cycleKey(category);
+      if (!store.awards.votes[key]) store.awards.votes[key] = {};
+      store.awards.votes[key][entityId] = (store.awards.votes[key][entityId] ?? 0) + 1;
+      store.awards.cycles[key] = season;
+    }
     return store;
   });
 
-  logUserInteraction("vote", entityId, { category, userId });
-  trackInteractionRemote("vote", entityId, { category, userId });
+  if (isRemoteDatastoreActive()) {
+    const userUuid = getSessionUser()?.id ?? null;
+    submitAwardVote({
+      category,
+      season,
+      entityLegacyId: entityId,
+      sessionId,
+      userId: userUuid,
+    })
+      .then(() => hydrateAwardVotes(category))
+      .catch((err) => console.warn("[HairQoo] award vote failed:", err.message));
+  }
+
+  logUserInteraction("vote", entityId, { category, userId: sessionId });
+  trackInteractionRemote("vote", entityId, { category, userId: sessionId });
 
   return getAwardRankings(category);
 }

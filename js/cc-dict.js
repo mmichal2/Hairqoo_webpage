@@ -136,12 +136,14 @@ export const CC_DICT = {
     },
     map: { ecosystemLabel: "Ekosystem wg krajów" },
     passport: {
-      items: [
-        { year: "2026", label: "Certyfikat: Balayage Master" },
-        { year: "2025", label: "Hairqoo World Summit — uczestnik" },
-        { year: "2025", label: "Warsztat: Precyzyjne cięcia" },
-        { year: "2024", label: "Dołączenie do Hairqoo" },
-      ],
+      levelLabel: "Poziom",
+      toNext: "Do następnego poziomu",
+      events: "Wydarzenia",
+      education: "Edukacja",
+      achievements: "Osiągnięcia",
+      awards: "Nagrody",
+      empty: "Twój passport zacznie się wypełniać po interakcjach z ekosystemem HairQoo.",
+      items: [],
     },
     entityTypes: {
       event: "Wydarzenie",
@@ -152,6 +154,7 @@ export const CC_DICT = {
       brand: "Marka",
       post: "Post",
       video: "Wideo",
+      user: "Użytkownik",
     },
     profile: {
       label: "Profil",
@@ -309,12 +312,14 @@ export const CC_DICT = {
     },
     map: { ecosystemLabel: "Ecosystem by country" },
     passport: {
-      items: [
-        { year: "2026", label: "Certificate: Balayage Master" },
-        { year: "2025", label: "Hairqoo World Summit — attendee" },
-        { year: "2025", label: "Workshop: Precision cutting" },
-        { year: "2024", label: "Joined Hairqoo" },
-      ],
+      levelLabel: "Level",
+      toNext: "To next level",
+      events: "Events",
+      education: "Education",
+      achievements: "Achievements",
+      awards: "Awards",
+      empty: "Your passport will fill in as you interact with the HairQoo ecosystem.",
+      items: [],
     },
     entityTypes: {
       event: "Event",
@@ -325,6 +330,7 @@ export const CC_DICT = {
       brand: "Brand",
       post: "Post",
       video: "Video",
+      user: "User",
     },
     profile: {
       label: "Profile",

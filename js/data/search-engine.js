@@ -19,6 +19,7 @@ export const SEARCHABLE_TYPES = new Set([
   "academy",
   "brand",
   "salon",
+  "user",
   "video",
   "post",
 ]);
@@ -262,6 +263,12 @@ export function computeScoreBreakdown(query, entity, ctx = {}) {
   const context = ctx.network ? ctx : buildContext({}, ctx);
   const tokens = tokenize(query);
 
+  const indexBoost = entity.searchIndexScore != null
+    ? Math.min(1, Number(entity.searchIndexScore) / 100)
+    : entity.ranking?.searchIndexBoost != null
+      ? Math.min(1, Number(entity.ranking.searchIndexBoost) / 100)
+      : 0;
+
   const breakdown = {
     keywordScore: keywordScore(tokens, entity),
     hairQooScore: resolveHairQooScore(entity, context.network),
@@ -269,6 +276,7 @@ export function computeScoreBreakdown(query, entity, ctx = {}) {
     popularityScore: popularityScore(entity),
     recencyScore: recencyScore(entity),
     geoLanguageBoost: geoLanguageBoost(entity, context),
+    searchIndexBoost: indexBoost,
   };
 
   const finalScore =
@@ -277,7 +285,8 @@ export function computeScoreBreakdown(query, entity, ctx = {}) {
     breakdown.verifiedBoost * RANK_WEIGHTS.verified +
     breakdown.popularityScore * RANK_WEIGHTS.popularity +
     breakdown.recencyScore * RANK_WEIGHTS.recency +
-    breakdown.geoLanguageBoost * RANK_WEIGHTS.geoLanguage;
+    breakdown.geoLanguageBoost * RANK_WEIGHTS.geoLanguage +
+    indexBoost * 0.05;
 
   return {
     finalScore: Math.min(1, Math.max(0, finalScore)),

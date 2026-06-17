@@ -154,7 +154,10 @@ export class Labyrinth {
   }
 
   clearUrlHash() {
-    if (!window.location.hash) return;
+    const hash = window.location.hash.replace(/^#/, "");
+    if (!hash) return;
+    /* Preserve homepage section anchors (#discover, #events, …) — ETAP 6.5 */
+    if (!/^(salon|client)(\/|$)/.test(hash)) return;
     const url = window.location.pathname + window.location.search;
     window.history.replaceState(null, "", url);
   }

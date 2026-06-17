@@ -7,11 +7,12 @@ import { DATA_CONFIG, resolveProvider, isSupabaseConfigured, applyDataConfig } f
 import { supabaseRequest, supabaseRpc, buildQuery } from "./supabase-client.js";
 import { rowToEntity, rowsToEntities, entityToRow } from "./entity-mapper.js";
 import { MOCK_ENTITIES } from "./entities.js";
+import { isRemoteDatastoreActive } from "./provider-state.js";
 
 export { isSupabaseConfigured, resolveProvider };
 
 export function isSupabaseEnabled() {
-  return resolveProvider() === "supabase";
+  return isRemoteDatastoreActive();
 }
 
 async function loadOptionalConfig() {
@@ -32,7 +33,7 @@ async function loadOptionalConfig() {
  */
 export async function getEntities(type, filters = {}) {
   await loadOptionalConfig();
-  if (!isSupabaseEnabled()) {
+  if (!isRemoteDatastoreActive()) {
     return filterMockEntities(type, filters);
   }
 
@@ -134,6 +135,116 @@ export async function getPassportBySession(sessionId) {
     query: buildQuery({ select: "*", session_id: `eq.${sessionId}`, limit: "1" }),
   });
   return rows?.[0] ? normalizePassportRow(rows[0]) : null;
+}
+
+function passportXpFromUser(user) {
+  const rules = {
+    event_attend: 120,
+    education_complete: 200,
+    certification: 350,
+    achievement: 150,
+    award_win: 800,
+  };
+  let xp = user.xpPoints ?? 0;
+  xp += (user.completedEvents ?? []).length * rules.event_attend;
+  xp += (user.attendedEducation ?? []).length * rules.education_complete;
+  xp += (user.certifications ?? []).length * rules.certification;
+  xp += (user.achievements ?? []).length * rules.achievement;
+  xp += (user.awardsWon ?? []).length * rules.award_win;
+  return xp;
+}
+
+export async function upsertPassportBySession(sessionId, user) {
+  await loadOptionalConfig();
+  if (!isRemoteDatastoreActive()) return { ok: true, provider: "local" };
+
+  const xp = passportXpFromUser(user);
+  const level = Math.min(100, Math.max(1, Math.floor(xp / 1000) + 1));
+  const body = {
+    session_id: sessionId,
+    xp,
+    level,
+    completed_events: user.completedEvents ?? [],
+    completed_education: user.attendedEducation ?? [],
+    achievements: [
+      ...(user.achievements ?? []),
+      ...(user.awardsWon ?? []).map((a) => ({ ...a, type: "award_win" })),
+    ],
+    updated_at: new Date().toISOString(),
+  };
+
+  await supabaseRequest(DATA_CONFIG.tables.passportProgress, {
+    method: "POST",
+    query: buildQuery({ on_conflict: "session_id" }),
+    body,
+    prefer: "resolution=merge-duplicates,return=minimal",
+  });
+  return { ok: true, xp, level, provider: "supabase" };
+}
+
+/** Submit award vote to award_votes (one vote per session per category per season). */
+export async function submitAwardVote({ category, season, entityLegacyId, sessionId, userId = null }) {
+  await loadOptionalConfig();
+  if (!isRemoteDatastoreActive()) return { ok: false, provider: "local" };
+
+  await supabaseRequest(DATA_CONFIG.tables.awardVotes, {
+    method: "DELETE",
+    query: buildQuery({
+      category: `eq.${category}`,
+      season: `eq.${season}`,
+      session_id: `eq.${sessionId}`,
+    }),
+    prefer: "return=minimal",
+  });
+
+  await supabaseRequest(DATA_CONFIG.tables.awardVotes, {
+    method: "POST",
+    body: {
+      category,
+      season,
+      entity_legacy_id: entityLegacyId,
+      session_id: sessionId,
+      user_id: userId && /^[0-9a-f-]{36}$/i.test(userId) ? userId : null,
+      vote_weight: 1,
+    },
+    prefer: "return=minimal",
+  });
+  return { ok: true, provider: "supabase" };
+}
+
+/** Aggregate vote counts for a category/season from award_votes. */
+export async function fetchAwardVoteCounts(category, season) {
+  await loadOptionalConfig();
+  if (!isRemoteDatastoreActive()) return null;
+
+  const rows = await supabaseRequest(DATA_CONFIG.tables.awardVotes, {
+    query: buildQuery({
+      select: "entity_legacy_id,vote_weight",
+      category: `eq.${category}`,
+      season: `eq.${season}`,
+    }),
+  });
+  const counts = {};
+  for (const row of rows ?? []) {
+    const id = row.entity_legacy_id;
+    counts[id] = (counts[id] ?? 0) + (row.vote_weight ?? 1);
+  }
+  return counts;
+}
+
+/** Preload search_index weighted scores for client ranking boost (ETAP 6.5). */
+export async function fetchSearchIndexScores() {
+  await loadOptionalConfig();
+  if (!isRemoteDatastoreActive()) return new Map();
+
+  try {
+    const rows = await supabaseRequest(DATA_CONFIG.tables.searchIndex, {
+      query: buildQuery({ select: "entity_legacy_id,weighted_score", limit: "500" }),
+    });
+    return new Map((rows ?? []).map((r) => [r.entity_legacy_id, Number(r.weighted_score) || 0]));
+  } catch {
+    return new Map();
+  }
 }
 
 export async function updateUserXP(userId, xpDelta, patch = {}) {

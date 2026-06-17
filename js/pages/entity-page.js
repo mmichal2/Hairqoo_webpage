@@ -86,11 +86,7 @@ function render(root) {
     country: entity.country,
     tags: entity.tags,
   });
-  if (entity.type === "event") {
-    updatePassportProgress(getPassportUser(), { type: "event_attend", entityId: entity.id, label: entity.title });
-  } else if (entity.type === "academy") {
-    updatePassportProgress(getPassportUser(), { type: "education_complete", entityId: entity.id, label: entity.title });
-  }
+  updatePassportProgress(getPassportUser(), { type: "entity_view", entityId: entity.id });
 
   const viewedAt = Date.now();
   const logDwell = () => {

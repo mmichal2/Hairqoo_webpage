@@ -1,17 +1,24 @@
 /**
  * In-memory entity cache — keeps queries.js synchronous for static frontend.
  * Hydrates from Supabase on boot when configured.
+ * ETAP 6.5: provider state, users, passport, search_index, single brain init.
  */
 
 import { MOCK_ENTITIES } from "./entities.js";
-import { fetchAllEntities, resolveProvider } from "./api.js";
-import { applyDataConfig } from "./config.js";
+import { fetchAllEntities, fetchSearchIndexScores } from "./api.js";
+import { applyDataConfig, resolveProvider } from "./config.js";
 import { enrichEntityPool } from "../intelligence/entity-intelligence.js";
+import { setRuntimeProvider } from "./provider-state.js";
+import { ensureSessionUser, getRuntimeUserEntity } from "./users-store.js";
+import { initPassportStore } from "./passport-store.js";
+import { hydrateAllAwardVotes } from "../intelligence/awards-system.js";
+import { getDataSessionId } from "./interactions.js";
 
 let entityPool = MOCK_ENTITIES;
 let provider = "mock";
 let ready = false;
 let initPromise = null;
+let brainInitPromise = null;
 
 export function getEntityPool() {
   return entityPool;
@@ -25,6 +32,8 @@ export function isDataReady() {
   return ready;
 }
 
+export { getRuntimeUserEntity };
+
 function withTimeout(promise, ms, label = "operation") {
   return Promise.race([
     promise,
@@ -32,6 +41,28 @@ function withTimeout(promise, ms, label = "operation") {
       setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
     }),
   ]);
+}
+
+function applySearchIndexBoosts(scoreMap) {
+  if (!scoreMap?.size) return;
+  entityPool = entityPool.map((entity) => {
+    const boost = scoreMap.get(entity.id);
+    if (boost == null) return entity;
+    return {
+      ...entity,
+      searchIndexScore: boost,
+      ranking: { ...(entity.ranking ?? {}), searchIndexBoost: boost },
+    };
+  });
+}
+
+async function initGlobalBrainOnce(pool) {
+  if (brainInitPromise) return brainInitPromise;
+  brainInitPromise = (async () => {
+    const { initGlobalBrain } = await import("../intelligence/global/index.js");
+    return initGlobalBrain(pool, { force: true });
+  })();
+  return brainInitPromise;
 }
 
 async function loadConfig() {
@@ -53,6 +84,7 @@ export async function initDataLayer() {
   initPromise = (async () => {
     await loadConfig();
     provider = resolveProvider();
+    setRuntimeProvider(provider);
 
     if (provider === "supabase") {
       try {
@@ -73,13 +105,26 @@ export async function initDataLayer() {
       entityPool = enrichEntityPool(MOCK_ENTITIES);
     }
 
-    ready = true;
-    try {
-      const { initGlobalBrain } = await import("../intelligence/global/index.js");
-      initGlobalBrain(entityPool);
-    } catch (err) {
-      console.warn("[HairQoo] Global brain init deferred:", err.message);
+    setRuntimeProvider(provider);
+    const sessionId = getDataSessionId();
+
+    await ensureSessionUser(sessionId);
+    const userEntity = getRuntimeUserEntity();
+    if (userEntity && !entityPool.some((e) => e.type === "user")) {
+      entityPool = [...entityPool, userEntity];
     }
+
+    await initPassportStore(sessionId);
+
+    if (provider === "supabase") {
+      const indexScores = await fetchSearchIndexScores();
+      applySearchIndexBoosts(indexScores);
+      await hydrateAllAwardVotes();
+    }
+
+    ready = true;
+    await initGlobalBrainOnce(entityPool);
+
     if (typeof window !== "undefined") {
       window.__HAIRQOO_DATA = { provider, count: entityPool.length, ready: true };
       window.dispatchEvent(new CustomEvent("hairqoo:data-ready", { detail: { provider, count: entityPool.length } }));
@@ -94,5 +139,6 @@ export async function initDataLayer() {
 export async function refreshDataLayer() {
   ready = false;
   initPromise = null;
+  brainInitPromise = null;
   return initDataLayer();
 }

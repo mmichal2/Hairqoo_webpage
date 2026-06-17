@@ -17,10 +17,10 @@ import {
 import { entityHref, homeSectionHref } from "../hub-routes.js";
 import { bootHubPage } from "../hub-boot.js";
 import { icon } from "../icons.js";
+import { renderPassportPanel } from "../hub-passport.js";
 
 const MONTHS_PL = ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"];
 const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const PASSPORT_ICONS = ["educators", "ticket", "salon", "sparkle"];
 const PULSE_POS = [
   { left: "28%", top: "38%" },
   { left: "52%", top: "32%" },
@@ -108,21 +108,7 @@ function renderAwards(d) {
 }
 
 function renderPassport(d) {
-  return `<div class="cc-glass cc-passport" style="padding:var(--space-xl)">
-    <ol style="list-style:none;margin:0;padding:0">
-      ${d.passport.items
-        .map(
-          (item, i) => `<li class="cc-passport__item">
-            <span class="cc-passport__icon">${icon(PASSPORT_ICONS[i] ?? "sparkle")}</span>
-            <div>
-              <span style="font-size:0.78rem;color:var(--primary);font-weight:600">${esc(item.year)}</span>
-              <div>${esc(item.label)}</div>
-            </div>
-          </li>`
-        )
-        .join("")}
-    </ol>
-  </div>`;
+  return renderPassportPanel(d);
 }
 
 function renderNewsletter(d) {
