@@ -1,7 +1,7 @@
 /** HairQoo Score — ETAP 4 core intelligence engine (0–100, deterministic). */
 
-import { readStore, writeStore } from "./session-store.js";
-import { getVerifiedStatus } from "./verified-trust.js";
+import { readStore, writeStore } from "./session-store.js?version=6.6.0";
+import { getVerifiedStatus } from "./verified-trust.js?version=6.6.0";
 
 export const SCORE_TIERS = {
   ELITE: { min: 90, label: "ELITE" },

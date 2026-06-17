@@ -2,18 +2,18 @@
  * ETAP 6 — Global intelligence score fusion (ETAP 3–5 + graph + region + language).
  */
 
-import { computeRelevanceScore } from "../../data/search-engine.js";
-import { getHairQooScoreValue } from "../score-system.js";
-import { computeTrustScore, getVerifiedSearchBoost } from "../verified-trust.js";
-import { popularityComponent } from "../score-system.js";
-import { computeUserAffinity } from "../personalization/personalized-search.js";
-import { getSessionContext } from "../personalization/session-memory.js";
-import { buildUserVector } from "../personalization/user-vector.js";
-import { computeGraphCentrality, computeInfluenceScore } from "./graph-centrality.js";
-import { applyCountryBiasBoost, getRegionContext } from "./regional-intelligence.js";
-import { semanticMatchScore, detectQueryLanguage } from "./semantic-layer.js";
-import { getEntityPool } from "../../data/data-source.js";
-import { getDataSessionId } from "../../data/interactions.js";
+import { computeRelevanceScore } from "../../data/search-engine.js?version=6.6.0";
+import { getHairQooScoreValue } from "../score-system.js?version=6.6.0";
+import { computeTrustScore, getVerifiedSearchBoost } from "../verified-trust.js?version=6.6.0";
+import { popularityComponent } from "../score-system.js?version=6.6.0";
+import { computeUserAffinity } from "../personalization/personalized-search.js?version=6.6.0";
+import { getSessionContext } from "../personalization/session-memory.js?version=6.6.0";
+import { buildUserVector } from "../personalization/user-vector.js?version=6.6.0";
+import { computeGraphCentrality, computeInfluenceScore } from "./graph-centrality.js?version=6.6.0";
+import { applyCountryBiasBoost, getRegionContext } from "./regional-intelligence.js?version=6.6.0";
+import { semanticMatchScore, detectQueryLanguage } from "./semantic-layer.js?version=6.6.0";
+import { getEntityPool } from "../../data/data-source.js?version=6.6.0";
+import { getDataSessionId } from "../../data/interactions.js?version=6.6.0";
 
 const FUSION_WEIGHTS = {
   searchRelevance: 0.28,

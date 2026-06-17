@@ -1,14 +1,14 @@
 /** Awards — ETAP 4 global competition engine. */
 
-import { readStore, writeStore } from "./session-store.js";
-import { getHairQooScoreValue, interactionVelocity } from "./score-system.js";
-import { getVerifiedStatus, computeTrustScore } from "./verified-trust.js";
-import { logUserInteraction } from "./ai-learning.js";
-import { trackInteractionRemote } from "../data/interactions.js";
-import { submitAwardVote, fetchAwardVoteCounts } from "../data/api.js";
-import { getDataSessionId } from "../data/interactions.js";
-import { getSessionUser } from "../data/users-store.js";
-import { isRemoteDatastoreActive } from "../data/provider-state.js";
+import { readStore, writeStore } from "./session-store.js?version=6.6.0";
+import { getHairQooScoreValue, interactionVelocity } from "./score-system.js?version=6.6.0";
+import { getVerifiedStatus, computeTrustScore } from "./verified-trust.js?version=6.6.0";
+import { logUserInteraction } from "./ai-learning.js?version=6.6.0";
+import { trackInteractionRemote } from "../data/interactions.js?version=6.6.0";
+import { submitAwardVote, fetchAwardVoteCounts } from "../data/api.js?version=6.6.0";
+import { getDataSessionId } from "../data/interactions.js?version=6.6.0";
+import { getSessionUser } from "../data/users-store.js?version=6.6.0";
+import { isRemoteDatastoreActive } from "../data/provider-state.js?version=6.6.0";
 
 export const AWARD_CATEGORIES = {
   educator_of_year: { key: "educatorOfYear", entityType: "educator", cycle: "yearly" },

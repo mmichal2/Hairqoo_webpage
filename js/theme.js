@@ -1,4 +1,4 @@
-import { applyI18n } from "./i18n.js";
+import { applyI18n } from "./i18n.js?version=6.6.0";
 
 const STORAGE_KEY = "hairqoo_theme";
 

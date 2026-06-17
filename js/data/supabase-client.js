@@ -1,4 +1,4 @@
-import { DATA_CONFIG } from "./config.js";
+import { DATA_CONFIG } from "./config.js?version=6.6.0";
 
 function headers(prefer = "return=representation") {
   const { anonKey } = DATA_CONFIG.supabase;

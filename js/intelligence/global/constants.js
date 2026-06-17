@@ -1,6 +1,6 @@
 /** ETAP 6 — extended regions (merges with ETAP 3 search-engine REGIONS). */
 
-import { REGIONS as SEARCH_REGIONS } from "../../data/search-engine.js";
+import { REGIONS as SEARCH_REGIONS } from "../../data/search-engine.js?version=6.6.0";
 
 export const GLOBAL_REGIONS = {
   europe: SEARCH_REGIONS.europe,

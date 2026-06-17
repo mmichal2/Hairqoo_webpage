@@ -1,5 +1,5 @@
-import { entityMedia } from "./asset-catalog.js";
-import { VERIFICATION_TYPES, VERIFICATION_LEVELS } from "../intelligence/verified-trust.js";
+import { entityMedia } from "./asset-catalog.js?version=6.6.0";
+import { VERIFICATION_TYPES, VERIFICATION_LEVELS } from "../intelligence/verified-trust.js?version=6.6.0";
 
 function engagement(base) {
   return {

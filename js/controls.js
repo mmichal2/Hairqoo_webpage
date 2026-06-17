@@ -1,4 +1,4 @@
-import { applyI18n, getLang, setLang, t, SUPPORTED_LANGUAGES } from "./i18n.js";
+import { applyI18n, getLang, setLang, t, SUPPORTED_LANGUAGES } from "./i18n.js?version=6.6.0";
 
 function closeAllLangMenus(except) {
   document.querySelectorAll("[data-lang-menu]").forEach((menu) => {

@@ -2,11 +2,11 @@
  * ETAP 5 — Behavioral learning loop + dynamic ranking weights.
  */
 
-import { readStore, writeStore } from "../session-store.js";
-import { updateSessionMemory } from "./session-memory.js";
-import { updateUserVector, getUserPreferenceVector } from "./user-vector.js";
-import { updateScore } from "../score-system.js";
-import { getDataSessionId } from "../../data/interactions.js";
+import { readStore, writeStore } from "../session-store.js?version=6.6.0";
+import { updateSessionMemory } from "./session-memory.js?version=6.6.0";
+import { updateUserVector, getUserPreferenceVector } from "./user-vector.js?version=6.6.0";
+import { updateScore } from "../score-system.js?version=6.6.0";
+import { getDataSessionId } from "../../data/interactions.js?version=6.6.0";
 
 const BASE_RANKING_WEIGHTS = {
   personalization: 0.12,

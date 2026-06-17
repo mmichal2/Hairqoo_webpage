@@ -2,10 +2,10 @@
  * ETAP 6.5 — Session users ↔ Supabase users table + runtime user entity.
  */
 
-import { DATA_CONFIG } from "./config.js";
-import { supabaseRequest, buildQuery } from "./supabase-client.js";
-import { isRemoteDatastoreActive } from "./provider-state.js";
-import { getDataSessionId } from "./interactions.js";
+import { DATA_CONFIG } from "./config.js?version=6.6.0";
+import { supabaseRequest, buildQuery } from "./supabase-client.js?version=6.6.0";
+import { isRemoteDatastoreActive } from "./provider-state.js?version=6.6.0";
+import { getDataSessionId } from "./interactions.js?version=6.6.0";
 
 let sessionUser = null;
 let runtimeUserEntity = null;

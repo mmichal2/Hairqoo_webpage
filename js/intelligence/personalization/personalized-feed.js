@@ -2,12 +2,12 @@
  * ETAP 5 — Personalized Discover feed engine.
  */
 
-import { getHairQooScoreValue, popularityComponent } from "../score-system.js";
-import { getEntityPool } from "../../data/data-source.js";
-import { getSessionContext } from "./session-memory.js";
-import { buildUserVector, compareEntityToUserVector } from "./user-vector.js";
-import { getRankingWeights } from "./learning-loop.js";
-import { getDataSessionId } from "../../data/interactions.js";
+import { getHairQooScoreValue, popularityComponent } from "../score-system.js?version=6.6.0";
+import { getEntityPool } from "../../data/data-source.js?version=6.6.0";
+import { getSessionContext } from "./session-memory.js?version=6.6.0";
+import { buildUserVector, compareEntityToUserVector } from "./user-vector.js?version=6.6.0";
+import { getRankingWeights } from "./learning-loop.js?version=6.6.0";
+import { getDataSessionId } from "../../data/interactions.js?version=6.6.0";
 
 export function filterFeedByPreferences(entities, userContext) {
   const ignored = new Set(userContext?.ignoredEntities ?? []);

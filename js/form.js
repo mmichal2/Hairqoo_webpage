@@ -1,4 +1,4 @@
-import { getLang, t } from "./i18n.js";
+import { getLang, t } from "./i18n.js?version=6.6.0";
 
 export function initForm(labyrinth) {
   const form = document.getElementById("signup-form");
@@ -39,7 +39,7 @@ export function initForm(labyrinth) {
   });
 }
 
-import { applyTheme } from "./theme.js";
+import { applyTheme } from "./theme.js?version=6.6.0";
 
 export function initThemeDemo() {
   document.querySelectorAll(".theme-chip").forEach((chip) => {

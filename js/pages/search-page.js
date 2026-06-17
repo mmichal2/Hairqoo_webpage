@@ -7,9 +7,10 @@ import {
   renderHubTabbar,
   bindSearchTags,
   renderSearchBar,
-} from "../hub-shared.js";
-import { search } from "../data/queries.js";
-import { bootHubPage } from "../hub-boot.js";
+  renderSearchRankingExplanation,
+} from "../hub-shared.js?version=6.6.0";
+import { search } from "../data/queries.js?version=6.6.0";
+import { bootHubPage } from "../hub-boot.js?version=6.6.0";
 
 function render(root) {
   const q = new URLSearchParams(window.location.search).get("q") || "";
@@ -39,6 +40,7 @@ function render(root) {
         <h1 class="cc-listing-title strand-text">${q ? `${esc(d.search?.resultsFor ?? "Wyniki dla")}: “${esc(q)}”` : esc(d.search?.placeholder ?? "Szukaj")}</h1>
       </header>
       <div style="margin-bottom:var(--space-xl)">${renderSearchBar("cc-search-page", d)}</div>
+      ${q ? renderSearchRankingExplanation(q, groups, d) : ""}
       ${body}
     </main>
     ${renderHubFooter(d)}

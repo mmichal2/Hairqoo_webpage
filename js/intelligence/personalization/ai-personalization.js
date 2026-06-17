@@ -2,14 +2,14 @@
  * ETAP 5 — AI assistant personalization (extends aiAsk context).
  */
 
-import { getSessionContext } from "./session-memory.js";
-import { buildUserVector, compareEntityToUserVector } from "./user-vector.js";
-import { getRankingWeights } from "./learning-loop.js";
-import { rankSearchResultsPersonalized } from "./personalized-search.js";
-import { getEntityIntelligenceContract } from "../entity-intelligence.js";
-import { getEntityPool } from "../../data/data-source.js";
-import { getAIContext } from "../ai-learning.js";
-import { getDataSessionId } from "../../data/interactions.js";
+import { getSessionContext } from "./session-memory.js?version=6.6.0";
+import { buildUserVector, compareEntityToUserVector } from "./user-vector.js?version=6.6.0";
+import { getRankingWeights } from "./learning-loop.js?version=6.6.0";
+import { rankSearchResultsPersonalized } from "./personalized-search.js?version=6.6.0";
+import { getEntityIntelligenceContract } from "../entity-intelligence.js?version=6.6.0";
+import { getEntityPool } from "../../data/data-source.js?version=6.6.0";
+import { getAIContext } from "../ai-learning.js?version=6.6.0";
+import { getDataSessionId } from "../../data/interactions.js?version=6.6.0";
 
 export function enhanceAIContext(userId, query) {
   const id = userId ?? getDataSessionId();

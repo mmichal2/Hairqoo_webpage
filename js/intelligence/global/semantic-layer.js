@@ -2,7 +2,7 @@
  * ETAP 6 — Multi-language semantic normalization.
  */
 
-import { TAG_SEMANTIC_MAP, QUERY_LANG_HINTS } from "./constants.js";
+import { TAG_SEMANTIC_MAP, QUERY_LANG_HINTS } from "./constants.js?version=6.6.0";
 
 export function detectQueryLanguage(query) {
   const q = String(query ?? "");

@@ -3,9 +3,9 @@
  * Enriches entities for search (ETAP 3), data layer (ETAP 2), AI (ETAP 5).
  */
 
-import { computeHairQooScore, getHairQooScoreValue, popularityComponent } from "./score-system.js";
-import { getVerifiedStatus, computeTrustScore } from "./verified-trust.js";
-import { computeAwardRankPotential } from "./awards-system.js";
+import { computeHairQooScore, getHairQooScoreValue, popularityComponent } from "./score-system.js?version=6.6.0";
+import { getVerifiedStatus, computeTrustScore } from "./verified-trust.js?version=6.6.0";
+import { computeAwardRankPotential } from "./awards-system.js?version=6.6.0";
 
 /** @returns {number} 0–100 popularity index */
 export function computePopularityIndex(entity, network = null) {

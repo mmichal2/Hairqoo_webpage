@@ -2,14 +2,14 @@
  * ETAP 5 — Personalized search ranking (extends ETAP 3 + ETAP 4).
  */
 
-import { rankSearchResults } from "../../data/search-engine.js";
-import { getHairQooScoreValue } from "../score-system.js";
-import { getVerifiedSearchBoost } from "../verified-trust.js";
-import { getSessionContext } from "./session-memory.js";
-import { buildUserVector, compareEntityToUserVector } from "./user-vector.js";
-import { getRankingWeights } from "./learning-loop.js";
-import { getEntityPool } from "../../data/data-source.js";
-import { getDataSessionId } from "../../data/interactions.js";
+import { rankSearchResults } from "../../data/search-engine.js?version=6.6.0";
+import { getHairQooScoreValue } from "../score-system.js?version=6.6.0";
+import { getVerifiedSearchBoost } from "../verified-trust.js?version=6.6.0";
+import { getSessionContext } from "./session-memory.js?version=6.6.0";
+import { buildUserVector, compareEntityToUserVector } from "./user-vector.js?version=6.6.0";
+import { getRankingWeights } from "./learning-loop.js?version=6.6.0";
+import { getEntityPool } from "../../data/data-source.js?version=6.6.0";
+import { getDataSessionId } from "../../data/interactions.js?version=6.6.0";
 
 export function computeUserAffinity(entity, userProfile, userVector = null) {
   const vector = userVector ?? buildUserVector(userProfile?.userId);

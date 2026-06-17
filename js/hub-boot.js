@@ -1,9 +1,9 @@
-import { initTheme } from "./theme.js";
-import { initControls } from "./controls.js";
-import { applyI18n } from "./i18n.js";
-import { initAIAssistant } from "./ai-assistant.js";
-import { initIntelligence } from "./intelligence/index.js";
-import { initDataLayer } from "./data/data-source.js";
+import { initTheme } from "./theme.js?version=6.6.0";
+import { initControls } from "./controls.js?version=6.6.0";
+import { applyI18n } from "./i18n.js?version=6.6.0";
+import { initAIAssistant } from "./ai-assistant.js?version=6.6.0";
+import { initIntelligence } from "./intelligence/index.js?version=6.6.0";
+import { initDataLayer } from "./data/data-source.js?version=6.6.0";
 
 /** Wspólny bootstrap stron hubu (bez labiryntu). */
 export async function bootHubPage(render) {

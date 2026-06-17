@@ -1,6 +1,6 @@
-import { getEntityPool } from "./data-source.js";
-import { getCcDict } from "../cc-dict.js";
-import { getHairQooScoreValue } from "../intelligence/score-system.js";
+import { getEntityPool } from "./data-source.js?version=6.6.0";
+import { getCcDict } from "../cc-dict.js?version=6.6.0";
+import { getHairQooScoreValue } from "../intelligence/score-system.js?version=6.6.0";
 import {
   searchEntities,
   groupSearchResults,
@@ -9,29 +9,29 @@ import {
   normalizeScores,
   tokenize,
   matchesQuery,
-} from "./search-engine.js";
-import { rankSearchResultsPersonalized } from "../intelligence/personalization/personalized-search.js";
-import { getAwardNominee } from "../intelligence/awards-system.js";
+} from "./search-engine.js?version=6.6.0";
+import { rankSearchResultsPersonalized } from "../intelligence/personalization/personalized-search.js?version=6.6.0";
+import { getAwardNominee } from "../intelligence/awards-system.js?version=6.6.0";
 import {
   inferBehavioralTypeHint,
   logUserInteraction,
   updateAIContext,
-} from "../intelligence/ai-learning.js";
-import { getSessionProfile } from "../intelligence/session-store.js";
-import { getLang } from "../i18n.js";
-import { getDataSessionId } from "./interactions.js";
+} from "../intelligence/ai-learning.js?version=6.6.0";
+import { getSessionProfile } from "../intelligence/session-store.js?version=6.6.0";
+import { getLang } from "../i18n.js?version=6.6.0";
+import { getDataSessionId } from "./interactions.js?version=6.6.0";
 import {
   enhanceAIContext,
   personalizedAIResponse,
-} from "../intelligence/personalization/ai-personalization.js";
-import { getPersonalizedFeed } from "../intelligence/personalization/personalized-feed.js";
-import { rankByGlobalIntelligence } from "../intelligence/global/global-scoring.js";
-import { mapSemanticMeaningAcrossLanguages } from "../intelligence/global/semantic-layer.js";
+} from "../intelligence/personalization/ai-personalization.js?version=6.6.0";
+import { getPersonalizedFeed } from "../intelligence/personalization/personalized-feed.js?version=6.6.0";
+import { rankByGlobalIntelligence } from "../intelligence/global/global-scoring.js?version=6.6.0";
+import { mapSemanticMeaningAcrossLanguages } from "../intelligence/global/semantic-layer.js?version=6.6.0";
 import {
   buildAIContext,
   enhanceAIResponseWithGraph,
   buildGlobalBrainResponse,
-} from "../intelligence/global/ai-brain-context.js";
+} from "../intelligence/global/ai-brain-context.js?version=6.6.0";
 
 function pool() {
   return getEntityPool();
@@ -287,7 +287,7 @@ export {
   getPassportSummary,
   enrichEntityIntelligence,
   getEntityIntelligenceContract,
-} from "../intelligence/index.js";
+} from "../intelligence/index.js?version=6.6.0";
 
 // Search engine API (ETAP 3)
 export {
@@ -303,7 +303,7 @@ export {
   SEARCHABLE_TYPES,
   RANK_WEIGHTS,
   REGIONS,
-} from "./search-engine.js";
+} from "./search-engine.js?version=6.6.0";
 
 // Data layer API (ETAP 2)
 export {
@@ -314,9 +314,9 @@ export {
   updateUserXP,
   upsertEntities,
   searchIndexed,
-} from "./api.js";
-export { trackInteraction } from "./interactions.js";
-export { initDataLayer, refreshDataLayer, getDataProvider, isDataReady } from "./data-source.js";
+} from "./api.js?version=6.6.0";
+export { trackInteraction } from "./interactions.js?version=6.6.0";
+export { initDataLayer, refreshDataLayer, getDataProvider, isDataReady } from "./data-source.js?version=6.6.0";
 
 // Global Brain API (ETAP 6)
 export {
@@ -328,7 +328,7 @@ export {
   rankByGlobalIntelligence,
   computeGraphCentrality,
   detectQueryLanguage,
-} from "../intelligence/global/index.js";
+} from "../intelligence/global/index.js?version=6.6.0";
 
 // Personalization API (ETAP 5)
 export {
@@ -344,4 +344,4 @@ export {
   getUserPreferenceVector,
   enhanceAIContext,
   personalizedAIResponse,
-} from "../intelligence/personalization/index.js";
+} from "../intelligence/personalization/index.js?version=6.6.0";

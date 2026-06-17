@@ -6,9 +6,9 @@ import {
   renderHubHeader,
   renderHubTabbar,
   bindSearchTags,
-} from "../hub-shared.js";
-import { getEntitiesByOwner } from "../data/queries.js";
-import { bootHubPage } from "../hub-boot.js";
+} from "../hub-shared.js?version=6.6.0";
+import { getEntitiesByOwner } from "../data/queries.js?version=6.6.0";
+import { bootHubPage } from "../hub-boot.js?version=6.6.0";
 
 function getProfileId() {
   return new URLSearchParams(window.location.search).get("id") || "";

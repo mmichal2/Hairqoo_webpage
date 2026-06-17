@@ -17,10 +17,10 @@ export {
   SEARCHABLE_TYPES,
   RANK_WEIGHTS,
   REGIONS,
-} from "../data/search-engine.js";
+} from "../data/search-engine.js?version=6.6.0";
 
-import { rankSearchResults as rankCore } from "../data/search-engine.js";
-import { improveRankingFromFeedback } from "./ai-learning.js";
+import { rankSearchResults as rankCore } from "../data/search-engine.js?version=6.6.0";
+import { improveRankingFromFeedback } from "./ai-learning.js?version=6.6.0";
 
 /**
  * Legacy wrapper: optional behavioral boost (ETAP 4/5 prep) after core ranking.

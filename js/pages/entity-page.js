@@ -7,13 +7,13 @@ import {
   renderHubHeader,
   renderHubTabbar,
   bindSearchTags,
-} from "../hub-shared.js";
-import { getEntityById, getByType } from "../data/queries.js";
-import { profileHref } from "../hub-routes.js";
-import { bootHubPage } from "../hub-boot.js";
-import { icon } from "../icons.js";
-import { logUserInteraction } from "../intelligence/ai-learning.js";
-import { updatePassportProgress, getPassportUser } from "../intelligence/passport-system.js";
+} from "../hub-shared.js?version=6.6.0";
+import { getEntityById, getByType } from "../data/queries.js?version=6.6.0";
+import { profileHref } from "../hub-routes.js?version=6.6.0";
+import { bootHubPage } from "../hub-boot.js?version=6.6.0";
+import { icon } from "../icons.js?version=6.6.0";
+import { logUserInteraction } from "../intelligence/ai-learning.js?version=6.6.0";
+import { updatePassportProgress, getPassportUser } from "../intelligence/passport-system.js?version=6.6.0";
 
 function render(root) {
   const p = new URLSearchParams(window.location.search);

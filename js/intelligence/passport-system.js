@@ -1,7 +1,7 @@
 /** Passport engine — ETAP 4 + ETAP 6.5 unified store. */
 
-import { getDataSessionId } from "../data/interactions.js";
-import { getPassportUserSync, persistPassportUser } from "../data/passport-store.js";
+import { getDataSessionId } from "../data/interactions.js?version=6.6.0";
+import { getPassportUserSync, persistPassportUser } from "../data/passport-store.js?version=6.6.0";
 
 export const XP_RULES = {
   event_attend: 120,

@@ -1,5 +1,5 @@
-import { t } from "./i18n.js";
-import { initPosterField } from "./poster.js";
+import { t } from "./i18n.js?version=6.6.0";
+import { initPosterField } from "./poster.js?version=6.6.0";
 
 const STATUS_KEYS = ["preloader.s1", "preloader.s2", "preloader.s3", "preloader.s4"];
 

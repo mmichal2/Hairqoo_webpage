@@ -2,8 +2,8 @@
  * ETAP 6.5 — Shared passport UI (homepage + passport.html).
  */
 
-import { getPassportSummary } from "../intelligence/passport-system.js";
-import { esc } from "./hub-shared.js";
+import { getPassportSummary } from "./intelligence/passport-system.js?version=6.6.0";
+import { esc } from "./hub-shared.js?version=6.6.0";
 
 const PASSPORT_ICONS = {
   certification: "🎓",

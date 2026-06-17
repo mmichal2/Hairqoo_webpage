@@ -2,15 +2,15 @@
  * ETAP 6 — RAG retrieval engine (static-site, no LLM server).
  */
 
-import { searchEntities, tokenize, haystack } from "../../data/search-engine.js";
-import { rankSearchResultsPersonalized } from "../personalization/personalized-search.js";
-import { getEntityPool } from "../../data/data-source.js";
-import { getDataSessionId } from "../../data/interactions.js";
-import { enhanceAIContext } from "../personalization/ai-personalization.js";
-import { findRelatedEntities, getEntityConnections } from "./entity-graph.js";
-import { mapSemanticMeaningAcrossLanguages, semanticMatchScore } from "./semantic-layer.js";
-import { computeGlobalIntelligenceScore } from "./global-scoring.js";
-import { getEntityIntelligenceContract } from "../entity-intelligence.js";
+import { searchEntities, tokenize, haystack } from "../../data/search-engine.js?version=6.6.0";
+import { rankSearchResultsPersonalized } from "../personalization/personalized-search.js?version=6.6.0";
+import { getEntityPool } from "../../data/data-source.js?version=6.6.0";
+import { getDataSessionId } from "../../data/interactions.js?version=6.6.0";
+import { enhanceAIContext } from "../personalization/ai-personalization.js?version=6.6.0";
+import { findRelatedEntities, getEntityConnections } from "./entity-graph.js?version=6.6.0";
+import { mapSemanticMeaningAcrossLanguages, semanticMatchScore } from "./semantic-layer.js?version=6.6.0";
+import { computeGlobalIntelligenceScore } from "./global-scoring.js?version=6.6.0";
+import { getEntityIntelligenceContract } from "../entity-intelligence.js?version=6.6.0";
 
 function entityToChunk(entity, query, userId, network) {
   const global = computeGlobalIntelligenceScore(entity, query, userId, { network });

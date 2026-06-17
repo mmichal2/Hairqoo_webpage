@@ -2,9 +2,9 @@
  * ETAP 5 — User preference vector (lightweight behavioral model).
  */
 
-import { readStore, writeStore } from "../session-store.js";
-import { getSessionContext } from "./session-memory.js";
-import { getDataSessionId } from "../../data/interactions.js";
+import { readStore, writeStore } from "../session-store.js?version=6.6.0";
+import { getSessionContext } from "./session-memory.js?version=6.6.0";
+import { getDataSessionId } from "../../data/interactions.js?version=6.6.0";
 
 const EVENT_WEIGHTS = {
   view_entity: 0.08,

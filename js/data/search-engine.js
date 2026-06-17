@@ -4,11 +4,11 @@
  * No UI — pure ranking pipeline over ETAP 2 entity pool.
  */
 
-import { getHairQooScoreValue, popularityComponent } from "../intelligence/score-system.js";
-import { getVerifiedStatus, computeTrustScore, VERIFICATION_LEVELS } from "../intelligence/verified-trust.js";
-import { getSessionProfile } from "../intelligence/session-store.js";
-import { getEntityPool } from "./data-source.js";
-import { getLang } from "../i18n.js";
+import { getHairQooScoreValue, popularityComponent } from "../intelligence/score-system.js?version=6.6.0";
+import { getVerifiedStatus, computeTrustScore, VERIFICATION_LEVELS } from "../intelligence/verified-trust.js?version=6.6.0";
+import { getSessionProfile } from "../intelligence/session-store.js?version=6.6.0";
+import { getEntityPool } from "./data-source.js?version=6.6.0";
+import { getLang } from "../i18n.js?version=6.6.0";
 
 /** Unified searchable types (cross-type global ranking). */
 export const SEARCHABLE_TYPES = new Set([

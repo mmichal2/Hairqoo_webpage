@@ -2,10 +2,10 @@
  * ETAP 6.5 — Unified passport persistence (Supabase OR localStorage, never both).
  */
 
-import { readStore, writeStore } from "../intelligence/session-store.js";
-import { getPassportBySession, upsertPassportBySession } from "./api.js";
-import { isRemoteDatastoreActive } from "./provider-state.js";
-import { getDataSessionId } from "./interactions.js";
+import { readStore, writeStore } from "../intelligence/session-store.js?version=6.6.0";
+import { getPassportBySession, upsertPassportBySession } from "./api.js?version=6.6.0";
+import { isRemoteDatastoreActive } from "./provider-state.js?version=6.6.0";
+import { getDataSessionId } from "./interactions.js?version=6.6.0";
 
 let passportCache = null;
 

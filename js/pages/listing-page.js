@@ -1,4 +1,4 @@
-import { LISTING_SECTIONS } from "../hub-routes.js";
+import { LISTING_SECTIONS } from "../hub-routes.js?version=6.6.0";
 import {
   dict,
   esc,
@@ -7,9 +7,9 @@ import {
   renderHubHeader,
   renderHubTabbar,
   bindSearchTags,
-} from "../hub-shared.js";
-import { filterEntities, getCountries, getTrendingTags } from "../data/queries.js";
-import { bootHubPage } from "../hub-boot.js";
+} from "../hub-shared.js?version=6.6.0";
+import { filterEntities, getCountries, getTrendingTags } from "../data/queries.js?version=6.6.0";
+import { bootHubPage } from "../hub-boot.js?version=6.6.0";
 
 function getSection() {
   const p = new URLSearchParams(window.location.search);

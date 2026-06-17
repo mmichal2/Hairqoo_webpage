@@ -3,7 +3,7 @@
  * Remote writes only when provider === "supabase" (not mock-fallback).
  */
 
-import { resolveProvider } from "./config.js";
+import { resolveProvider } from "./config.js?version=6.6.0";
 
 let runtimeProvider = null;
 

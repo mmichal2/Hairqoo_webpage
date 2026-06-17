@@ -2,8 +2,8 @@
  * ETAP 6 — Cross-country intelligence (extends ETAP 3 regions).
  */
 
-import { getHairQooScoreValue } from "../score-system.js";
-import { GLOBAL_REGIONS, resolveGlobalRegion } from "./constants.js";
+import { getHairQooScoreValue } from "../score-system.js?version=6.6.0";
+import { GLOBAL_REGIONS, resolveGlobalRegion } from "./constants.js?version=6.6.0";
 
 function regionEntityCounts(entities) {
   const counts = {};

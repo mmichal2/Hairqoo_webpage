@@ -3,11 +3,11 @@
  * ETAP 2: schema-backed reads/writes; no UI logic.
  */
 
-import { DATA_CONFIG, resolveProvider, isSupabaseConfigured, applyDataConfig } from "./config.js";
-import { supabaseRequest, supabaseRpc, buildQuery } from "./supabase-client.js";
-import { rowToEntity, rowsToEntities, entityToRow } from "./entity-mapper.js";
-import { MOCK_ENTITIES } from "./entities.js";
-import { isRemoteDatastoreActive } from "./provider-state.js";
+import { DATA_CONFIG, resolveProvider, isSupabaseConfigured, applyDataConfig } from "./config.js?version=6.6.0";
+import { supabaseRequest, supabaseRpc, buildQuery } from "./supabase-client.js?version=6.6.0";
+import { rowToEntity, rowsToEntities, entityToRow } from "./entity-mapper.js?version=6.6.0";
+import { MOCK_ENTITIES } from "./entities.js?version=6.6.0";
+import { isRemoteDatastoreActive } from "./provider-state.js?version=6.6.0";
 
 export { isSupabaseConfigured, resolveProvider };
 
@@ -20,7 +20,7 @@ async function loadOptionalConfig() {
     applyDataConfig(window.__HAIRQOO_DATA_CONFIG);
   }
   try {
-    const mod = await import("./config.local.js");
+    const mod = await import("./config.local.js?version=6.6.0");
     if (mod.DATA_CONFIG_LOCAL) applyDataConfig(mod.DATA_CONFIG_LOCAL);
   } catch {
     /* optional local config */

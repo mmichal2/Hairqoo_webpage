@@ -7,9 +7,9 @@ export {
   findRelatedEntities,
   getEntityGraph,
   strengthenEdgeFromInteraction,
-} from "./entity-graph.js";
+} from "./entity-graph.js?version=6.6.0";
 
-export { retrieveContext, buildContextWindow, rankKnowledgeChunks } from "./rag-engine.js";
+export { retrieveContext, buildContextWindow, rankKnowledgeChunks } from "./rag-engine.js?version=6.6.0";
 
 export {
   getRegionalRanking,
@@ -18,30 +18,30 @@ export {
   getRegionContext,
   resolveGlobalRegion,
   GLOBAL_REGIONS,
-} from "./regional-intelligence.js";
+} from "./regional-intelligence.js?version=6.6.0";
 
 export {
   detectQueryLanguage,
   mapSemanticMeaningAcrossLanguages,
   unifyEntityTagsAcrossLanguages,
   semanticMatchScore,
-} from "./semantic-layer.js";
+} from "./semantic-layer.js?version=6.6.0";
 
 export {
   computeGlobalIntelligenceScore,
   rankByGlobalIntelligence,
   FUSION_WEIGHTS,
-} from "./global-scoring.js";
+} from "./global-scoring.js?version=6.6.0";
 
-export { computeGraphCentrality, computeInfluenceScore, warmupCentralityCache } from "./graph-centrality.js";
+export { computeGraphCentrality, computeInfluenceScore, warmupCentralityCache } from "./graph-centrality.js?version=6.6.0";
 
-export { buildAIContext, enhanceAIResponseWithGraph, buildGlobalBrainResponse } from "./ai-brain-context.js";
+export { buildAIContext, enhanceAIResponseWithGraph, buildGlobalBrainResponse } from "./ai-brain-context.js?version=6.6.0";
 
-export { TAG_SEMANTIC_MAP, RELATION_TYPES } from "./constants.js";
+export { TAG_SEMANTIC_MAP, RELATION_TYPES } from "./constants.js?version=6.6.0";
 
-import { createEntityGraph, getEntityGraph } from "./entity-graph.js";
-import { warmupCentralityCache } from "./graph-centrality.js";
-import { getEntityPool } from "../../data/data-source.js";
+import { createEntityGraph, getEntityGraph } from "./entity-graph.js?version=6.6.0";
+import { warmupCentralityCache } from "./graph-centrality.js?version=6.6.0";
+import { getEntityPool } from "../../data/data-source.js?version=6.6.0";
 
 let brainReady = false;
 

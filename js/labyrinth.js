@@ -1,8 +1,8 @@
-import { CHAMBER_CONFIG, applyFinaleI18n, applyI18n, t } from "./i18n.js";
-import { initMockups } from "./mockups.js";
-import { initChambers } from "./chambers/index.js";
-import { portalDoorEnter, portalExit, portalTilePress } from "./motion.js";
-import { ScrollPhysics } from "./scroll-physics.js";
+import { CHAMBER_CONFIG, applyFinaleI18n, applyI18n, t } from "./i18n.js?version=6.6.0";
+import { initMockups } from "./mockups.js?version=6.6.0";
+import { initChambers } from "./chambers/index.js?version=6.6.0";
+import { portalDoorEnter, portalExit, portalTilePress } from "./motion.js?version=6.6.0";
+import { ScrollPhysics } from "./scroll-physics.js?version=6.6.0";
 
 const STORAGE_KEY = "hairqoo_labyrinth";
 

@@ -1,10 +1,10 @@
-import { getLang } from "./i18n.js";
-import { getCcDict } from "./cc-dict.js";
-import { aiAsk } from "./data/queries.js";
-import { entityHref, searchHref, seeAllHref } from "./hub-routes.js";
-import { esc } from "./hub-shared.js";
-import { bindVoiceButton } from "./speech-recognition.js";
-import { logUserInteraction } from "./intelligence/ai-learning.js";
+import { getLang } from "./i18n.js?version=6.6.0";
+import { getCcDict } from "./cc-dict.js?version=6.6.0";
+import { aiAsk } from "./data/queries.js?version=6.6.0";
+import { entityHref, searchHref, seeAllHref } from "./hub-routes.js?version=6.6.0";
+import { esc } from "./hub-shared.js?version=6.6.0";
+import { bindVoiceButton } from "./speech-recognition.js?version=6.6.0";
+import { logUserInteraction } from "./intelligence/ai-learning.js?version=6.6.0";
 
 const state = {
   open: false,
@@ -12,6 +12,53 @@ const state = {
   loading: false,
   failed: false,
 };
+
+/** ETAP 6.6 — read-only brain snapshot for UI hooks (no pipeline changes). */
+let brainSnapshot = { brainContext: null, globalBrain: null };
+
+export function getBrainContextReadOnly() {
+  const c = brainSnapshot.brainContext;
+  return c ? structuredClone(c) : null;
+}
+
+export function getGlobalBrainSummaryReadOnly() {
+  const g = brainSnapshot.globalBrain;
+  if (!g) return null;
+  return structuredClone({
+    entityCount: g.entities?.length ?? 0,
+    relatedCount: g.relatedEntities?.length ?? 0,
+    graphEdgeCount: g.graphConnections?.length ?? 0,
+    scoreBreakdown: g.scoreBreakdown,
+    regionContext: g.regionContext,
+    languageContext: g.languageContext,
+  });
+}
+
+function renderBrainInsightPanel() {
+  const d = dict();
+  const g = brainSnapshot.globalBrain;
+  if (!g?.entities?.length) return "";
+  const labels = d.aiVisibility ?? {};
+  const top = g.entities[0];
+  const rows = [
+    { label: labels.hairQooScore ?? "HairQoo Score", value: top.globalBrain?.scoreBreakdown?.hairQooScore },
+    { label: labels.popularity ?? "Popularity", value: top.globalBrain?.scoreBreakdown?.engagementScore },
+    { label: labels.countryBoost ?? "Country boost", value: top.globalBrain?.scoreBreakdown?.regionalBoost },
+    { label: labels.recencyBoost ?? "Recency boost", value: top.globalBrain?.scoreBreakdown?.searchRelevanceScore },
+  ]
+    .map((row) => {
+      const val = row.value == null ? "—" : Math.round(row.value * 100);
+      return `<div><dt>${esc(row.label)}</dt><dd>${val}</dd></div>`;
+    })
+    .join("");
+
+  return `<div class="cc-ai-brain-panel" aria-label="${esc(labels.panelTitle ?? "AI Brain")}">
+    <h3 class="cc-ai-brain-panel__title">${esc(labels.whySeeing ?? "Why am I seeing this?")}</h3>
+    <p class="cc-ai-brain-panel__subtitle">${esc(labels.rankingTitle ?? "AI ranking explanation")}</p>
+    <dl class="cc-ai-insight__grid">${rows}</dl>
+    <p class="cc-ai-brain-panel__meta">${esc(labels.brainNodes ?? "Graph nodes")}: ${brainSnapshot.brainContext?.graph?.nodeCount ?? 0}</p>
+  </div>`;
+}
 
 function dict() {
   return getCcDict(getLang());
@@ -79,7 +126,7 @@ function renderDrawer() {
         </div>
         <button type="button" class="cc-ai-drawer__close" id="cc-ai-close" aria-label="${esc(d.common?.close ?? "Zamknij")}">✕</button>
       </header>
-      <div class="cc-ai-thread" id="cc-ai-thread">${renderThread()}</div>
+      <div class="cc-ai-thread" id="cc-ai-thread">${renderThread()}${renderBrainInsightPanel()}</div>
       <form class="cc-ai-input-bar" id="cc-ai-form">
         <input class="cc-ai-input" id="cc-ai-input" type="text" placeholder="${esc(d.ai.placeholder ?? "")}" aria-label="${esc(d.ai.placeholder ?? "")}" />
         <button type="button" class="cc-voice-btn" id="cc-ai-voice" aria-label="${esc(d.search?.voice ?? "Głos")}">🎙</button>
@@ -163,6 +210,11 @@ export async function send(prompt) {
             : seeAllHref(l.href.replace(/^\//, ""))
         : l.href,
     }));
+
+    brainSnapshot = {
+      brainContext: res.brainContext ? structuredClone(res.brainContext) : null,
+      globalBrain: res.globalBrain ? structuredClone(res.globalBrain) : null,
+    };
 
     state.thread = [
       ...state.thread,

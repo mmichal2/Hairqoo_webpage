@@ -1,16 +1,16 @@
 /** AI learning layer — ETAP 5 personalization integration. */
 
-import { readStore, writeStore, getSessionProfile } from "./session-store.js";
-import { updateScore } from "./score-system.js";
-import { updatePassportProgress, getPassportUser } from "./passport-system.js";
-import { getDataSessionId } from "../data/interactions.js";
+import { readStore, writeStore, getSessionProfile } from "./session-store.js?version=6.6.0";
+import { updateScore } from "./score-system.js?version=6.6.0";
+import { updatePassportProgress, getPassportUser } from "./passport-system.js?version=6.6.0";
+import { getDataSessionId } from "../data/interactions.js?version=6.6.0";
 import {
   updateLearningModel,
-} from "./personalization/learning-loop.js";
-import { getUserPreferenceVector } from "./personalization/user-vector.js";
-import { getSessionContext } from "./personalization/session-memory.js";
-import { compareEntityToUserVector, buildUserVector } from "./personalization/user-vector.js";
-import { getRankingWeights } from "./personalization/learning-loop.js";
+} from "./personalization/learning-loop.js?version=6.6.0";
+import { getUserPreferenceVector } from "./personalization/user-vector.js?version=6.6.0";
+import { getSessionContext } from "./personalization/session-memory.js?version=6.6.0";
+import { compareEntityToUserVector, buildUserVector } from "./personalization/user-vector.js?version=6.6.0";
+import { getRankingWeights } from "./personalization/learning-loop.js?version=6.6.0";
 
 const MAX_INTERACTIONS = 200;
 const MAX_SEARCH_HISTORY = 30;
@@ -90,7 +90,7 @@ export function logUserInteraction(type, entityId, meta = {}) {
   updateLearningModel(userId, { type, entityId, meta: entry.meta });
 
   if (entityId) {
-    import("./global/entity-graph.js")
+    import("./global/entity-graph.js?version=6.6.0")
       .then(({ strengthenEdgeFromInteraction }) => strengthenEdgeFromInteraction(entityId, type))
       .catch(() => {});
   }
@@ -103,7 +103,7 @@ export function logUserInteraction(type, entityId, meta = {}) {
   }
 
   queueMicrotask(() => {
-    import("../data/interactions.js")
+    import("../data/interactions.js?version=6.6.0")
       .then(({ trackInteractionRemote }) => trackInteractionRemote(type, entityId, entry.meta))
       .catch(() => {});
   });

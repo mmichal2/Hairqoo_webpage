@@ -1,4 +1,4 @@
-import { getLang } from "../i18n.js";
+import { getLang } from "../i18n.js?version=6.6.0";
 import {
   dict,
   esc,
@@ -7,17 +7,17 @@ import {
   renderHubTabbar,
   bindSearchTags,
   bindAwardVotes,
-} from "../hub-shared.js";
+} from "../hub-shared.js?version=6.6.0";
 import {
   getCalendarEventsByView,
   getCountriesAggregated,
   getByType,
   getAwardLeader,
-} from "../data/queries.js";
-import { entityHref, homeSectionHref } from "../hub-routes.js";
-import { bootHubPage } from "../hub-boot.js";
-import { icon } from "../icons.js";
-import { renderPassportPanel } from "../hub-passport.js";
+} from "../data/queries.js?version=6.6.0";
+import { entityHref, homeSectionHref } from "../hub-routes.js?version=6.6.0";
+import { bootHubPage } from "../hub-boot.js?version=6.6.0";
+import { icon } from "../icons.js?version=6.6.0";
+import { renderPassportPanel } from "../hub-passport.js?version=6.6.0";
 
 const MONTHS_PL = ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"];
 const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

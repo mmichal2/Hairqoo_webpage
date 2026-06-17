@@ -1,7 +1,7 @@
 /** Tłumaczenia Control Center (hairqoo3) — PL, EN, ES, FR, PT */
-import es from "./cc-locales/es.js";
-import fr from "./cc-locales/fr.js";
-import pt from "./cc-locales/pt.js";
+import es from "./cc-locales/es.js?version=6.6.0";
+import fr from "./cc-locales/fr.js?version=6.6.0";
+import pt from "./cc-locales/pt.js?version=6.6.0";
 
 export const CC_DICT = {
   pl: {
@@ -52,6 +52,20 @@ export const CC_DICT = {
         "Najlepiej oceniane maszynki do fade",
         "Wydarzenia fryzjerskie blisko mnie",
       ],
+    },
+    aiVisibility: {
+      whySeeing: "Dlaczego to widzę?",
+      rankingTitle: "Wyjaśnienie rankingu AI",
+      rankingLead: "Podgląd score breakdown dla najlepszego dopasowania (tylko odczyt).",
+      panelTitle: "Ranking AI",
+      hairQooScore: "HairQoo Score",
+      verified: "Status weryfikacji",
+      verifiedYes: "Zweryfikowany",
+      verifiedNo: "Niezweryfikowany",
+      popularity: "Popularność",
+      countryBoost: "Boost kraju",
+      recencyBoost: "Boost świeżości",
+      brainNodes: "Węzły grafu",
     },
     portals: {
       businessHeadline: "Twój biznes",
@@ -228,6 +242,20 @@ export const CC_DICT = {
         "Highest-rated fade clippers",
         "Hair events near me",
       ],
+    },
+    aiVisibility: {
+      whySeeing: "Why am I seeing this?",
+      rankingTitle: "AI ranking explanation",
+      rankingLead: "Score breakdown preview for the top match (read-only).",
+      panelTitle: "AI ranking",
+      hairQooScore: "HairQoo Score",
+      verified: "Verified status",
+      verifiedYes: "Verified",
+      verifiedNo: "Unverified",
+      popularity: "Popularity",
+      countryBoost: "Country boost",
+      recencyBoost: "Recency boost",
+      brainNodes: "Graph nodes",
     },
     portals: {
       businessHeadline: "Your business",

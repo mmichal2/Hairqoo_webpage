@@ -297,3 +297,30 @@
     font-size: 1.2rem;
   }
 }
+
+/* ETAP 6.6 — AI Brain visibility (read-only UI) */
+.cc-ai-brain-panel {
+  margin: var(--space-md);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.cc-ai-brain-panel__title {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.cc-ai-brain-panel__subtitle {
+  margin: 0 0 12px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.cc-ai-brain-panel__meta {
+  margin: 10px 0 0;
+  font-size: 0.75rem;
+  color: var(--outline);
+}

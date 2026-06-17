@@ -1,4 +1,4 @@
-import { getLang } from "./i18n.js";
+import { getLang } from "./i18n.js?version=6.6.0";
 import {
   getFeedPage,
   getTrending,
@@ -6,9 +6,9 @@ import {
   getCountriesAggregated,
   getCalendarEventsByView,
   getAwardLeader,
-} from "./data/queries.js";
-import { seeAllHref, entityHref } from "./hub-routes.js";
-import { openAIWithPrompt } from "./ai-assistant.js";
+} from "./data/queries.js?version=6.6.0";
+import { seeAllHref, entityHref } from "./hub-routes.js?version=6.6.0";
+import { openAIWithPrompt } from "./ai-assistant.js?version=6.6.0";
 import {
   esc,
   dict,
@@ -20,10 +20,10 @@ import {
   renderHubNav,
   bindSearchTags,
   bindAwardVotes,
-} from "./hub-shared.js";
-import { hairqooBrandMarkup } from "./brand-logo.js";
-import { icon } from "./icons.js";
-import { renderPassportPanel } from "./hub-passport.js";
+} from "./hub-shared.js?version=6.6.0";
+import { hairqooBrandMarkup } from "./brand-logo.js?version=6.6.0";
+import { icon } from "./icons.js?version=6.6.0";
+import { renderPassportPanel } from "./hub-passport.js?version=6.6.0";
 
 const MONTHS_PL = ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"];
 const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -38,6 +38,15 @@ const DISCOVER_FEED_LIMIT = 18;
 
 let feedCursor = null;
 let feedLoading = false;
+let feedObserver = null;
+let ccLabyrinth = null;
+let ccLangBound = false;
+
+function teardownFeedObserver() {
+  feedObserver?.disconnect();
+  feedObserver = null;
+  document.getElementById("cc-feed-sentinel")?.remove();
+}
 
 function sectionHeader(title, subtitle, sectionKey, seeAll) {
   return `<header class="cc-section__header">
@@ -318,12 +327,14 @@ function bindInteractions(root, labyrinth) {
     newsletterForm.innerHTML = `<p class="cc-newsletter__success">${esc(d.newsletter.success)}</p>`;
   });
 
+  teardownFeedObserver();
+
   const feedEl = document.getElementById("cc-feed");
   const feedState = document.getElementById("cc-feed-state");
   feedCursor = getFeedPage(null, DISCOVER_FEED_LIMIT).nextCursor ?? "done";
   feedLoading = false;
   if (feedEl) {
-    const observer = new IntersectionObserver(
+    feedObserver = new IntersectionObserver(
       (entries) => {
         if (!entries[0]?.isIntersecting || feedLoading || feedCursor === "done") return;
         loadMoreFeed(feedEl, feedState);
@@ -333,13 +344,13 @@ function bindInteractions(root, labyrinth) {
     const sentinel = document.createElement("div");
     sentinel.id = "cc-feed-sentinel";
     feedEl.after(sentinel);
-    observer.observe(sentinel);
+    feedObserver.observe(sentinel);
   }
 
   root.querySelectorAll("[data-portal]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       if (!labyrinth || labyrinth.isTransitioning) return;
-      const { portalTilePress } = await import("./motion.js");
+      const { portalTilePress } = await import("./motion.js?version=6.6.0");
       await portalTilePress(btn);
       await labyrinth.enterPortal(btn.dataset.portal);
     });
@@ -369,28 +380,42 @@ function loadMoreFeed(feedEl, feedState) {
   feedLoading = false;
 }
 
-function scrollToSectionHash() {
-  const id = window.location.hash.replace("#", "");
-  if (!id) return;
+/** ETAP 6.6 — preserve #discover / #events hash scroll after CC mount. */
+export function restoreHashScroll() {
+  const id = window.location.hash.replace(/^#/, "");
+  if (!id || id.includes("/")) return;
   const el = document.getElementById(id);
-  if (el) requestAnimationFrame(() => el.scrollIntoView({ behavior: "smooth" }));
+  if (el) requestAnimationFrame(() => el.scrollIntoView({ behavior: "smooth", block: "start" }));
+}
+
+function mountControlCenter(labyrinth) {
+  const root = document.getElementById("cc-app");
+  if (!root) return;
+  renderHomepage(root);
+  bindInteractions(root, labyrinth);
+  restoreHashScroll();
+}
+
+export function refreshControlCenter() {
+  if (ccLabyrinth) mountControlCenter(ccLabyrinth);
 }
 
 export function initControlCenter(labyrinth) {
   const gate = document.getElementById("gate");
   if (!gate) return;
 
+  ccLabyrinth = labyrinth;
   gate.classList.add("home-cc", "is-poster-ready");
-  gate.innerHTML = '<div class="cc-app" id="cc-app"></div>';
+  document.body.classList.add("is-home-cc");
 
-  const root = document.getElementById("cc-app");
-  renderHomepage(root);
-  bindInteractions(root, labyrinth);
-  scrollToSectionHash();
+  if (!document.getElementById("cc-app")) {
+    gate.innerHTML = '<div class="cc-app" id="cc-app"></div>';
+  }
 
-  window.addEventListener("hairqoo:lang", () => {
-    renderHomepage(root);
-    bindInteractions(root, labyrinth);
-    scrollToSectionHash();
-  });
+  if (!ccLangBound) {
+    ccLangBound = true;
+    window.addEventListener("hairqoo:lang", () => refreshControlCenter());
+  }
+
+  mountControlCenter(labyrinth);
 }

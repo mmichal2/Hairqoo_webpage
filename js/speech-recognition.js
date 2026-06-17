@@ -1,5 +1,5 @@
-import { getLang } from "./i18n.js";
-import { SPEECH_LOCALES } from "./speech-locales.js";
+import { getLang } from "./i18n.js?version=6.6.0";
+import { SPEECH_LOCALES } from "./speech-locales.js?version=6.6.0";
 
 function getRecognitionCtor() {
   if (typeof window === "undefined") return null;

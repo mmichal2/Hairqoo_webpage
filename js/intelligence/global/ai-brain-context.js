@@ -2,13 +2,13 @@
  * ETAP 6 — AI brain context + global output contract.
  */
 
-import { enhanceAIContext, personalizedAIResponse } from "../personalization/ai-personalization.js";
-import { buildContextWindow, retrieveContext } from "./rag-engine.js";
-import { findRelatedEntities, getEntityConnections } from "./entity-graph.js";
-import { rankByGlobalIntelligence } from "./global-scoring.js";
-import { detectQueryLanguage } from "./semantic-layer.js";
-import { getEntityPool } from "../../data/data-source.js";
-import { getDataSessionId } from "../../data/interactions.js";
+import { enhanceAIContext, personalizedAIResponse } from "../personalization/ai-personalization.js?version=6.6.0";
+import { buildContextWindow, retrieveContext } from "./rag-engine.js?version=6.6.0";
+import { findRelatedEntities, getEntityConnections } from "./entity-graph.js?version=6.6.0";
+import { rankByGlobalIntelligence } from "./global-scoring.js?version=6.6.0";
+import { detectQueryLanguage } from "./semantic-layer.js?version=6.6.0";
+import { getEntityPool } from "../../data/data-source.js?version=6.6.0";
+import { getDataSessionId } from "../../data/interactions.js?version=6.6.0";
 
 export function buildAIContext(query, userId = null) {
   const id = userId ?? getDataSessionId();

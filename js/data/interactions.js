@@ -3,10 +3,10 @@
  * Fire-and-forget; never blocks UI.
  */
 
-import { DATA_CONFIG } from "./config.js";
-import { supabaseRequest, buildQuery } from "./supabase-client.js";
-import { updateEntityMetrics } from "./api.js";
-import { isLocalDatastoreActive } from "./provider-state.js";
+import { DATA_CONFIG } from "./config.js?version=6.6.0";
+import { supabaseRequest, buildQuery } from "./supabase-client.js?version=6.6.0";
+import { updateEntityMetrics } from "./api.js?version=6.6.0";
+import { isLocalDatastoreActive } from "./provider-state.js?version=6.6.0";
 
 const METRIC_MAP = {
   view: { views: 1 },

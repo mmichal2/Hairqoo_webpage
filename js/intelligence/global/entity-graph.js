@@ -2,10 +2,10 @@
  * ETAP 6 — Global Entity Graph (directional, weighted).
  */
 
-import { readStore, writeStore } from "../session-store.js";
-import { getEntityPool } from "../../data/data-source.js";
-import { getVerifiedStatus } from "../verified-trust.js";
-import { RELATION_TYPES } from "./constants.js";
+import { readStore, writeStore } from "../session-store.js?version=6.6.0";
+import { getEntityPool } from "../../data/data-source.js?version=6.6.0";
+import { getVerifiedStatus } from "../verified-trust.js?version=6.6.0";
+import { RELATION_TYPES } from "./constants.js?version=6.6.0";
 
 function emptyGraph() {
   return { nodes: {}, edges: [] };

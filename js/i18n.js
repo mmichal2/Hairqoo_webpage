@@ -1,6 +1,6 @@
-import es from "./locales/es.js";
-import pt from "./locales/pt.js";
-import fr from "./locales/fr.js";
+import es from "./locales/es.js?version=6.6.0";
+import pt from "./locales/pt.js?version=6.6.0";
+import fr from "./locales/fr.js?version=6.6.0";
 
 export const SUPPORTED_LANGUAGES = [
   { code: "pl", flag: "🇵🇱", labelKey: "languages.pl" },

@@ -104,7 +104,8 @@ body.is-labyrinth-active {
   }
 }
 
-body.is-labyrinth-active .site-footer {
+body.is-labyrinth-active .site-footer,
+body.is-home-cc .site-footer {
   display: none;
 }
 

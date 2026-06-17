@@ -2,8 +2,8 @@
  * ETAP 5 — Session memory engine (client-side, static-site safe).
  */
 
-import { readStore, writeStore } from "../session-store.js";
-import { getDataSessionId } from "../../data/interactions.js";
+import { readStore, writeStore } from "../session-store.js?version=6.6.0";
+import { getDataSessionId } from "../../data/interactions.js?version=6.6.0";
 
 const MAX_LIST = 80;
 

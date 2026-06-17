@@ -4,15 +4,15 @@
  * ETAP 6.5: provider state, users, passport, search_index, single brain init.
  */
 
-import { MOCK_ENTITIES } from "./entities.js";
-import { fetchAllEntities, fetchSearchIndexScores } from "./api.js";
-import { applyDataConfig, resolveProvider } from "./config.js";
-import { enrichEntityPool } from "../intelligence/entity-intelligence.js";
-import { setRuntimeProvider } from "./provider-state.js";
-import { ensureSessionUser, getRuntimeUserEntity } from "./users-store.js";
-import { initPassportStore } from "./passport-store.js";
-import { hydrateAllAwardVotes } from "../intelligence/awards-system.js";
-import { getDataSessionId } from "./interactions.js";
+import { MOCK_ENTITIES } from "./entities.js?version=6.6.0";
+import { fetchAllEntities, fetchSearchIndexScores } from "./api.js?version=6.6.0";
+import { applyDataConfig, resolveProvider } from "./config.js?version=6.6.0";
+import { enrichEntityPool } from "../intelligence/entity-intelligence.js?version=6.6.0";
+import { setRuntimeProvider } from "./provider-state.js?version=6.6.0";
+import { ensureSessionUser, getRuntimeUserEntity } from "./users-store.js?version=6.6.0";
+import { initPassportStore } from "./passport-store.js?version=6.6.0";
+import { hydrateAllAwardVotes } from "../intelligence/awards-system.js?version=6.6.0";
+import { getDataSessionId } from "./interactions.js?version=6.6.0";
 
 let entityPool = MOCK_ENTITIES;
 let provider = "mock";
@@ -59,7 +59,7 @@ function applySearchIndexBoosts(scoreMap) {
 async function initGlobalBrainOnce(pool) {
   if (brainInitPromise) return brainInitPromise;
   brainInitPromise = (async () => {
-    const { initGlobalBrain } = await import("../intelligence/global/index.js");
+    const { initGlobalBrain } = await import("../intelligence/global/index.js?version=6.6.0");
     return initGlobalBrain(pool, { force: true });
   })();
   return brainInitPromise;
@@ -70,7 +70,7 @@ async function loadConfig() {
     applyDataConfig(window.__HAIRQOO_DATA_CONFIG);
   }
   try {
-    const mod = await import("./config.local.js");
+    const mod = await import("./config.local.js?version=6.6.0");
     if (mod.DATA_CONFIG_LOCAL) applyDataConfig(mod.DATA_CONFIG_LOCAL);
   } catch {
     /* optional */

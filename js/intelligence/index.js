@@ -1,6 +1,6 @@
 /** HairQoo Intelligence Layer — ETAP 4 public API + bootstrap. */
 
-export { readStore, writeStore, getSessionProfile } from "./session-store.js";
+export { readStore, writeStore, getSessionProfile } from "./session-store.js?version=6.6.0";
 export {
   computeHairQooScore,
   getHairQooScore,
@@ -16,7 +16,7 @@ export {
   interactionVelocity,
   SCORE_TIERS,
   SCORE_REFERENCE_DATE,
-} from "./score-system.js";
+} from "./score-system.js?version=6.6.0";
 export {
   getVerifiedStatus,
   applyVerifiedBoost,
@@ -24,8 +24,8 @@ export {
   computeTrustScore,
   VERIFICATION_TYPES,
   VERIFICATION_LEVELS,
-} from "./verified-trust.js";
-export { computeRelevanceScore, rankSearchResultsWithFeedback } from "./search-ranking.js";
+} from "./verified-trust.js?version=6.6.0";
+export { computeRelevanceScore, rankSearchResultsWithFeedback } from "./search-ranking.js?version=6.6.0";
 export {
   AWARD_CATEGORIES,
   vote,
@@ -37,7 +37,7 @@ export {
   hasVoted,
   getUserVote,
   getCurrentSeason,
-} from "./awards-system.js";
+} from "./awards-system.js?version=6.6.0";
 export {
   XP_RULES,
   getDefaultUser,
@@ -50,13 +50,13 @@ export {
   updatePassportProgressById,
   getPassportProgress,
   getPassportSummary,
-} from "./passport-system.js";
+} from "./passport-system.js?version=6.6.0";
 export {
   enrichEntityIntelligence,
   enrichEntityPool,
   getEntityIntelligenceContract,
   computePopularityIndex,
-} from "./entity-intelligence.js";
+} from "./entity-intelligence.js?version=6.6.0";
 export {
   logUserInteraction,
   updateAIContext,
@@ -64,7 +64,7 @@ export {
   getAIContext,
   inferBehavioralTypeHint,
   getUserPreferenceVector,
-} from "./ai-learning.js";
+} from "./ai-learning.js?version=6.6.0";
 
 export {
   initPersonalization,
@@ -86,14 +86,14 @@ export {
   filterFeedByPreferences,
   enhanceAIContext,
   personalizedAIResponse,
-} from "./personalization/index.js";
+} from "./personalization/index.js?version=6.6.0";
 
-import { logUserInteraction } from "./ai-learning.js";
-import { updatePassportProgressById } from "./passport-system.js";
-import { voteForAward, getUserVote, AWARD_CATEGORIES } from "./awards-system.js";
-import { getDataSessionId } from "../data/interactions.js";
-import { initPersonalization } from "./personalization/index.js";
-import { initGlobalBrain } from "./global/index.js";
+import { logUserInteraction } from "./ai-learning.js?version=6.6.0";
+import { updatePassportProgressById } from "./passport-system.js?version=6.6.0";
+import { voteForAward, getUserVote, AWARD_CATEGORIES } from "./awards-system.js?version=6.6.0";
+import { getDataSessionId } from "../data/interactions.js?version=6.6.0";
+import { initPersonalization } from "./personalization/index.js?version=6.6.0";
+import { initGlobalBrain } from "./global/index.js?version=6.6.0";
 
 export {
   initGlobalBrain,
@@ -121,7 +121,7 @@ export {
   buildGlobalBrainResponse,
   GLOBAL_REGIONS,
   FUSION_WEIGHTS,
-} from "./global/index.js";
+} from "./global/index.js?version=6.6.0";
 
 let initialized = false;
 

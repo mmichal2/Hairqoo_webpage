@@ -2,11 +2,11 @@
  * ETAP 6 — Graph centrality + influence metrics.
  */
 
-import { readStore, writeStore } from "../session-store.js";
-import { getEntityGraph, getEntityConnections } from "./entity-graph.js";
-import { getHairQooScoreValue, interactionVelocity } from "../score-system.js";
-import { getVerifiedStatus } from "../verified-trust.js";
-import { getEntityPool } from "../../data/data-source.js";
+import { readStore, writeStore } from "../session-store.js?version=6.6.0";
+import { getEntityGraph, getEntityConnections } from "./entity-graph.js?version=6.6.0";
+import { getHairQooScoreValue, interactionVelocity } from "../score-system.js?version=6.6.0";
+import { getVerifiedStatus } from "../verified-trust.js?version=6.6.0";
+import { getEntityPool } from "../../data/data-source.js?version=6.6.0";
 
 function cacheCentrality(entityId, metrics) {
   writeStore((store) => {
