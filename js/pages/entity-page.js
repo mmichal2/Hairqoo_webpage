@@ -7,6 +7,7 @@ import {
   renderHubHeader,
   renderHubTabbar,
   bindSearchTags,
+  bindCollapsibleInsights,
 } from "../hub-shared.js?version=6.6.0";
 import { getEntityById, getByType } from "../data/queries.js?version=6.6.0";
 import { profileHref } from "../hub-routes.js?version=6.6.0";
@@ -80,6 +81,7 @@ function render(root) {
     ${renderHubTabbar(d)}
   `;
   bindSearchTags(root);
+  bindCollapsibleInsights(root);
 
   logUserInteraction("view", entity.id, {
     entityType: entity.type,

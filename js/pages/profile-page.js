@@ -6,6 +6,7 @@ import {
   renderHubHeader,
   renderHubTabbar,
   bindSearchTags,
+  bindCollapsibleInsights,
 } from "../hub-shared.js?version=6.6.0";
 import { getEntitiesByOwner } from "../data/queries.js?version=6.6.0";
 import { bootHubPage } from "../hub-boot.js?version=6.6.0";
@@ -38,6 +39,7 @@ function render(root) {
     ${renderHubTabbar(d)}
   `;
   bindSearchTags(root);
+  bindCollapsibleInsights(root);
 }
 
 bootHubPage(render);

@@ -259,7 +259,7 @@ export function initAIAssistant() {
     <span aria-hidden="true">✦</span>
     <span class="cc-ai-fab__label">${esc(d.ai.title)}</span>
   </button>
-  <div class="cc-ai-status-fab" aria-hidden="true">${renderAISystemStatus(d)}</div>
+  <div class="cc-ai-status-fab" role="complementary" aria-label="${esc(d.aiVisibility?.statusTitle ?? "AI System Status")}">${renderAISystemStatus(d)}</div>
   <div id="cc-ai-host"></div>`;
   document.body.appendChild(root);
 

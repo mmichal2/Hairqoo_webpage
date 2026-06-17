@@ -7,6 +7,7 @@ import {
   renderHubTabbar,
   bindSearchTags,
   bindAwardVotes,
+  bindCollapsibleInsights,
 } from "../hub-shared.js?version=6.6.0";
 import {
   getCalendarEventsByView,
@@ -158,6 +159,7 @@ function render(root) {
   `;
 
   bindSearchTags(root);
+  bindCollapsibleInsights(root);
   root.querySelectorAll("[data-calendar-view]").forEach((tab) => {
     tab.addEventListener("click", () => {
       const view = tab.dataset.calendarView;
