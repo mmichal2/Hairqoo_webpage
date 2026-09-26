@@ -74,6 +74,17 @@ body.is-preloading {
   transform: scale(0.98);
 }
 
+.boot-fallback-legal {
+  margin: 12px 0 0 !important;
+  font-size: 0.8rem !important;
+  color: var(--muted);
+}
+
+.boot-fallback-legal a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
 [data-theme="light"] .boot-fallback {
   background: rgba(255, 255, 255, 0.96);
   border-color: rgba(90, 69, 212, 0.22);
