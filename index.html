@@ -101,7 +101,7 @@
     <link rel="stylesheet" href="./css/tunnel.css?version=6.6.0" />
     <link rel="stylesheet" href="./css/scroll-cue.css?version=6.6.0" />
     <link rel="stylesheet" href="./css/portal-door.css?version=6.6.0" />
-    <link rel="stylesheet" href="./css/controls.css?version=6.6.0" />
+    <link rel="stylesheet" href="./css/controls.css?version=6.6.1" />
     <link rel="stylesheet" href="./css/control-center.css?version=6.6.0" />
     <link rel="stylesheet" href="./css/ai-assistant.css?version=6.6.0" />
   </head>
@@ -147,6 +147,11 @@
     </svg>
 
     <div class="ambient-glow" aria-hidden="true"></div>
+
+    <nav class="site-legal-links" aria-label="Legal">
+      <a class="site-legal-links__link" href="./privacy.html">Privacy</a>
+      <a class="site-legal-links__link" href="./terms.html">Terms</a>
+    </nav>
 
     <div class="portal-chrome" id="portal-chrome" aria-hidden="false">
       <button
@@ -983,6 +988,11 @@
       <button type="button" class="boot-fallback-btn" onclick="location.reload()">
         Odśwież stronę
       </button>
+      <p class="boot-fallback-legal">
+        <a href="./privacy.html">Privacy</a>
+        ·
+        <a href="./terms.html">Terms</a>
+      </p>
     </div>
 
     <script type="module" src="./js/main.js?version=6.6.0"></script>

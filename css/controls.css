@@ -5,6 +5,54 @@
   --gate-controls-reserve: calc(122px + env(safe-area-inset-right, 0px));
 }
 
+/* TikTok / store review: Privacy + Terms always visible without opening a menu */
+.site-legal-links {
+  position: fixed;
+  left: calc(12px + env(safe-area-inset-left, 0px));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 130;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border, rgba(201, 191, 255, 0.22));
+  background: rgba(11, 11, 18, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  pointer-events: auto;
+}
+
+[data-theme="light"] .site-legal-links {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(90, 69, 212, 0.16);
+}
+
+.site-legal-links__link {
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: var(--muted, #a8a4c0);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-legal-links__link:hover,
+.site-legal-links__link:focus-visible {
+  color: var(--text, #f4f2ff);
+}
+
+body.is-labyrinth-active .site-legal-links {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  body:not(.is-labyrinth-active) .site-legal-links {
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 .portal-chrome {
   position: fixed;
   inset: 0;
